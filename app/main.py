@@ -30,6 +30,14 @@ from src.trip_planner.route_optimizer import nearest_neighbor_optimize, compute_
 from src.trip_planner.auto_assigner import assign_spots_to_days
 from src.trip_planner.nearby_search import search_nearby_hotels, search_nearby_restaurants
 from src.trip_planner.plan_manager import save_plan, load_plan, list_plans, delete_plan
+from src.trip_planner.play_duration import estimate_play_duration, get_opening_hours
+from src.trip_planner.review_aggregator import aggregate_spot_reviews
+from src.trip_planner.pass_coverage import compute_pass_coverage
+from src.trip_planner.time_aware_assigner import assign_spots_with_duration
+from src.trip_planner.cost_estimator import estimate_trip_cost
+from src.trip_planner.seasonal_checker import check_seasonal_availability
+from src.trip_planner.smart_selector import import_pass_spots, get_all_passes_info, get_persona_recommendations
+from src.trip_planner.timeline_builder import build_day_timeline
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW_DATA_DIR = os.path.join(PROJECT_ROOT, "raw_data")
@@ -2025,276 +2033,479 @@ elif page == "📊 数据总览":
 elif page == "📝 行程规划":
     st.title("行程规划")
 
-    # Sub-navigation
-    sub_page = st.radio(
-        "选择功能",
-        ["新建行程", "景点评价", "历史记录"],
-        horizontal=True,
-        label_visibility="collapsed",
-    )
-
     # --- Initialize session state ---
-    if "trip_spots" not in st.session_state:
-        st.session_state.trip_spots = []
-    if "trip_days" not in st.session_state:
-        st.session_state.trip_days = 3
-    if "departure_city" not in st.session_state:
-        st.session_state.departure_city = "武汉"
-    if "departure_date" not in st.session_state:
-        st.session_state.departure_date = None
-    if "optimized_plan" not in st.session_state:
-        st.session_state.optimized_plan = None
+    if "tp_cart" not in st.session_state:
+        st.session_state.tp_cart = []
+    if "tp_assignment" not in st.session_state:
+        st.session_state.tp_assignment = None
+    if "tp_route_options" not in st.session_state:
+        st.session_state.tp_route_options = []
+    if "tp_selected_route" not in st.session_state:
+        st.session_state.tp_selected_route = 0
+    if "tp_travel_month" not in st.session_state:
+        st.session_state.tp_travel_month = 6
+    if "tp_departure_city" not in st.session_state:
+        st.session_state.tp_departure_city = "武汉"
+    if "tp_num_days" not in st.session_state:
+        st.session_state.tp_num_days = 3
 
-    # --- Sub-page: New Trip ---
-    if sub_page == "新建行程":
-        st.subheader("新建行程")
+    # --- Tab navigation ---
+    tab1, tab2, tab3, tab4 = st.tabs(["智能选景", "行程编排", "路线优化", "行程总览"])
 
-        # Step 1: Settings
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            all_cities_for_dep = sorted(set(s["city"] for s in spots_with_coords if s["city"]))
-            dep_city = st.selectbox("出发城市", all_cities_for_dep, index=all_cities_for_dep.index("武汉") if "武汉" in all_cities_for_dep else 0)
-        with c2:
-            dep_date = st.date_input("出发日期")
-        with c3:
-            num_days = st.number_input("游玩天数", 1, 7, 3)
+    # ============================================================
+    # Tab 1: 智能选景
+    # ============================================================
+    with tab1:
+        st.subheader("快速导入年卡景点")
 
-        st.session_state.departure_city = dep_city
-        st.session_state.departure_date = str(dep_date)
-        st.session_state.trip_days = num_days
-
-        # Step 2: Spot selection
-        st.subheader("选择景点")
-        sorted_spots = sorted(spots_with_coords, key=lambda s: (s.get("city", ""), s["name"]))
-        spot_options = [f"{s['city']} - {s['name']}" for s in sorted_spots]
-        spot_map = {f"{s['city']} - {s['name']}": s for s in sorted_spots}
-
-        # Group by city for easier selection
-        city_groups = {}
-        for s in sorted_spots:
-            city_groups.setdefault(s["city"], []).append(s)
-
-        selected_spot_keys = []
-        for city in sorted(city_groups.keys()):
-            with st.expander(f"{city}（{len(city_groups[city])}个景点）"):
-                city_options = [f"{s['city']} - {s['name']}" for s in city_groups[city]]
-                picked = st.multiselect(
-                    f"选择{city}的景点",
-                    city_options,
-                    default=[k for k in st.session_state.trip_spots if k in city_options],
+        passes_info = get_all_passes_info(graph_data)
+        if passes_info:
+            c1, c2, c3 = st.columns([3, 1, 1])
+            with c1:
+                selected_pass_name = st.selectbox(
+                    "选择年卡",
+                    [p["name"] for p in passes_info],
                     label_visibility="collapsed",
                 )
-                selected_spot_keys.extend(picked)
+            with c2:
+                pass_data = next((p for p in passes_info if p["name"] == selected_pass_name), None)
+                if pass_data:
+                    st.metric("景点数", pass_data["spot_count"])
+                    st.metric("性价比", pass_data["value_ratio"])
+            with c3:
+                if st.button("一键导入", type="primary", use_container_width=True):
+                    imported = import_pass_spots(selected_pass_name, graph_data, cleaned)
+                    if imported:
+                        st.session_state.tp_cart = imported
+                        st.rerun()
 
-        st.session_state.trip_spots = selected_spot_keys
+        st.divider()
+        st.subheader("季节性推荐")
 
-        if selected_spot_keys:
-            st.info(f"已选 **{len(selected_spot_keys)}** 个景点")
+        month = st.slider("出行月份", 1, 12, st.session_state.tp_travel_month)
+        st.session_state.tp_travel_month = month
 
-            # Generate plan button
-            if st.button("生成行程", type="primary"):
-                selected_spots = [spot_map[k] for k in selected_spot_keys if k in spot_map]
-                valid_spots = [s for s in selected_spots if s.get("lng") and s.get("lat")]
+        persona = st.radio(
+            "游玩偏好",
+            ["family", "adventure", "culture", "relax"],
+            format_func=lambda x: PERSONA_PROFILES[x]["label"],
+            horizontal=True,
+        )
+
+        persona_recs = get_persona_recommendations(persona, month, spots_with_coords)
+        if persona_recs:
+            top = persona_recs[:12]
+            cols = st.columns(4)
+            for idx, (spot, score, reason, _bonus) in enumerate(top):
+                with cols[idx % 4]:
+                    with st.container(border=True):
+                        st.caption(spot.get("name", "")[:12])
+                        st.caption(f"{spot.get('city', '')} · ¥{spot.get('price', 0)}")
+                        emoji = "✅" if score >= 4 else "⚠️" if score >= 2 else "❌"
+                        st.caption(f"{emoji} 季节分 {score}")
+                        if st.button("加入行程", key=f"rec_add_{idx}"):
+                            entry = {
+                                "name": spot.get("name", ""),
+                                "city": spot.get("city", ""),
+                                "category": spot.get("category", ""),
+                                "sub_category": spot.get("_classification", {}).get("sub_category", ""),
+                                "level": spot.get("level", ""),
+                                "price": spot.get("price", 0),
+                                "lng": spot.get("lng"),
+                                "lat": spot.get("lat"),
+                                "tags": spot.get("tags", []),
+                            }
+                            names = [s["name"] for s in st.session_state.tp_cart]
+                            if entry["name"] not in names:
+                                st.session_state.tp_cart.append(entry)
+                            st.rerun()
+
+        st.divider()
+        st.subheader("手动选择")
+
+        search_text = st.text_input("搜索景点名称或城市", placeholder="输入关键词...")
+        filtered_manual = spots_with_coords
+        if search_text:
+            filtered_manual = [
+                s for s in spots_with_coords
+                if search_text in s.get("name", "") or search_text in s.get("city", "")
+            ]
+
+        if filtered_manual:
+            with st.expander(f"点击展开选择（{len(filtered_manual)}个结果）"):
+                manual_options = [f"{s['city']} - {s['name']}" for s in filtered_manual]
+                manual_map = {f"{s['city']} - {s['name']}": s for s in filtered_manual}
+                picked_manual = st.multiselect(
+                    "选择景点",
+                    manual_options,
+                    label_visibility="collapsed",
+                )
+                if picked_manual and st.button("添加到行程"):
+                    for key in picked_manual:
+                        s = manual_map[key]
+                        entry = {
+                            "name": s.get("name", ""),
+                            "city": s.get("city", ""),
+                            "category": s.get("category", ""),
+                            "sub_category": s.get("_classification", {}).get("sub_category", ""),
+                            "level": s.get("level", ""),
+                            "price": s.get("price", 0),
+                            "lng": s.get("lng"),
+                            "lat": s.get("lat"),
+                            "tags": s.get("tags", []),
+                        }
+                        names = [s["name"] for s in st.session_state.tp_cart]
+                        if entry["name"] not in names:
+                            st.session_state.tp_cart.append(entry)
+                    st.rerun()
+
+        # --- Cart display ---
+        st.divider()
+        if st.session_state.tp_cart:
+            st.subheader(f"已选景点（{len(st.session_state.tp_cart)}个）")
+
+            # Summary stats
+            total_tickets = sum(s.get("price", 0) for s in st.session_state.tp_cart)
+            cities = set(s.get("city", "") for s in st.session_state.tp_cart)
+            sc1, sc2, sc3 = st.columns(3)
+            sc1.metric("门票总计", f"¥{total_tickets}")
+            sc2.metric("涉及城市", len(cities))
+            sc3.metric("年卡对比", f"¥{total_tickets // len(st.session_state.tp_cart)}/人" if st.session_state.tp_cart else "¥0")
+
+            # Cart table
+            cart_df = pd.DataFrame([
+                {
+                    "景点": s["name"],
+                    "城市": s.get("city", ""),
+                    "类型": s.get("category", ""),
+                    "时长(h)": estimate_play_duration(
+                        s.get("category", ""), s.get("sub_category", ""),
+                        s.get("level", ""), s.get("price", 0),
+                    ),
+                    "票价": s.get("price", 0),
+                }
+                for s in st.session_state.tp_cart
+            ])
+            st.dataframe(cart_df, use_container_width=True, hide_index=True)
+
+            if st.button("清空行程", type="secondary"):
+                st.session_state.tp_cart = []
+                st.session_state.tp_assignment = None
+                st.rerun()
+        else:
+            st.info("请从上方导入年卡景点或手动选择")
+
+    # ============================================================
+    # Tab 2: 行程编排
+    # ============================================================
+    with tab2:
+        if not st.session_state.tp_cart:
+            st.info("请先在「智能选景」Tab添加景点")
+        else:
+            c1, c2, c3, c4 = st.columns(4)
+            with c1:
+                all_cities = sorted(set(s["city"] for s in spots_with_coords if s["city"]))
+                dep_idx = all_cities.index("武汉") if "武汉" in all_cities else 0
+                dep_city = st.selectbox("出发城市", all_cities, index=dep_idx)
+            with c2:
+                travel_month = st.selectbox("出行月份", range(1, 13), index=month - 1)
+            with c3:
+                num_days = st.number_input("天数", 1, 7, st.session_state.tp_num_days)
+            with c4:
+                daily_cap = st.slider("每日时长(h)", 6.0, 12.0, 8.0, 0.5)
+
+            if st.button("自动编排行程", type="primary", use_container_width=True):
                 dep_coord = CITY_COORDS.get(dep_city, [114.305, 30.593])
                 departure = {"name": dep_city, "lng": dep_coord[0], "lat": dep_coord[1]}
+                valid = [s for s in st.session_state.tp_cart if s.get("lng") and s.get("lat")]
 
-                with st.spinner("正在规划行程..."):
-                    # Assign spots to days
-                    days = assign_spots_to_days(valid_spots, departure, num_days)
-
-                    # Optimize routes for each day
-                    web_key = st.secrets.get("amap_web_key", "")
-                    day_routes = []
-                    for i, day_spots in enumerate(days):
-                        prev_end = days[i-1][-1] if days[i-1] else departure
-                        ordered = nearest_neighbor_optimize(departure if i == 0 else prev_end, day_spots)
-                        route = compute_route(departure, ordered, web_key)
-                        day_routes.append(route)
-
-                    st.session_state.optimized_plan = {
-                        "days": [
-                            {
-                                "spots": [
-                                    {
-                                        "name": s["name"], "city": s["city"],
-                                        "lng": s["lng"], "lat": s["lat"],
-                                        "category": s["category"], "price": s["price"],
-                                    }
-                                    for s in day_spots
-                                ],
-                                "route": {
-                                    "total_distance_km": dr.total_distance_km,
-                                    "total_duration_min": dr.total_duration_min,
-                                    "segments": [
-                                        {"from": seg.from_name, "to": seg.to_name,
-                                         "distance_km": seg.distance_km, "duration_min": seg.duration_min}
-                                        for seg in dr.segments[:5]  # top 5 segments
-                                    ],
-                                },
-                            }
-                            for day_spots, dr in zip(days, day_routes)
-                        ],
-                        "departure_city": dep_city,
-                        "departure_date": str(dep_date),
-                        "num_days": num_days,
-                        "total_spots": len(valid_spots),
-                    }
+                with st.spinner("正在编排..."):
+                    assignment = assign_spots_with_duration(
+                        valid, departure, num_days, travel_month, daily_cap,
+                    )
+                    st.session_state.tp_assignment = assignment
+                    st.session_state.tp_departure_city = dep_city
+                    st.session_state.tp_num_days = num_days
+                    st.session_state.tp_travel_month = travel_month
                 st.rerun()
 
-        # Display optimized plan
-        if st.session_state.optimized_plan:
-            plan = st.session_state.optimized_plan
-            st.divider()
-            st.subheader(f"行程概览（{plan['num_days']}天）")
+            # Display assignment
+            assignment = st.session_state.tp_assignment
+            if assignment:
+                # Seasonal warnings banner
+                if assignment["seasonal_warnings"]:
+                    st.warning("⚠️ 季节性提醒：")
+                    for w in assignment["seasonal_warnings"]:
+                        st.caption(f"❌ {w['spot_name']} — {w['reason']}")
 
-            # Save button
-            plan_name = st.text_input("行程名称", value=f"{plan['departure_city']}出发-{plan['num_days']}日游")
-            if st.button("保存行程", type="primary"):
-                plan_data = {
-                    "name": plan_name,
-                    "trip_type": "trip_planner",
-                    **plan,
-                }
-                plan_id = save_plan(plan_data)
-                st.success(f"已保存！行程ID: {plan_id}")
+                # Day cards
+                for day_data in assignment["days"]:
+                    spots = day_data["spots"]
+                    if not spots:
+                        st.caption(f"Day {day_data['day_num']}: 无景点")
+                        continue
 
-            # Day-by-day display
-            for i, day in enumerate(plan["days"]):
-                with st.expander(f"**Day {i+1}** - {len(day['spots'])}个景点 · 驾驶 {day['route']['total_distance_km']:.1f}km / {day['route']['total_duration_min']}分钟", expanded=True):
-                    if day["spots"]:
-                        # Show spots in order
-                        cols = st.columns([3, 1, 1])
-                        spot_df = pd.DataFrame([
-                            {"景点": s["name"], "城市": s["city"], "类型": s["category"], "票价": s["price"]}
-                            for s in day["spots"]
-                        ])
-                        cols[0].dataframe(spot_df, use_container_width=True, hide_index=True)
+                    with st.expander(
+                        f"**Day {day_data['day_num']}** — {len(spots)}个景点 · 游玩{day_data['play_hours']:.1f}h · 驾驶{day_data['travel_km']:.0f}km · {day_data['primary_city']}",
+                        expanded=True,
+                    ):
+                        # Spot list with duration and reviews
+                        for spot in spots:
+                            name = spot.get("name", "")
+                            play_h = spot.get("_play_hours", 2.0)
+                            score = spot.get("_seasonal_score", 3)
+                            emoji = "✅" if score >= 4 else "⚠️" if score >= 2 else "❌"
 
-                        # Show route summary
-                        cols[1].metric("总距离", f"{day['route']['total_distance_km']:.1f}km")
-                        cols[2].metric("预计驾驶", f"{day['route']['total_duration_min']}分钟")
+                            col_n, col_d, col_s = st.columns([4, 1, 1])
+                            col_n.markdown(f"**{name}**")
+                            col_n.caption(f"{spot.get('city', '')} · {spot.get('category', '')} · ¥{spot.get('price', 0)}")
+                            col_d.metric("游玩时长", f"{play_h}h")
+                            col_s.metric("季节分", f"{emoji}{score}")
 
-                        # Nearby search
-                        if day["spots"]:
-                            first_spot = day["spots"][0]
-                            st.caption(f"搜索 **{first_spot['name']}** 附近的酒店和餐厅")
-                            c_hotel, c_rest = st.columns(2)
-                            if c_hotel.button("附近酒店", key=f"hotel_{i}"):
-                                with st.spinner("搜索中..."):
-                                    hotels = search_nearby_hotels(
-                                        first_spot["lng"], first_spot["lat"],
-                                        st.secrets.get("amap_web_key", ""), radius=3000, max_results=8,
-                                    )
-                                    if hotels:
-                                        hotel_df = pd.DataFrame([
-                                            {"酒店": h["name"], "地址": h["address"], "距离(m)": h["distance"]}
-                                            for h in hotels
-                                        ])
-                                        c_hotel.dataframe(hotel_df, use_container_width=True, hide_index=True)
-                                    else:
-                                        c_hotel.info("未找到附近酒店")
-                            if c_rest.button("附近餐厅", key=f"rest_{i}"):
-                                with st.spinner("搜索中..."):
-                                    restaurants = search_nearby_restaurants(
-                                        first_spot["lng"], first_spot["lat"],
-                                        st.secrets.get("amap_web_key", ""), radius=2000, max_results=8,
-                                    )
-                                    if restaurants:
-                                        rest_df = pd.DataFrame([
-                                            {"餐厅": r["name"], "地址": r["address"], "距离(m)": r["distance"]}
-                                            for r in restaurants
-                                    ])
-                                        c_rest.dataframe(rest_df, use_container_width=True, hide_index=True)
-                                    else:
-                                        c_rest.info("未找到附近餐厅")
-                    else:
-                        st.info("本日无景点")
+                            # Review button
+                            if col_s.button("评价", key=f"tp_review_{name}"):
+                                reviews = aggregate_spot_reviews(name)
+                                if reviews["review_count"] > 0:
+                                    st.caption(f"真实评价: {reviews['avg_rating']:.1f}/5 ({reviews['review_count']}条)")
+                                    if reviews["pros"]:
+                                        st.caption("优点: " + ", ".join(reviews["pros"]))
+                                    if reviews["cons"]:
+                                        st.caption("注意: " + ", ".join(reviews["cons"]))
+                                else:
+                                    st.caption("暂无真实评价，使用AI评价")
+                                    rec = generate_spot_recommendation(spot, st.secrets)
+                                    st.caption(f"评分: {rec.rating:.1f}/5")
+                                    if rec.pros:
+                                        st.caption("优点: " + ", ".join(rec.pros[:2]))
 
-            # Map of the route
-            st.subheader("行程地图")
-            route_markers = []
-            for i, day in enumerate(plan["days"]):
-                for spot in day["spots"]:
-                    if spot.get("lng") and spot.get("lat"):
-                        route_markers.append({
-                            "name": spot["name"],
-                            "lng": spot["lng"],
-                            "lat": spot["lat"],
-                            "category": spot["category"],
-                            "color": CATEGORY_COLORS.get(spot["category"], "#9E9E9E"),
-                            "price": spot["price"],
-                            "city": spot["city"],
-                            "area": spot.get("area", ""),
-                            "level": spot.get("level", ""),
-                            "passes": [],
-                            "usage": "",
-                            "notes": f"Day {i+1}",
-                        })
+                        # Timeline
+                        timeline = build_day_timeline(spots)
+                        st.caption(f"时间轴: {timeline['slots'][0]['start'] if timeline['slots'] else ''} → {timeline['end_time']}")
+                        if timeline["warnings"]:
+                            for w in timeline["warnings"]:
+                                st.caption(f"⚠️ {w}")
 
-            if route_markers:
-                html = _build_map_html(route_markers, {}, height="500px", clear_filters=True)
-                map_url = _save_map_html(html)
-                st.components.v1.iframe(map_url, height=510)
+            # No assignment yet
+            if not assignment:
+                st.info("点击「自动编排行程」生成每日行程")
 
-    # --- Sub-page: Spot Reviews ---
-    elif sub_page == "景点评价":
-        st.subheader("景点评价")
-        st.write("选择景点查看 AI 评价（基于 LLM 或规则生成）")
-
-        review_city = st.selectbox("城市", sorted(set(s["city"] for s in spots_with_coords if s["city"])), key="review_city")
-        city_spots = sorted([s for s in spots_with_coords if s["city"] == review_city], key=lambda s: s["name"])
-
-        if city_spots:
-            review_spot_name = st.selectbox("景点", [s["name"] for s in city_spots], key="review_spot")
-            selected_spot = next((s for s in city_spots if s["name"] == review_spot_name), None)
-
-            if selected_spot and st.button("生成评价", type="primary"):
-                with st.spinner("正在生成评价..."):
-                    rec = generate_spot_recommendation(selected_spot, st.secrets)
-
-                    col1, col2 = st.columns([2, 1])
-                    with col1:
-                        st.markdown(f"### {selected_spot['name']}")
-                        st.caption(f"{selected_spot['city']} {selected_spot.get('area', '')}")
-                        st.markdown(f"**评分: {rec.rating:.1f} / 5.0**")
-                        st.write(rec.summary)
-
-                        st.markdown("**优点**")
-                        for pro in rec.pros:
-                            st.markdown(f"- {pro}")
-                        st.markdown("**缺点**")
-                        for con in rec.cons:
-                            st.markdown(f"- {con}")
-                    with col2:
-                        st.markdown("### 标签")
-                        for tag in rec.tags:
-                            st.markdown(f"`{tag}`")
-                        st.divider()
-                        st.metric("性价比评分", f"{rec.price_value_score:.1f} / 10")
-
-    # --- Sub-page: Saved Plans ---
-    elif sub_page == "历史记录":
-        st.subheader("历史行程")
-
-        saved_plans = list_plans()
-        planner_plans = [p for p in saved_plans if p.get("trip_type") == "trip_planner"]
-        if not planner_plans:
-            st.info("暂无保存的行程")
+    # ============================================================
+    # Tab 3: 路线优化
+    # ============================================================
+    with tab3:
+        assignment = st.session_state.tp_assignment
+        if not assignment or not assignment.get("days"):
+            st.info("请先在「行程编排」Tab生成每日行程")
         else:
-            for p in planner_plans:
-                with st.expander(f"**{p['name']}** - {p['num_days']}天 · {p['total_spots']}个景点 · {p['updated_at'][:10]}"):
-                    c1, c2, c3 = st.columns([4, 1, 1])
-                    c1.write(f"出发日期: {p.get('departure_date', '未设置')}")
-                    if c2.button("加载", key=f"load_{p['id']}"):
-                        plan = load_plan(p["id"])
-                        if plan:
-                            st.session_state.optimized_plan = plan
-                            st.session_state.trip_days = plan.get("num_days", 3)
-                            st.session_state.departure_city = plan.get("departure_city", "武汉")
-                            st.rerun()
-                    if c3.button("删除", key=f"del_{p['id']}"):
-                        delete_plan(p["id"])
+            # Pick a day to optimize
+            day_nums = [d["day_num"] for d in assignment["days"] if d["spots"]]
+            if day_nums:
+                selected_day = st.radio("选择要优化的日期", day_nums, horizontal=True)
+                day_data = next((d for d in assignment["days"] if d["day_num"] == selected_day), None)
+
+                if day_data and day_data["spots"]:
+                    dep_coord = CITY_COORDS.get(
+                        st.session_state.tp_departure_city, [114.305, 30.593]
+                    )
+                    departure = {
+                        "name": st.session_state.tp_departure_city,
+                        "lng": dep_coord[0], "lat": dep_coord[1],
+                    }
+                    web_key = st.secrets.get("amap_web_key", "")
+
+                    if st.button("生成路线方案", type="primary"):
+                        spots_for_route = [
+                            s for s in day_data["spots"] if s.get("lng") and s.get("lat")
+                        ]
+                        with st.spinner("正在计算路线..."):
+                            options = generate_route_options(departure, spots_for_route, web_key)
+                            st.session_state.tp_route_options = options
+                            st.session_state.tp_selected_route = 0
                         st.rerun()
+
+                    if st.session_state.tp_route_options:
+                        options = st.session_state.tp_route_options
+                        labels = [f"方案{i+1}: {opt['name']}" for i, opt in enumerate(options)]
+                        sel = st.radio("选择方案", labels, index=st.session_state.tp_selected_route, horizontal=True)
+                        new_idx = labels.index(sel)
+                        if new_idx != st.session_state.tp_selected_route:
+                            st.session_state.tp_selected_route = new_idx
+                            st.rerun()
+
+                        chosen = options[st.session_state.tp_selected_route]
+
+                        # Route summary
+                        c1, c2, c3 = st.columns(3)
+                        c1.metric("总距离", f"{chosen['total_distance_km']:.1f}km")
+                        c2.metric("预计驾驶", f"{chosen['total_duration_min']}分钟")
+                        c3.metric("景点数", len(chosen.get("ordered_spots", [])))
+
+                        # Pros/cons
+                        cp, cc = st.columns(2)
+                        with cp:
+                            st.markdown("**优点**")
+                            for pro in chosen.get("pros", []):
+                                st.markdown(f"- {pro}")
+                        with cc:
+                            st.markdown("**缺点**")
+                            for con in chosen.get("cons", []):
+                                st.markdown(f"- {con}")
+
+                        # Recommended order
+                        st.markdown("**推荐游览顺序:**")
+                        for i, s in enumerate(chosen.get("ordered_spots", [])):
+                            st.markdown(f"{i+1}. {s.get('name', '')} ({s.get('city', '')})")
+
+                        # Cost estimation
+                        st.divider()
+                        st.subheader("成本估算")
+                        total_ticket = sum(s.get("price", 0) for s in day_data["spots"])
+                        cost = estimate_trip_cost(
+                            total_distance_km=chosen["total_distance_km"],
+                            num_days=1,
+                            ticket_cost=total_ticket,
+                        )
+                        cc1, cc2, cc3, cc4 = st.columns(4)
+                        cc1.metric("驾驶费用", f"¥{cost['driving']['total']}")
+                        cc2.metric("餐饮", f"¥{cost['food']['total']}")
+                        cc3.metric("门票", f"¥{cost['tickets']['net']}")
+                        cc4.metric("当日总计", f"¥{cost['grand_total']}")
+
+    # ============================================================
+    # Tab 4: 行程总览
+    # ============================================================
+    with tab4:
+        assignment = st.session_state.tp_assignment
+        cart = st.session_state.tp_cart
+
+        if not cart:
+            st.info("请先添加景点")
+        else:
+            # Trip settings
+            st.subheader("行程设置")
+            c1, c2, c3 = st.columns(3)
+            with c1:
+                trip_name = st.text_input("行程名称", value=f"{st.session_state.tp_departure_city}出发-{st.session_state.tp_num_days}日游")
+            with c2:
+                travel_style = st.selectbox("消费水平", ["economy", "midrange", "luxury"], format_func=lambda x: {"economy": "经济型", "midrange": "舒适型", "luxury": "豪华型"}.get(x, x))
+            with c3:
+                if st.button("保存行程", type="primary", use_container_width=True):
+                    plan_data = {
+                        "name": trip_name,
+                        "trip_type": "trip_planner_v2",
+                        "cart": cart,
+                        "assignment": assignment,
+                        "departure_city": st.session_state.tp_departure_city,
+                        "num_days": st.session_state.tp_num_days,
+                        "travel_month": st.session_state.tp_travel_month,
+                        "total_spots": len(cart),
+                    }
+                    plan_id = save_plan(plan_data)
+                    st.success(f"已保存！行程ID: {plan_id}")
+
+            # Seasonal checklist
+            st.subheader("季节性检查")
+            warnings = check_seasonal_availability(cart, st.session_state.tp_travel_month)
+            ok_spots = [w for w in warnings if w["severity"] == "ok"]
+            warn_spots = [w for w in warnings if w["severity"] == "warning"]
+            danger_spots = [w for w in warnings if w["severity"] == "danger"]
+
+            cc1, cc2, cc3 = st.columns(3)
+            cc1.metric("✅ 适宜", len(ok_spots))
+            cc2.metric("⚠️ 一般", len(warn_spots))
+            cc3.metric("❌ 不适宜", len(danger_spots))
+
+            if danger_spots:
+                st.error("以下景点出行季节不适宜：")
+                for w in danger_spots:
+                    st.caption(f"❌ {w['spot_name']} — {w['seasonal_reason']}")
+
+            # Pass coverage
+            st.subheader("年卡覆盖分析")
+            coverage = compute_pass_coverage(cart, graph_data)
+            if coverage["pass_stats"]:
+                for ps in coverage["pass_stats"][:5]:
+                    st.caption(f"🎫 {ps['pass_name']}: 覆盖{ps['covered_count']}个景点 · 价值¥{ps['total_value']}")
+            else:
+                st.caption("当前所选景点暂无年卡覆盖")
+
+            cc1, cc2 = st.columns(2)
+            cc1.metric("门票总计", f"¥{coverage['total_ticket_cost']}")
+            if coverage["pass_stats"]:
+                best_pass = coverage["pass_stats"][0]
+                cc2.metric("最佳年卡价值", f"¥{best_pass['total_value']} (覆盖{best_pass['covered_count']}个)")
+
+            # Full itinerary if assigned
+            if assignment:
+                st.divider()
+                st.subheader("完整行程")
+                for day_data in assignment["days"]:
+                    if not day_data["spots"]:
+                        continue
+                    with st.expander(
+                        f"**Day {day_data['day_num']}** — {len(day_data['spots'])}个景点 · {day_data['primary_city']}",
+                        expanded=True,
+                    ):
+                        for spot in day_data["spots"]:
+                            name = spot.get("name", "")
+                            play_h = spot.get("_play_hours", 2.0)
+                            st.markdown(f"- **{name}** · {play_h}h · ¥{spot.get('price', 0)}")
+
+                        # Timeline for this day
+                        timeline = build_day_timeline(day_data["spots"])
+                        if timeline["slots"]:
+                            times = [f"{s['start']} {s['spot_name']}" for s in timeline["slots"]]
+                            st.caption("时间轴: " + " → ".join(times))
+
+            # Total cost summary
+            st.divider()
+            st.subheader("费用总览")
+
+            total_distance = sum(d.get("travel_km", 0) for d in (assignment["days"] if assignment else []))
+            total_tickets = sum(s.get("price", 0) for s in cart)
+            pass_savings = coverage["total_pass_value"] if coverage else 0
+
+            cost = estimate_trip_cost(
+                total_distance_km=total_distance,
+                num_days=st.session_state.tp_num_days,
+                ticket_cost=total_tickets,
+                pass_savings=pass_savings,
+                travel_style=travel_style,
+            )
+
+            cost_cols = st.columns(5)
+            cost_cols[0].metric("驾驶", f"¥{cost['driving']['total']}")
+            cost_cols[1].metric("住宿", f"¥{cost['accommodation']['total']}")
+            cost_cols[2].metric("门票", f"¥{cost['tickets']['net']}")
+            cost_cols[3].metric("餐饮", f"¥{cost['food']['total']}")
+            cost_cols[4].metric("总计", f"¥{cost['grand_total']}")
+
+            if pass_savings > 0:
+                st.success(f"使用年卡预计节省 ¥{pass_savings:.0f}")
+
+            # Load saved plans
+            st.divider()
+            st.subheader("历史记录")
+            saved = list_plans()
+            v2_plans = [p for p in saved if p.get("trip_type") == "trip_planner_v2"]
+            if not v2_plans:
+                st.caption("暂无保存的行程")
+            else:
+                for p in v2_plans:
+                    date_str = p["updated_at"][:10] if p.get("updated_at") else ""
+                    with st.expander(f"**{p['name']}** · {p.get('num_days', 0)}天 · {p.get('total_spots', 0)}个景点 · {date_str}"):
+                        if st.button("加载", key=f"tp_load_{p['id']}"):
+                            plan = load_plan(p["id"])
+                            if plan:
+                                st.session_state.tp_cart = plan.get("cart", [])
+                                st.session_state.tp_assignment = plan.get("assignment")
+                                st.session_state.tp_departure_city = plan.get("departure_city", "武汉")
+                                st.session_state.tp_num_days = plan.get("num_days", 3)
+                                st.session_state.tp_travel_month = plan.get("travel_month", 6)
+                                st.rerun()
+                        if st.button("删除", key=f"tp_del_{p['id']}"):
+                            delete_plan(p["id"])
+                            st.rerun()
 
 
 # ============================================================
