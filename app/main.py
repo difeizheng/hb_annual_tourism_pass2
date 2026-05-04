@@ -36,7 +36,7 @@ from src.trip_planner.pass_coverage import compute_pass_coverage
 from src.trip_planner.time_aware_assigner import assign_spots_with_duration
 from src.trip_planner.cost_estimator import estimate_trip_cost
 from src.trip_planner.seasonal_checker import check_seasonal_availability
-from src.trip_planner.smart_selector import import_pass_spots, get_all_passes_info, get_persona_recommendations
+from src.trip_planner.smart_selector import import_pass_spots, get_all_passes_info, get_persona_recommendations, PERSONA_PROFILES
 from src.trip_planner.timeline_builder import build_day_timeline
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
