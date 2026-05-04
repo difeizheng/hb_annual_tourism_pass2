@@ -131,8 +131,7 @@ def seasonal_analysis(cleaned_spots: list[dict]) -> dict:
     """Analyze seasonal spots."""
     seasonal = []
     for spot in cleaned_spots:
-        notes = spot.get("notes_raw", "")
-        usage = spot.get("usage_limit_raw", "")
+        notes = (spot.get("notes_raw") or "") + (spot.get("usage_limit_raw") or "")
         if "季节性" in notes or "仅夏季" in notes or "仅冬季" in notes or "开漂" in notes:
             seasonal.append({
                 "name": spot["spot_name"],

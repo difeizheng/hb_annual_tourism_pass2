@@ -1368,63 +1368,337 @@ window.showToast = function(message, type) {{
 elif page == "💡 选卡助手":
     st.title("选卡助手")
 
-    st.write("回答 3 个问题，帮你找到最合适的年卡。")
+    # Build pass info from graph_data
+    import re
+    pass_info = {}
+    for node in graph_data["nodes"]:
+        if node.get("type") == "pass":
+            price_m = re.search(r"(\d+)元", node.get("name", ""))
+            pass_info[node["name"]] = {
+                "display": node["name"].split("_")[0],
+                "price": int(price_m.group(1)) if price_m else 0,
+                "spots": [], "cities": set(), "categories": set(),
+                "total_price": 0, "levels": [],
+            }
+    # Assign spots to passes
+    for edge in graph_data["edges"]:
+        target = edge.get("target", "")
+        if target.startswith("pass:") and target in pass_info:
+            source = edge.get("source", "")
+            for n in graph_data["nodes"]:
+                if n.get("id") == source and n.get("type") == "spot":
+                    pi = pass_info[target]
+                    pi["spots"].append(n.get("name", ""))
+                    pi["cities"].add(n.get("city", ""))
+                    pi["categories"].add(n.get("category", ""))
+                    pi["total_price"] += n.get("price", 0)
+                    pi["levels"].append(n.get("level") or "")
 
-    # Question 1
-    all_cities = sorted(set(s["city"] for s in cleaned))
-    cities = st.multiselect("1. 你主要在哪些城市游玩？", all_cities)
+    for pn, pi in pass_info.items():
+        pi["city_count"] = len(pi["cities"])
+        pi["spot_count"] = len(pi["spots"])
+        pi["value_ratio"] = round(pi["total_price"] / pi["price"], 1) if pi["price"] else 0
+        pi["a5_count"] = sum(1 for lv in pi["levels"] if lv == "A5")
+        pi["a4_count"] = sum(1 for lv in pi["levels"] if lv == "A4")
 
-    # Question 2
-    all_cats = sorted(set(s.get("_classification", {}).get("category", "其他") for s in cleaned))
-    cats = st.multiselect("2. 你喜欢什么类型的景点？", all_cats)
+    # Quick comparison cards
+    st.subheader("年卡速览")
+    passes_sorted = sorted(pass_info.values(), key=lambda x: -x["value_ratio"])
+    cols = st.columns(min(5, len(passes_sorted)))
+    for i, pi in enumerate(passes_sorted[:5]):
+        with cols[i % 5]:
+            with st.container(border=True):
+                st.markdown(f"**{pi['display']}**")
+                st.metric("卡价", f"¥{pi['price']}")
+                st.metric("景点", pi["spot_count"])
+                st.metric("城市", pi["city_count"])
+                st.metric("性价比", f"{pi['value_ratio']}x")
 
-    # Question 3
-    budget = st.slider("3. 你的年卡预算是多少？", 50, 400, 200)
+    tabs = st.tabs(["智能推荐向导", "年卡对比面板", "年卡详情"])
 
-    if cities or cats:
-        # Score each pass
-        scored = []
-        for pn in set(s["pass_name"] for s in cleaned):
-            spots = [s for s in cleaned if s["pass_name"] == pn]
-            m = re.search(r"(\d+)元", pn)
-            price = int(m.group(1)) if m else 0
+    # ================================================================
+    # Tab 1: Smart Wizard
+    # ================================================================
+    with tabs[0]:
+        # Persona selection
+        personas = {
+            "武汉本地人": {"cities": ["武汉"], "bonus_cats": ["休闲农业", "主题乐园"], "label": "武汉本地人，周末周边游"},
+            "湖北全省游": {"min_cities": 8, "bonus_cats": ["自然景观", "人文历史"], "label": "深度探索湖北全省"},
+            "跨省游": {"min_cities": 12, "bonus_cats": [], "label": "跨省游玩，覆盖范围广"},
+            "家庭亲子": {"bonus_cats": ["主题乐园", "休闲农业", "城市娱乐"], "min_spots": 30, "label": "带小孩，亲子友好"},
+            "预算优先": {"sort_by": "value_ratio", "label": "性价比至上"},
+            "品质优先": {"bonus_tags": ["5A", "4A"], "min_a5": 1, "label": "5A/4A 高品质景点"},
+        }
 
-            if price > budget:
+        st.subheader("Step 1: 你是哪种游客？")
+        selected_persona = st.selectbox(
+            "选择最符合你的类型",
+            list(personas.keys()),
+            format_func=lambda x: personas[x]["label"],
+            label_visibility="collapsed",
+        )
+
+        st.subheader("Step 2: 你在哪些城市游玩？")
+        all_cities_card = sorted(set(s["city"] for s in cleaned if s["city"]))
+        wiz_cities = st.multiselect(
+            "选择游玩城市（不选=不限）",
+            all_cities_card,
+            default=personas.get(selected_persona, {}).get("cities", []),
+            label_visibility="collapsed",
+        )
+
+        st.subheader("Step 3: 你喜欢什么类型的景点？")
+        all_cats_card = sorted(set(s.get("_classification", {}).get("category", "其他") for s in cleaned))
+        wiz_cats = st.multiselect(
+            "选择偏好类型（不选=不限）",
+            all_cats_card,
+            default=personas.get(selected_persona, {}).get("bonus_cats", []),
+            label_visibility="collapsed",
+        )
+
+        st.subheader("Step 4: 你的预算是多少？")
+        max_pass_price = max(pi["price"] for pi in pass_info.values())
+        wiz_budget = st.slider("年卡预算", 100, max_pass_price, max_pass_price, step=50)
+
+        # Scoring
+        wizard_results = []
+        for pn, pi in pass_info.items():
+            if pi["price"] > wiz_budget:
                 continue
-
             score = 0
-            if cities:
-                city_matches = sum(1 for s in spots if s["city"] in cities)
-                score += city_matches * 3
-            if cats:
-                cat_matches = sum(1 for s in spots if s.get("_classification", {}).get("category") in cats)
-                score += cat_matches * 2
+            reasons = []
 
-            total_value = sum(s["price"] for s in spots)
-            ratio = total_value / price if price else 0
-            score += ratio
+            persona_cfg = personas.get(selected_persona, {})
 
-            scored.append({
-                "年卡": pn.split("_")[0],
-                "卡价": price,
-                "景点数": len(spots),
-                "总票价": total_value,
+            # City match
+            if wiz_cities:
+                match = sum(1 for c in wiz_cities if c in pi["cities"])
+                score += match * 5
+                if match > 0:
+                    reasons.append(f"{match}个目标城市有景点")
+            elif persona_cfg.get("min_cities"):
+                if pi["city_count"] >= persona_cfg["min_cities"]:
+                    score += 10
+                    reasons.append(f"覆盖{pi['city_count']}个城市")
+
+            # Category match
+            if wiz_cats:
+                match = sum(1 for c in wiz_cats if c in pi["categories"])
+                score += match * 4
+                if match > 0:
+                    reasons.append(f"{match}个偏好类型匹配")
+
+            # Persona-specific bonuses
+            if persona_cfg.get("min_spots") and pi["spot_count"] >= persona_cfg["min_spots"]:
+                score += 5
+                reasons.append(f"{pi['spot_count']}个景点足够多")
+            if persona_cfg.get("min_a5") and pi["a5_count"] >= persona_cfg["min_a5"]:
+                score += pi["a5_count"] * 2
+                reasons.append(f"{pi['a5_count']}个5A景点")
+
+            # Value ratio bonus
+            score += pi["value_ratio"] * 2
+
+            if not reasons:
+                reasons.append("性价比不错")
+
+            wizard_results.append({
+                "年卡": pi["display"],
+                "卡价": pi["price"],
+                "景点数": pi["spot_count"],
+                "城市数": pi["city_count"],
                 "匹配度": round(score, 1),
-                "性价比": round(ratio, 1),
+                "性价比": f"{pi['value_ratio']}x",
+                "推荐理由": "；".join(reasons[:3]),
             })
 
-        scored.sort(key=lambda x: -x["匹配度"])
+        wizard_results.sort(key=lambda x: -x["匹配度"])
 
-        if scored:
-            st.subheader("推荐排行")
-            df = pd.DataFrame(scored[:5])
-            st.dataframe(df, use_container_width=True, hide_index=True)
+        if wizard_results:
+            st.divider()
+            st.subheader(f"推荐排行 ({len(wizard_results)}张匹配)")
+            df_wiz = pd.DataFrame(wizard_results)
+            st.dataframe(df_wiz, use_container_width=True, hide_index=True)
 
-            # Top recommendation detail
-            top = scored[0]
-            st.success(f"推荐: **{top['年卡']}** (¥{top['卡价']}) — 包含 {top['景点数']} 个景点，总票价 ¥{top['总票价']}")
+            # Top recommendation
+            top = wizard_results[0]
+            st.success(f"💡 推荐: **{top['年卡']}** (¥{top['卡价']}) — {top['推荐理由']}")
+
+            # Bar chart of match scores
+            fig = px.bar(df_wiz.head(10), x="匹配度", y="年卡", orientation="h",
+                         color="匹配度", color_continuous_scale="RdYlGn",
+                         text="匹配度", hover_data={"卡价": True, "景点数": True, "推荐理由": True})
+            fig.update_traces(texttemplate="%{text:.1f}", textposition="outside")
+            fig.update_layout(showlegend=False)
+            st.plotly_chart(fig, use_container_width=True)
         else:
-            st.info("当前筛选条件下没有匹配的年卡，请放宽条件。")
+            st.info("当前条件没有匹配的年卡，请放宽预算或减少筛选。")
+
+    # ================================================================
+    # Tab 2: Comparison Panel
+    # ================================================================
+    with tabs[1]:
+        all_pass_names = sorted(pass_info.keys(), key=lambda x: -pass_info[x]["value_ratio"])
+        comp_selection = st.multiselect(
+            "选择2-4张年卡对比",
+            all_pass_names,
+            default=[all_pass_names[0], all_pass_names[1]] if len(all_pass_names) >= 2 else all_pass_names,
+            format_func=lambda x: pass_info[x]["display"],
+        )
+
+        if len(comp_selection) >= 2:
+            comp_data = []
+            for pn in comp_selection:
+                pi = pass_info[pn]
+                comp_data.append({
+                    "年卡": pi["display"],
+                    "卡价": pi["price"],
+                    "景点数": pi["spot_count"],
+                    "城市数": pi["city_count"],
+                    "总价值": pi["total_price"],
+                    "性价比": pi["value_ratio"],
+                    "5A": pi["a5_count"],
+                    "4A": pi["a4_count"],
+                })
+            df_comp = pd.DataFrame(comp_data)
+
+            # Comparison table
+            st.subheader("参数对比")
+            st.dataframe(df_comp, use_container_width=True, hide_index=True)
+
+            # Bar chart: price vs value
+            c1, c2 = st.columns(2)
+            with c1:
+                fig = px.bar(df_comp, x="年卡", y="卡价", color="卡价",
+                             color_continuous_scale="Reds", text_auto=True)
+                fig.update_layout(showlegend=False, title="年卡价格")
+                st.plotly_chart(fig, use_container_width=True)
+            with c2:
+                fig = px.bar(df_comp, x="年卡", y="性价比", color="性价比",
+                             color_continuous_scale="Greens", text_auto=True)
+                fig.update_traces(texttemplate="%{text:.1f}x")
+                fig.update_layout(showlegend=False, title="性价比倍数")
+                st.plotly_chart(fig, use_container_width=True)
+
+            # Spot count comparison
+            c1, c2 = st.columns(2)
+            with c1:
+                fig = px.bar(df_comp, x="年卡", y="景点数", color="景点数",
+                             color_continuous_scale="Blues", text_auto=True)
+                fig.update_layout(showlegend=False, title="景点数量")
+                st.plotly_chart(fig, use_container_width=True)
+            with c2:
+                fig = px.bar(df_comp, x="年卡", y="城市数", color="城市数",
+                             color_continuous_scale="Oranges", text_auto=True)
+                fig.update_layout(showlegend=False, title="覆盖城市")
+                st.plotly_chart(fig, use_container_width=True)
+
+            # Overlap analysis (first 2 selected)
+            if len(comp_selection) >= 2:
+                st.subheader("景点重叠分析")
+                p1_name, p2_name = comp_selection[0], comp_selection[1]
+                s1 = set(pass_info[p1_name]["spots"])
+                s2 = set(pass_info[p2_name]["spots"])
+                overlap = s1 & s2
+                only1 = s1 - s2
+                only2 = s2 - s1
+
+                o1, o2, o3 = st.columns(3)
+                o1.metric(f"仅 {pass_info[p1_name]['display']}", len(only1))
+                o2.metric("重叠景点", len(overlap))
+                o3.metric(f"仅 {pass_info[p2_name]['display']}", len(only2))
+
+                if overlap:
+                    st.caption(f"{len(overlap)} 个重叠景点:")
+                    st.dataframe(pd.DataFrame(sorted(overlap), columns=["景点"]),
+                                 use_container_width=True, hide_index=True, height=200)
+        else:
+            st.info("请选择至少2张年卡进行对比。")
+
+    # ================================================================
+    # Tab 3: Pass Detail
+    # ================================================================
+    with tabs[2]:
+        detail_pass = st.selectbox(
+            "选择一张年卡查看详情",
+            all_pass_names,
+            format_func=lambda x: f"{pass_info[x]['display']} (¥{pass_info[x]['price']}, {pass_info[x]['spot_count']}景点)",
+        )
+
+        pi = pass_info[detail_pass]
+
+        # Basic info
+        c1, c2, c3, c4, c5, c6 = st.columns(6)
+        c1.metric("卡价", f"¥{pi['price']}")
+        c2.metric("景点数", pi["spot_count"])
+        c3.metric("城市数", pi["city_count"])
+        c4.metric("总价值", f"¥{pi['total_price']:,}")
+        c5.metric("性价比", f"{pi['value_ratio']}x")
+        c6.metric("5A景点", pi["a5_count"])
+
+        # Category distribution
+        st.subheader("分类占比")
+        cat_counts = {}
+        for s in cleaned:
+            if s.get("pass_name") == detail_pass:
+                cat = s.get("_classification", {}).get("category", "其他")
+                cat_counts[cat] = cat_counts.get(cat, 0) + 1
+        if cat_counts:
+            df_detail_cat = pd.DataFrame(list(cat_counts.items()), columns=["分类", "数量"])
+            fig = px.pie(df_detail_cat, values="数量", names="分类", hole=0.4)
+            st.plotly_chart(fig, use_container_width=True)
+
+        # City distribution
+        st.subheader("城市分布")
+        city_counts = {}
+        for s in cleaned:
+            if s.get("pass_name") == detail_pass:
+                city = s.get("city", "未知")
+                city_counts[city] = city_counts.get(city, 0) + 1
+        city_counts = dict(sorted(city_counts.items(), key=lambda x: -x[1]))
+        if city_counts:
+            df_detail_city = pd.DataFrame(list(city_counts.items()), columns=["城市", "景点数"])
+            fig = px.bar(df_detail_city, x="城市", y="景点数", color="景点数",
+                         color_continuous_scale="Blues", text_auto=True)
+            fig.update_layout(showlegend=False)
+            st.plotly_chart(fig, use_container_width=True)
+
+        # Spot list
+        st.subheader("包含景点")
+        spot_list = []
+        for s in cleaned:
+            if s.get("pass_name") == detail_pass:
+                spot_list.append({
+                    "景点": s["spot_name"],
+                    "城市": s.get("city", ""),
+                    "分类": s.get("_classification", {}).get("category", ""),
+                    "等级": s.get("level") or "未评级",
+                    "票价": s.get("price", 0),
+                })
+        if spot_list:
+            df_spots = pd.DataFrame(spot_list).sort_values("票价", ascending=False)
+            st.dataframe(df_spots, use_container_width=True, hide_index=True, height=400)
+
+        # Usage limits and notes
+        st.subheader("使用说明")
+        usage_notes = set()
+        spot_notes = set()
+        for s in cleaned:
+            if s.get("pass_name") == detail_pass:
+                if s.get("usage_limit_raw"):
+                    usage_notes.add(s["usage_limit_raw"])
+                if s.get("notes_raw"):
+                    spot_notes.add(s["notes_raw"][:80])
+        if usage_notes:
+            st.caption("使用次数:")
+            for u in sorted(usage_notes):
+                st.caption(f"- {u}")
+        if spot_notes:
+            st.caption("特殊说明:")
+            for n in sorted(spot_notes)[:10]:
+                st.caption(f"- {n}")
+            if len(spot_notes) > 10:
+                st.caption(f"... 还有 {len(spot_notes) - 10} 条")
 
 
 # ============================================================
@@ -1671,7 +1945,7 @@ elif page == "📊 数据总览":
         st.subheader("票价区间分布")
         price_list = [s["price"] for s in cleaned]
         bins = [0, 50, 100, 200, 500]
-        labels = ["¥0", "¥1-50", "¥51-100", "¥101-200", "¥200+"]
+        labels = ["¥0-50", "¥51-100", "¥101-200", "¥200+"]
         df_pr = pd.DataFrame(price_list, columns=["票价"])
         df_pr["区间"] = pd.cut(df_pr["票价"], bins=bins, labels=labels, include_lowest=True)
         fig = px.bar(df_pr["区间"].value_counts().reset_index(), x="区间", y="count",
