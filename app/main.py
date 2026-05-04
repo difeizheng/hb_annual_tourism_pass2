@@ -23,6 +23,7 @@ from src.graph_builder import build_graph, graph_to_json
 from src.geocoder import load_coordinates, save_coordinates, batch_geocode
 from src.analyzer import price_analysis
 from src.recommender import recommend_by_season
+from src.seasonal_recommender import get_seasonal_recommendations
 from src.trip_planner.llm_client import generate_spot_recommendation
 from src.trip_planner.route_optimizer import nearest_neighbor_optimize, compute_route, haversine_distance, generate_route_options
 from src.trip_planner.auto_assigner import assign_spots_to_days
@@ -201,36 +202,6 @@ def get_unique_spots_with_coords(cleaned, coordinates):
 # ============================================================
 # Map HTML generation
 # ============================================================
-
-def recommend_by_season_from_graph(graph_data: dict, month: int) -> dict:
-    """Recommend spots by season from graph data."""
-    kw = {
-        1: "冬季", 2: "冬季", 3: "春季", 4: "春季", 5: "春季",
-        6: "夏季", 7: "夏季", 8: "夏季", 9: "秋季",
-        10: "秋季", 11: "秋季", 12: "冬季",
-    }
-    words = {
-        "冬季": ["滑雪", "温泉"],
-        "春季": ["樱花", "桃花", "梅园", "牡丹", "郁金香"],
-        "夏季": ["漂流", "水上", "水世界"],
-        "秋季": ["红叶", "赏秋", "登山"],
-    }
-    season = kw.get(month, "")
-    results = []
-    for n in graph_data["nodes"]:
-        if n.get("type") != "spot":
-            continue
-        name = n.get("name", "")
-        for w in words.get(season, []):
-            if w in name:
-                results.append({
-                    "name": name, "city": n.get("city", ""),
-                    "price": n.get("price", 0), "category": n.get("category", ""),
-                    "reason": w,
-                })
-                break
-    return {"season": season, "spots": results}
-
 
 def _build_map_html(spots_with_coords, filters=None, height="700px", clear_filters=False):
     """Generate AMap HTML with markers."""
@@ -1461,22 +1432,108 @@ elif page == "💡 选卡助手":
 elif page == "🌿 季节指南":
     st.title("季节游玩指南")
 
-    month = st.selectbox("选择月份", list(range(1, 13)), index=0)
-    season_data = recommend_by_season_from_graph(graph_data, month)
+    # Month picker in sidebar
+    with st.sidebar:
+        month = st.selectbox("选择月份", list(range(1, 13)), index=0)
+        all_cities_season = sorted(set(s["city"] for s in spots_with_coords if s["city"]))
+        sel_cities = st.multiselect("城市筛选", all_cities_season, default=[])
+        clear_btn = st.button("清除筛选", type="secondary", use_container_width=True)
+        if clear_btn and sel_cities:
+            st.rerun()
 
-    season_emoji = {"冬季": "❄️ 冬季", "春季": "🌸 春季", "夏季": "☀️ 夏季", "秋季": "🍂 秋季"}
-    season_label = season_emoji.get(season_data.get('season', ''), season_data.get('season', ''))
-    st.subheader(f"{season_label} — {len(season_data.get('spots', []))} 个推荐景点")
+    # Get recommendations
+    recs = get_seasonal_recommendations(spots_with_coords, month, sel_cities if sel_cities else None)
 
-    if season_data.get("spots"):
-        df = pd.DataFrame([{
-            "景点": s["name"], "城市": s.get("city", ""),
-            "票价": s.get("price", 0), "类型": s.get("category", ""),
-            "推荐理由": s.get("reason", ""),
-        } for s in season_data["spots"]])
-        st.dataframe(df, use_container_width=True, hide_index=True)
-    else:
-        st.info("该季节暂无特别推荐的季节性景点")
+    # Season overview card
+    emoji = recs["emoji"]
+    season_name = recs["season"]
+    climate = recs["climate"]
+    st.markdown(
+        f"### {emoji} {season_name}（{recs['month']}月）"
+        f" · {climate['temp_range']}"
+    )
+    st.caption(climate["desc"])
+    st.caption(f"💡 {climate['tips']}")
+    st.divider()
+
+    total = recs["total_count"]
+    if total == 0:
+        st.info("当前筛选条件下暂无推荐景点")
+        st.stop()
+
+    st.caption(f"共 {total} 个推荐景点")
+
+    # Helper: render a spot card
+    def _spot_card(spot: dict, reason: str, score: int, key: str):
+        with st.container(border=True):
+            level_badge = ""
+            if spot.get("level") == "A5":
+                level_badge = " `[5A]`"
+            elif spot.get("level") == "A4":
+                level_badge = " `[4A]`"
+            st.markdown(f"**{spot['name']}**{level_badge}")
+            st.caption(f"{spot['city']} {spot.get('area', '')} · {spot['category']}")
+            st.caption(f"¥{spot['price']}")
+            st.caption(f"📌 {reason}")
+            # Pass badges
+            passes = spot.get("passes", [])
+            if passes:
+                pass_text = " · ".join(p.split("_")[0] for p in passes[:2])
+                st.caption(f"🎫 {pass_text}")
+            if st.button("➕ 添加行程", key=f"season_add_{key}_{spot['name']}", type="secondary", use_container_width=True):
+                existing = {s["name"] for s in st.session_state.selected_trip_spots}
+                if spot["name"] not in existing:
+                    st.session_state.selected_trip_spots.append({
+                        "name": spot["name"], "lng": spot.get("lng"),
+                        "lat": spot.get("lat"), "city": spot["city"],
+                        "area": spot.get("area", ""), "category": spot["category"],
+                        "price": spot["price"], "level": spot.get("level", ""),
+                        "passes": passes,
+                    })
+                    st.toast(f"已添加 {spot['name']} 到行程", icon="✅")
+                else:
+                    st.toast(f"{spot['name']} 已在行程中", icon="ℹ️")
+
+    # Tier 1: Must visit
+    mv = recs["must_visit"]
+    if mv:
+        st.subheader(f"⭐ 必去推荐 ({len(mv)}个)")
+        cols = st.columns(3)
+        for i, (spot, reason, score) in enumerate(mv):
+            with cols[i % 3]:
+                _spot_card(spot, reason, score, f"mv_{i}")
+
+    # Tier 2: Recommended
+    rec = recs["recommended"]
+    if rec:
+        st.subheader(f"👍 值得一去 ({len(rec)}个)")
+        display_rec = rec[:15]
+        cols = st.columns(3)
+        for i, (spot, reason, score) in enumerate(display_rec):
+            with cols[i % 3]:
+                _spot_card(spot, reason, score, f"rec_{i}")
+        if len(rec) > 15:
+            with st.expander(f"查看更多推荐 ({len(rec) - 15}个)"):
+                cols2 = st.columns(3)
+                for i, (spot, reason, score) in enumerate(rec[15:]):
+                    with cols2[i % 3]:
+                        _spot_card(spot, reason, score, f"rec2_{i}")
+
+    # Tier 3: Optional
+    opt = recs["optional"]
+    if opt:
+        st.subheader(f"📍 也不错 ({len(opt)}个)")
+        display_opt = opt[:15]
+        cols = st.columns(3)
+        for i, (spot, reason, score) in enumerate(display_opt):
+            with cols[i % 3]:
+                _spot_card(spot, reason, score, f"opt_{i}")
+        if len(opt) > 15:
+            with st.expander(f"查看更多 ({len(opt) - 15}个)"):
+                cols2 = st.columns(3)
+                for i, (spot, reason, score) in enumerate(opt[15:]):
+                    with cols2[i % 3]:
+                        _spot_card(spot, reason, score, f"opt2_{i}")
 
 
 # ============================================================
