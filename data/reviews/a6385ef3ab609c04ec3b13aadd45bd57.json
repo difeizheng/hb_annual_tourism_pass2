@@ -1,0 +1,19 @@
+{
+  "spot_name": "金龙水寨",
+  "overall_rating": 4.1,
+  "review_count": 1,
+  "reviews": [
+    {
+      "source": "amap",
+      "rating": 4.1,
+      "text": "高德地图综合评分：4.1/5.0",
+      "author": "高德地图",
+      "date": "",
+      "upvotes": 0
+    }
+  ],
+  "cached_at": "2026-05-04T15:46:13.000585+00:00",
+  "sources_used": [
+    "amap"
+  ]
+}

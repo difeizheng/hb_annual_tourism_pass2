@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body, #container { width: 100%; height: 500px; }
+.amap-info-content { font-size: 13px; max-width: 260px; }
+.info-title { font-weight: bold; font-size: 15px; margin-bottom: 6px; color: #333; }
+.info-row { margin: 3px 0; color: #666; }
+.info-label { color: #999; }
+.legend {
+    position: fixed; bottom: 30px; right: 15px; z-index: 1000;
+    background: rgba(255,255,255,0.92); border-radius: 8px; padding: 12px 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 12px;
+}
+.legend-item { display: flex; align-items: center; margin: 3px 0; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; flex-shrink: 0; }
+.stats-bar {
+    position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1000;
+    background: rgba(255,255,255,0.95); border-radius: 8px; padding: 8px 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12); font-size: 13px; display: flex; gap: 16px;
+}
+.stats-bar span { color: #333; }
+.stats-bar b { color: #1a73e8; }
+</style>
+<script src="https://webapi.amap.com/maps?v=2.0&key=bffe2259b0ec1636b09aff27ae24db9f"></script>
+</head>
+<body>
+<div id="container"></div>
+<div class="stats-bar" id="statsBar">加载中...</div>
+<div class="legend" id="legend"></div>
+<script>
+const markersData = [{"name": "\u767d\u6c34\u5bfa\u666f\u533a", "lng": 112.755407, "lat": 31.974717, "category": "\u4eba\u6587\u5386\u53f2", "color": "#FF9800", "price": 65, "city": "\u8944\u9633", "area": "", "level": "", "passes": [], "usage": "", "notes": "Day 1"}, {"name": "Zoolung\u52a8\u7269\u56ed", "lng": 112.247788, "lat": 32.078193, "category": "\u4e3b\u9898\u4e50\u56ed", "color": "#E91E63", "price": 120, "city": "\u8944\u9633", "area": "", "level": "", "passes": [], "usage": "", "notes": "Day 2"}];
+const cityCoords = {"\u6b66\u6c49": [114.305, 30.593], "\u9ec4\u5188": [114.873, 30.447], "\u9102\u5dde": [114.894, 30.388], "\u5b5d\u611f": [113.917, 30.926], "\u54b8\u5b81": [114.302, 29.841], "\u9ec4\u77f3": [115.038, 30.22], "\u8944\u9633": [112.122, 32.042], "\u5b9c\u660c": [111.286, 30.7], "\u8346\u5dde": [112.183, 30.335], "\u8346\u95e8": [112.199, 31.035], "\u968f\u5dde": [113.373, 31.69], "\u5341\u5830": [110.779, 32.645], "\u6069\u65bd": [109.487, 30.283], "\u4ed9\u6843": [113.444, 30.365], "\u5929\u95e8": [113.166, 30.653], "\u6f5c\u6c5f": [112.897, 30.414], "\u795e\u519c\u67b6": [110.671, 31.744], "\u957f\u6c99": [112.983, 28.193], "\u5357\u660c": [115.858, 28.683], "\u5408\u80a5": [117.227, 31.821], "\u5cb3\u9633": [113.128, 29.357], "\u4e5d\u6c5f": [115.98, 29.712], "\u5b89\u5e86": [117.053, 30.531], "\u9ec4\u5c71": [118.337, 29.711], "\u682a\u6d32": [113.134, 27.827], "\u6e58\u6f6d": [112.944, 27.829], "\u629a\u5dde": [116.358, 27.947], "\u5b9c\u6625": [114.417, 27.801], "\u9e70\u6f6d": [117.033, 28.238]};
+const selectedCityCenter = [];
+const filterPasses = [];
+const filterCities = [];
+const filterCats = [];
+
+function initMap() {
+    window._amap = new AMap.Map('container', {
+        zoom: 10,
+        center: [114.305, 30.593],
+    });
+    // Alias for convenience
+    const map = window._amap;
+
+    // Single reusable InfoWindow
+    const infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -10)});
+
+    // Build legend
+    const legendEl = document.getElementById('legend');
+    const categories = [...new Set(markersData.map(m => m.category))];
+    legendEl.innerHTML = '<div style="font-weight:bold;margin-bottom:6px;">景点类型</div>' +
+        categories.map(cat => {
+            const color = markersData.find(m => m.category === cat)?.color || '#999';
+            return `<div class="legend-item"><div class="legend-dot" style="background:${color}"></div>${cat}</div>`;
+        }).join('');
+
+    // Filter markers
+    function filteredMarkers() {
+        return markersData.filter(m => {
+            if (filterPasses.length > 0 && !m.passes.some(p => filterPasses.some(fp => p.includes(fp)))) return false;
+            if (filterCities.length > 0 && !filterCities.includes(m.city)) return false;
+            if (filterCats.length > 0 && !filterCats.includes(m.category)) return false;
+            return true;
+        });
+    }
+
+    // Dimmed marker content: small gray dot
+    const dimmedContent = '<div style="width:8px;height:8px;border-radius:50%;background:#bbb;opacity:0.4;border:1px solid #999;"></div>';
+
+    // Create markers directly on map (no clustering)
+    let currentMarkers = [];
+    function renderMarkers() {
+        // Remove old markers
+        map.remove(currentMarkers);
+        currentMarkers = [];
+
+        const filtered = filteredMarkers();
+        const hasFilter = filterPasses.length > 0 || filterCities.length > 0 || filterCats.length > 0;
+        const filteredNames = new Set(filtered.map(m => m.name));
+
+        for (let i = 0; i < markersData.length; i++) {
+            const m = markersData[i];
+            const isMatch = !hasFilter || filteredNames.has(m.name);
+
+            const markerOpts = {
+                position: [m.lng, m.lat],
+                extData: m,
+            };
+            if (!isMatch) {
+                markerOpts.content = dimmedContent;
+                markerOpts.offset = new AMap.Pixel(-4, -4);
+            }
+
+            const marker = new AMap.Marker(markerOpts);
+
+            // Add name label above matching markers when filters are active
+            if (isMatch && hasFilter) {
+                marker.setLabel({
+                    content: `<div style="background:#fff;padding:1px 5px;border-radius:3px;font-size:11px;white-space:nowrap;border:1px solid #ddd;box-shadow:0 1px 3px rgba(0,0,0,0.15)">${m.name}</div>`,
+                    direction: 'top',
+                });
+            }
+
+            // Compute index for coord correction UI (use original index in markersData)
+            const idx = i;
+            marker.on('click', function(e) {
+                const d = e.target.getExtData();
+                const passesHtml = d.passes.length > 0
+                    ? '<div class="info-row"><span class="info-label">包含年卡:</span> ' + d.passes.join('、') + '</div>'
+                    : '';
+                const content = `
+                    <div class="info-title">${d.name}</div>
+                    <div class="info-row"><span class="info-label">城市:</span> ${d.city} ${d.area}</div>
+                    <div class="info-row"><span class="info-label">类型:</span> ${d.category}</div>
+                    <div class="info-row"><span class="info-label">票价:</span> ￥${d.price}</div>
+                    <div class="info-row"><span class="info-label">等级:</span> ${d.level || '未评级'}</div>
+                    ${d.usage ? `<div class="info-row"><span class="info-label">使用:</span> ${d.usage}</div>` : ''}
+                    ${passesHtml}
+                    <div style="margin-top:8px;border-top:1px solid #eee;padding-top:6px;">
+                        <button onclick="document.getElementById('coordSearch_${idx}').style.display='block';this.style.display='none';"
+                            style="background:none;border:1px solid #ddd;border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer;color:#666;">
+                            &#128205; 坐标有误？纠正
+                        </button>
+                        <div id="coordSearch_${idx}" style="display:none;">
+                            <div style="display:flex;gap:4px;margin-bottom:4px;">
+                                <input type="text" id="coordInput_${idx}" placeholder="搜索地点..." value="${d.name} ${d.city}"
+                                    style="flex:1;font-size:12px;padding:4px 6px;border:1px solid #ddd;border-radius:4px;"
+                                    onkeydown="if(event.key==='Enter')window.correctCoord('${d.name}',${idx})">
+                                <button onclick="window.correctCoord('${d.name}',${idx})"
+                                    style="background:#1a73e8;color:#fff;border:none;border-radius:4px;padding:4px 10px;font-size:12px;cursor:pointer;">
+                                    搜索
+                                </button>
+                            </div>
+                            <div id="coordResults_${idx}"></div>
+                        </div>
+                    </div>
+                `;
+                infoWindow.setContent(content);
+                infoWindow.open(map, e.target.getPosition());
+                window.parent.postMessage({type: 'marker_click', name: d.name}, '*');
+            });
+            currentMarkers.push(marker);
+        }
+        map.add(currentMarkers);
+
+        const citySet = new Set(filtered.map(m => m.city));
+        const filterLabel = hasFilter ? `筛选结果 ` : '';
+        document.getElementById('statsBar').innerHTML =
+            `${filterLabel}<b>${filtered.length}</b> / ${markersData.length} 个景点 · <b>${citySet.size}</b> 个城市`;
+        console.log('rendered', filtered.length, 'markers');
+
+        // Auto-center: single city selected → zoom to that city
+        if (filtered.length === 0) {
+            // no matches, show all
+            if (currentMarkers.length > 0) map.setFitView(currentMarkers);
+            return;
+        }
+        if (hasFilter && currentMarkers.length > 0) {
+            // zoom to fit matching markers
+            map.setFitView(currentMarkers.filter(mk => {
+                const d = mk.getExtData();
+                return filteredNames.has(d.name);
+            }));
+        }
+        if (selectedCityCenter.length === 1) {
+            const city = selectedCityCenter[0];
+            if (cityCoords[city]) {
+                map.setCenter(cityCoords[city]);
+                map.setZoom(11);
+            } else if (currentMarkers.length > 0) {
+                map.setFitView(currentMarkers);
+            }
+        }
+    }
+
+    renderMarkers();
+
+    // Listen for filter updates from parent
+    window.addEventListener('message', function(e) {
+        if (e.data.type === 'update_filters') {
+            filterPasses.length = 0;
+            filterCities.length = 0;
+            filterCats.length = 0;
+            (e.data.passes || []).forEach(p => filterPasses.push(p));
+            (e.data.cities || []).forEach(c => filterCities.push(c));
+            (e.data.categories || []).forEach(c => filterCats.push(c));
+            renderMarkers();
+        }
+        // Receive coordinate correction results from Streamlit
+        if (e.data.type === 'coord_updated') {
+            const name = e.data.name;
+            const newLng = e.data.lng;
+            const newLat = e.data.lat;
+            // Update markersData in place
+            for (let i = 0; i < markersData.length; i++) {
+                if (markersData[i].name === name) {
+                    markersData[i].lng = newLng;
+                    markersData[i].lat = newLat;
+                    break;
+                }
+            }
+            renderMarkers();
+            infoWindow.close();
+        }
+    });
+
+    // Coordinate correction: search and update
+    // Uses backend API (no PlaceSearch plugin needed)
+    window.correctCoord = function(name, idx) {
+        const input = document.getElementById('coordInput_' + idx);
+        const resultsDiv = document.getElementById('coordResults_' + idx);
+        if (!input || !resultsDiv) return;
+
+        const query = input.value.trim();
+        if (!query) return;
+
+        resultsDiv.innerHTML = '<div style="color:#999;font-size:12px;">搜索中...</div>';
+
+        fetch('/api/search_poi?query=' + encodeURIComponent(query))
+            .then(r => r.json())
+            .then(data => {
+                if (!data.pois || data.pois.length === 0) {
+                    resultsDiv.innerHTML = '<div style="color:#999;font-size:12px;">未找到结果</div>';
+                    return;
+                }
+                let html = '';
+                for (const p of data.pois) {
+                    const addr = p.address || p.name;
+                    html += `<div class="coord-result" data-lng="${p.lng}" data-lat="${p.lat}" data-name="${p.name}"
+                        style="padding:8px;margin:4px 0;background:#f5f5f5;border-radius:4px;cursor:pointer;font-size:12px;border:1px solid #ddd;"
+                        onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f5f5f5'">
+                        <div style="font-weight:bold;">${p.name}</div>
+                        <div style="color:#666;font-size:11px;">${addr}</div>
+                        <div style="color:#999;font-size:11px;">(${p.lng.toFixed(4)}, ${p.lat.toFixed(4)})</div>
+                    </div>`;
+                }
+                resultsDiv.innerHTML = html;
+
+                // Click to select
+                resultsDiv.querySelectorAll('.coord-result').forEach(el => {
+                    el.onclick = function() {
+                        const newLng = parseFloat(this.dataset.lng);
+                        const newLat = parseFloat(this.dataset.lat);
+                        const spotName = this.dataset.name;
+                        // Update marker on map
+                        for (let i = 0; i < currentMarkers.length; i++) {
+                            const data = currentMarkers[i].getExtData();
+                            if (data.name === name) {
+                                currentMarkers[i].setPosition([newLng, newLat]);
+                                break;
+                            }
+                        }
+                        // Save via API
+                        fetch('/api/save_coord', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({name: name, lng: newLng, lat: newLat})
+                        }).then(r => r.json()).then(resp => {
+                            if (resp.ok) {
+                                resultsDiv.innerHTML = `<div style="color:#4caf50;font-size:12px;">✓ 已更新: ${spotName} (${newLng.toFixed(4)}, ${newLat.toFixed(4)})</div>`;
+                            } else {
+                                resultsDiv.innerHTML = `<div style="color:#f44336;font-size:12px;">保存失败: ${resp.error}</div>`;
+                            }
+                        }).catch(err => {
+                            resultsDiv.innerHTML = `<div style="color:#f44336;font-size:12px;">保存失败: ${err.message}</div>`;
+                        });
+                    };
+                });
+            })
+            .catch(err => {
+                resultsDiv.innerHTML = `<div style="color:#f44336;font-size:12px;">搜索失败: ${err.message}</div>`;
+            });
+    };
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMap);
+} else {
+    initMap();
+}
+</script>
+</body>
+</html>

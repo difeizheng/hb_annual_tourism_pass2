@@ -1,0 +1,19 @@
+{
+  "spot_name": "黄鹤楼",
+  "overall_rating": 4.8,
+  "review_count": 1,
+  "reviews": [
+    {
+      "source": "amap",
+      "rating": 4.8,
+      "text": "高德地图综合评分：4.8/5.0",
+      "author": "高德地图",
+      "date": "",
+      "upvotes": 0
+    }
+  ],
+  "cached_at": "2026-05-04T09:41:13.268309+00:00",
+  "sources_used": [
+    "amap"
+  ]
+}

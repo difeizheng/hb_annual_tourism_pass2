@@ -1,0 +1,19 @@
+{
+  "spot_name": "三峡大瀑布(夷陵)",
+  "overall_rating": 4.7,
+  "review_count": 1,
+  "reviews": [
+    {
+      "source": "amap",
+      "rating": 4.7,
+      "text": "高德地图综合评分：4.7/5.0",
+      "author": "高德地图",
+      "date": "",
+      "upvotes": 0
+    }
+  ],
+  "cached_at": "2026-05-04T14:24:32.764054+00:00",
+  "sources_used": [
+    "amap"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "spot_name": "玉龙洞旅游区",
+  "overall_rating": 4.2,
+  "review_count": 1,
+  "reviews": [
+    {
+      "source": "amap",
+      "rating": 4.2,
+      "text": "高德地图综合评分：4.2/5.0",
+      "author": "高德地图",
+      "date": "",
+      "upvotes": 0
+    }
+  ],
+  "cached_at": "2026-05-04T13:17:58.129153+00:00",
+  "sources_used": [
+    "amap"
+  ]
+}

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body, #container { width: 100%; height: 650px; }
+.amap-info-content { font-size: 13px; max-width: 260px; }
+.legend {
+    position: fixed; bottom: 30px; right: 15px; z-index: 1000;
+    background: rgba(255,255,255,0.92); border-radius: 8px; padding: 12px 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 12px;
+}
+.legend-item { display: flex; align-items: center; margin: 4px 0; }
+.legend-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; flex-shrink: 0; }
+</style>
+<script src="https://webapi.amap.com/maps?v=2.0&key=bffe2259b0ec1636b09aff27ae24db9f"></script>
+</head>
+<body>
+<div id="container"></div>
+<div class="legend">
+<div style="font-weight:bold;margin-bottom:6px;">图例</div>
+<div class="legend-item"><div class="legend-dot" style="background:#1a73e8"></div>行程景点（带序号）</div>
+<div class="legend-item"><div class="legend-dot" style="background:#FF9800"></div>酒店</div>
+<div class="legend-item"><div class="legend-dot" style="background:#4CAF50"></div>餐厅</div>
+</div>
+<script>
+const spotsData = [{"name": "\u6069\u65bd\u5927\u5ce1\u8c37-\u5730\u7f1d", "lng": 109.194306, "lat": 30.403162, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 170, "city": "\u6069\u65bd", "area": "\u6069\u65bd", "level": "A4", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u7f34\u6b21", "notes": ""}, {"name": "\u817e\u9f99\u6d1e", "lng": 109.173692, "lat": 30.415616, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 150, "city": "\u6069\u65bd", "area": "\u6069\u65bd", "level": "A5", "passes": ["\u6e56\u5317\u6587\u65c5\u7545\u73a9\u5361_200\u5143", "\u6e56\u5317\u65c5\u6e38\u5e74\u5361_300\u5143", "\u957f\u6c5f\u4e2d\u6e38\u4e00\u5361\u901a_300\u5143"], "usage": "\u4e0d\u9650", "notes": ""}, {"name": "\u58a8\u8fbe\u697c", "lng": 109.486098, "lat": 29.986859, "category": "\u5176\u4ed6", "color": "#9E9E9E", "price": 62, "city": "\u6069\u65bd", "area": "\u5ba3\u6069", "level": "A3", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u9650\u6b21", "notes": ""}, {"name": "\u9ec4\u9e64\u6865\u5cf0\u6797(\u5efa\u59cb)", "lng": 109.996199, "lat": 30.39432, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 70, "city": "\u6069\u65bd", "area": "\u6069\u65bd", "level": "A4", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u7f34\u6b21", "notes": ""}];
+const routePolyline = "";
+const hotelsData = [{"name": "\u571f\u5bb6\u6446\u624b\u5802\u6c11\u4fd7\u6587\u5316\u9910\u5385", "address": "\u524d\u8fdb\u8def\u4e0e\u6b63\u8857\u4ea4\u53c9\u53e3\u897f\u535780\u7c73", "lng": 109.196865, "lat": 30.405769, "distance": 380, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u4e2d\u9910\u5385", "photos": []}, {"name": "\u5973\u513f\u5be8\u81ea\u52a9\u4e2d\u9910\u5385", "address": "\u6c90\u629a\u529e\u4e8b\u5904\u6c90\u629a\u5927\u5ce1\u8c37\u5973\u513f\u5be8", "lng": 109.193928, "lat": 30.407538, "distance": 488, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u4e2d\u9910\u5385", "photos": []}, {"name": "\u5e78\u4e3d\u91ce\u8bed\u94c1\u9505\u9e21", "address": "\u6069\u65bd\u5e78\u4e3d\u91ce\u8bed\u6c11\u5bbf(\u6069\u65bd\u5927\u5ce1\u8c37\u6e38\u5ba2\u4e2d\u5fc3\u5e97)\u4e1c\u4fa750\u7c73", "lng": 109.196625, "lat": 30.398575, "distance": 557, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u4e2d\u9910\u5385", "photos": []}, {"name": "\u68a6\u8c37\u4e61\u00b7\u571f\u5bb6\u83dc\u9986", "address": "\u524d\u8fdb\u8def\u4e0e\u6b63\u8857\u4ea4\u53c9\u53e3\u5317140\u7c73", "lng": 109.1977, "lat": 30.40808, "distance": 637, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u4e2d\u9910\u5385", "photos": [{"title": [], "url": "https://store.is.autonavi.com/showpic/f2a495f942f7ec07d2483e8a893ca051"}, {"title": [], "url": "https://store.is.autonavi.com/showpic/f3bbacc7d7ce0ea735c493c8cea09fbd"}, {"title": [], "url": "https://store.is.autonavi.com/showpic/bf3111a09b5e5878b68f42415e5ec624"}]}, {"name": "\u5973\u513f\u6751\u751f\u6001\u9910\u5385(\u5927\u5ce1\u8c37\u5e97)", "address": "\u6b63\u8857284\u53f7", "lng": 109.197969, "lat": 30.408202, "distance": 662, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u4e2d\u9910\u5385", "photos": [{"title": [], "url": "https://store.is.autonavi.com/showpic/dabed375bd8bbee20000002197222413"}, {"title": [], "url": "https://store.is.autonavi.com/showpic/f3fb76ed6ee2576d0000002197204715"}, {"title": [], "url": "https://store.is.autonavi.com/showpic/1251759b54f72a9365eea070741b5683"}]}, {"name": "\u6069\u65bd\u5e02\u5e73\u79c0\u5c71\u5e84", "address": "\u6c90\u629a\u8425\u4e0a\u6751\u4e0b\u8349\u575d\u7ec4", "lng": 109.187355, "lat": 30.420025, "distance": 1400, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u7efc\u5408\u9152\u697c", "photos": [{"title": "Logo", "url": "https://store.is.autonavi.com/showpic/a1835fb686d547256df129bdec45dbea"}, {"title": "\u5916\u89c2", "url": "https://store.is.autonavi.com/showpic/fd23c91adbd439665bddc6abaed52a9a"}, {"title": "\u6807\u95f4", "url": "https://store.is.autonavi.com/showpic/f01b2628b0d06586cc24589a95b3b553"}]}, {"name": "\u5408\u5473\u5c45(\u6069\u65bd\u5927\u5ce1\u8c37\u5e97)", "address": "\u6c90\u629a\u6751\u6069\u65bd\u5927\u5ce1\u8c37\u5185(\u5317\u4fa7)", "lng": 109.191001, "lat": 30.419023, "distance": 1704, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u4e2d\u9910\u5385", "photos": [{"title": [], "url": "https://aos-comment.amap.com/B0FFLAIVQA/comment/0016954693a4886e704517f2ef250811_2048_2048_80.jpg"}, {"title": [], "url": "http://store.is.autonavi.com/showpic/05f4ece4e96a4315a1ace6269a1cc1b5"}, {"title": [], "url": "http://store.is.autonavi.com/showpic/4bc5de259a394eebbb9ae16e4eabfb29"}]}, {"name": "\u6069\u65bd\u5927\u5ce1\u8c37\u7f18\u723d\u9152\u5bb6", "address": "\u6069\u65bd\u5927\u5ce1\u8c37\u7d22\u9053\u5165\u53e3\u5904\u4e1c\u5357150\u7c73", "lng": 109.19199, "lat": 30.417994, "distance": 1776, "type_name": "\u4f4f\u5bbf\u670d\u52a1;\u4f4f\u5bbf\u670d\u52a1\u76f8\u5173;\u4f4f\u5bbf\u670d\u52a1\u76f8\u5173|\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u4e2d\u9910\u5385", "photos": [{"provider": [], "title": [], "url": "https://store.is.autonavi.com/showpic/ed4f66a63c0b2fdc9ea0473ed455506d"}, {"provider": [], "title": "\u5916\u89c2", "url": "https://store.is.autonavi.com/showpic/13769f77de44f36dd305bb45c6b6fc2a"}, {"provider": [], "title": "\u5176\u4ed6", "url": "https://store.is.autonavi.com/showpic/f892e62caf45a1d052148ebb3b76ae99"}]}, {"name": "\u76f8\u89c1\u6b22\u5927\u9152\u697c", "address": "\u4e91\u9f99\u5730\u7f1d\u51fa\u53e3\u5ce1\u8c37\u7d22\u9053\u4e0b\u7ad9\u4e0a\u884c200\u7c73", "lng": 109.1935, "lat": 30.420038, "distance": 1964, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u7efc\u5408\u9152\u697c", "photos": [{"title": [], "url": "http://store.is.autonavi.com/showpic/fc40e425379955f0c8628b7793424059"}]}, {"name": "\u9152\u7a9d\u7cbe\u917f\u5802\u98df\u5e97", "address": "\u5174\u9686\u8001\u8857\u5546\u4e1a\u88576\u680b", "lng": 109.485849, "lat": 29.986651, "distance": 33, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u4e2d\u9910\u5385", "photos": [{"title": [], "url": "http://store.is.autonavi.com/showpic/a5bd49b640624b0d6d207f4bdaf82f70"}]}, {"name": "\u4e00\u4f73\u6c5f\u6e56\u83dc\u9986", "address": "\u5174\u9686\u5927\u9053\u4e0e\u8d21\u6c34\u8def\u4ea4\u53c9\u53e3\u4e1c260\u7c73", "lng": 109.485518, "lat": 29.98644, "distance": 72, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u4e2d\u9910\u5385", "photos": [{"title": [], "url": "https://store.is.autonavi.com/showpic/3678b0d894319864727efb1c521b7e77"}]}, {"name": "\u9192\u4e8b\u5c0f\u9152\u9986", "address": "\u5174\u9686\u5927\u9053\u4e0e\u8d21\u6c34\u8def\u4ea4\u53c9\u53e3\u4e1c180\u7c73", "lng": 109.484687, "lat": 29.986423, "distance": 144, "type_name": "\u4f53\u80b2\u4f11\u95f2\u670d\u52a1;\u5a31\u4e50\u573a\u6240;\u9152\u5427|\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u4e2d\u9910\u5385", "photos": []}, {"name": "\u58a8\u8fbe\u53a8\u574a(\u4e39\u5cf0\u00b7\u8d21\u6c34\u9f99\u57ce\u5e97)", "address": "\u73e0\u5c71\u9547\u4e39\u5cf0\u8d21\u6c34\u9f99\u57ce\u4e00\u680b\u4e00\u5355\u5143\u4e00\u697cb-27-28", "lng": 109.485157, "lat": 29.987895, "distance": 146, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u4e2d\u9910\u5385", "photos": [{"title": [], "url": "http://store.is.autonavi.com/showpic/d0c781e55072b62e801c168f81e27bff"}]}, {"name": "\u5df7\u5b50\u6df1", "address": "\u5174\u9686\u5927\u905383\u53f7", "lng": 109.485043, "lat": 29.985844, "distance": 152, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u4e2d\u9910\u5385", "photos": [{"title": [], "url": "https://store.is.autonavi.com/showpic/7ff7b51e37e4d9948c83a09ac2152fdc"}]}];
+const restaurantsData = [{"name": "\u76f8\u89c1\u6b22\u5927\u9152\u697c", "address": "\u4e91\u9f99\u5730\u7f1d\u51fa\u53e3\u5ce1\u8c37\u7d22\u9053\u4e0b\u7ad9\u4e0a\u884c200\u7c73", "lng": 109.1935, "lat": 30.420038, "distance": 1880, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u7efc\u5408\u9152\u697c", "photos": [{"title": [], "url": "http://store.is.autonavi.com/showpic/fc40e425379955f0c8628b7793424059"}]}, {"name": "\u6069\u65bd\u5e02\u5e73\u79c0\u5c71\u5e84", "address": "\u6c90\u629a\u8425\u4e0a\u6751\u4e0b\u8349\u575d\u7ec4", "lng": 109.187355, "lat": 30.420025, "distance": 1992, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u7efc\u5408\u9152\u697c", "photos": [{"title": "Logo", "url": "https://store.is.autonavi.com/showpic/a1835fb686d547256df129bdec45dbea"}, {"title": "\u5916\u89c2", "url": "https://store.is.autonavi.com/showpic/fd23c91adbd439665bddc6abaed52a9a"}, {"title": "\u6807\u95f4", "url": "https://store.is.autonavi.com/showpic/f01b2628b0d06586cc24589a95b3b553"}]}, {"name": "\u548c\u5e73\u516c\u793e(\u5ba3\u6069\u5e97)", "address": "\u73e0\u5c71\u9547\u58a8\u8fbe\u697c\u6b65\u884c\u88577\u53f7", "lng": 109.484439, "lat": 29.985999, "distance": 186, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u7efc\u5408\u9152\u697c", "photos": [{"title": [], "url": "http://store.is.autonavi.com/showpic/005fa3b7532b9e489600d6a966eae7f8"}, {"title": [], "url": "https://store.is.autonavi.com/showpic/375fac458f213594fc8dfcdddf7ff6d4"}, {"title": [], "url": "https://aos-comment.amap.com/B0IDYRVNIH/headerImg/5cf973626673f57fc3297bdcc1fdade2_2048_2048_80.jpg"}]}, {"name": "\u9ec4\u6cb3\u5df712\u53f7\u9152\u697c", "address": "\u73e0\u5c71\u9547\u9ec4\u6cb3\u5df712\u53f7", "lng": 109.481129, "lat": 29.990502, "distance": 627, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u7efc\u5408\u9152\u697c", "photos": [{"title": [], "url": "http://store.is.autonavi.com/showpic/c73dd2ba04c9fdd20ae9797a1d553cfe"}]}, {"name": "\u7b80\u5355\u5c0f\u9986", "address": "\u73e0\u5c71\u9547\u83b2\u82b1\u575d\u6751\u4e09\u7ec4\u5efa\u8bbe\u8def74\u53f7", "lng": 109.494883, "lat": 29.992343, "distance": 1044, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u7efc\u5408\u9152\u697c", "photos": [{"title": [], "url": "http://store.is.autonavi.com/showpic/62768156a953065ebc4171234783239b"}, {"title": [], "url": "http://store.is.autonavi.com/showpic/4719409a995f41465487d3706847752c"}, {"title": [], "url": "http://store.is.autonavi.com/showpic/efa5cdbdfbb62988dd1f48fe6b5d20c9"}]}, {"name": "\u5ba3\u6069\u53bf\u723d\u53e3\u4e50\u9152\u697c", "address": "\u6c11\u65cf\u8def\u4e0e\u73af\u6e56\u8def\u4ea4\u53c9\u53e3\u4e1c\u5357220\u7c73", "lng": 109.47488, "lat": 29.984615, "distance": 1110, "type_name": "\u9910\u996e\u670d\u52a1;\u4e2d\u9910\u5385;\u7efc\u5408\u9152\u697c", "photos": [{"title": [], "url": "https://store.is.autonavi.com/showpic/d35135af69738bd958b36b8c38d3e964"}, {"title": [], "url": "https://store.is.autonavi.com/showpic/149d53a24431fc5637a293e05a17d2a0"}, {"title": [], "url": "https://store.is.autonavi.com/showpic/6dd7c48e0cca8dbbd3fb01b9ef05760b"}]}];
+const cityCoords = {"\u6b66\u6c49": [114.305, 30.593], "\u9ec4\u5188": [114.873, 30.447], "\u9102\u5dde": [114.894, 30.388], "\u5b5d\u611f": [113.917, 30.926], "\u54b8\u5b81": [114.302, 29.841], "\u9ec4\u77f3": [115.038, 30.22], "\u8944\u9633": [112.122, 32.042], "\u5b9c\u660c": [111.286, 30.7], "\u8346\u5dde": [112.183, 30.335], "\u8346\u95e8": [112.199, 31.035], "\u968f\u5dde": [113.373, 31.69], "\u5341\u5830": [110.779, 32.645], "\u6069\u65bd": [109.487, 30.283], "\u4ed9\u6843": [113.444, 30.365], "\u5929\u95e8": [113.166, 30.653], "\u6f5c\u6c5f": [112.897, 30.414], "\u795e\u519c\u67b6": [110.671, 31.744], "\u957f\u6c99": [112.983, 28.193], "\u5357\u660c": [115.858, 28.683], "\u5408\u80a5": [117.227, 31.821], "\u5cb3\u9633": [113.128, 29.357], "\u4e5d\u6c5f": [115.98, 29.712], "\u5b89\u5e86": [117.053, 30.531], "\u9ec4\u5c71": [118.337, 29.711], "\u682a\u6d32": [113.134, 27.827], "\u6e58\u6f6d": [112.944, 27.829], "\u629a\u5dde": [116.358, 27.947], "\u5b9c\u6625": [114.417, 27.801], "\u9e70\u6f6d": [117.033, 28.238]};
+
+function initTripMap() {
+    const map = new AMap.Map('container', {zoom: 10, center: [114.305, 30.593]});
+    const infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -10)});
+
+    // Numbered spot markers
+    const markers = [];
+    spotsData.forEach((s, i) => {
+        const content = `<div style="width:28px;height:28px;border-radius:50%;background:#1a73e8;color:#fff;
+            display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:bold;
+            border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,0.3);">${i + 1}</div>`;
+        const marker = new AMap.Marker({
+            position: [s.lng, s.lat],
+            content: content,
+            offset: new AMap.Pixel(-14, -14),
+            extData: s,
+        });
+        marker.on('click', function(e) {
+            const d = e.target.getExtData();
+            infoWindow.setContent(`
+                <div style="font-weight:bold;font-size:14px;">${i + 1}. ${d.name}</div>
+                <div style="color:#666;font-size:12px;">${d.city} ${d.area || ''}</div>
+                <div style="color:#666;font-size:12px;">类型: ${d.category} | 票价: ￥${d.price}</div>
+                <button onclick="window.removeFromTrip('${d.name}')"
+                    style="margin-top:6px;background:#f44336;color:#fff;border:none;border-radius:4px;
+                    padding:3px 10px;font-size:11px;cursor:pointer;">
+                    移除
+                </button>
+            `);
+            infoWindow.open(map, e.target.getPosition());
+        });
+        markers.push(marker);
+    });
+    map.add(markers);
+
+    // Route polyline
+    if (routePolyline && routePolyline.length > 0) {
+        const path = routePolyline.split(';').map(p => {
+            const parts = p.split(',');
+            return [parseFloat(parts[0]), parseFloat(parts[1])];
+        }).filter(p => !isNaN(p[0]) && !isNaN(p[1]));
+
+        if (path.length > 1) {
+            const polyline = new AMap.Polyline({
+                path: path,
+                strokeColor: '#1a73e8',
+                strokeWeight: 5,
+                strokeOpacity: 0.8,
+                lineJoin: 'round',
+                lineCap: 'round',
+            });
+            map.add(polyline);
+        }
+    }
+
+    // Hotel markers
+    const hotelMarkers = [];
+    hotelsData.forEach(h => {
+        const content = '<div style="width:14px;height:14px;border-radius:50%;background:#FF9800;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></div>';
+        const marker = new AMap.Marker({
+            position: [h.lng, h.lat],
+            content: content,
+            offset: new AMap.Pixel(-7, -7),
+            extData: {...h, _type: 'hotel'},
+        });
+        marker.on('click', function(e) {
+            const d = e.target.getExtData();
+            infoWindow.setContent(`
+                <div style="font-weight:bold;">&#127976; ${d.name}</div>
+                <div style="color:#666;font-size:12px;">${d.address || ''}</div>
+                <div style="color:#999;font-size:11px;">距离: ${d.distance}m</div>
+            `);
+            infoWindow.open(map, e.target.getPosition());
+        });
+        hotelMarkers.push(marker);
+    });
+    map.add(hotelMarkers);
+
+    // Restaurant markers
+    const restMarkers = [];
+    restaurantsData.forEach(r => {
+        const content = '<div style="width:14px;height:14px;border-radius:50%;background:#4CAF50;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></div>';
+        const marker = new AMap.Marker({
+            position: [r.lng, r.lat],
+            content: content,
+            offset: new AMap.Pixel(-7, -7),
+            extData: {...r, _type: 'restaurant'},
+        });
+        marker.on('click', function(e) {
+            const d = e.target.getExtData();
+            infoWindow.setContent(`
+                <div style="font-weight:bold;">&#127860; ${d.name}</div>
+                <div style="color:#666;font-size:12px;">${d.address || ''}</div>
+                <div style="color:#999;font-size:11px;">距离: ${d.distance}m</div>
+            `);
+            infoWindow.open(map, e.target.getPosition());
+        });
+        restMarkers.push(marker);
+    });
+    map.add(restMarkers);
+
+    // Auto-fit
+    const allMarkers = markers.concat(hotelMarkers, restMarkers);
+    if (allMarkers.length > 0) {
+        map.setFitView(allMarkers);
+    }
+}
+
+// Remove from trip
+window.removeFromTrip = function(name) {
+    fetch('/api/remove_from_trip', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name: name})
+    }).then(() => {
+        alert('已移除 ' + name);
+    });
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTripMap);
+} else {
+    initTripMap();
+}
+</script>
+</body>
+</html>

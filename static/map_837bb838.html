@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body, #container { width: 100%; height: 650px; }
+.amap-info-content { font-size: 13px; max-width: 260px; }
+.legend {
+    position: fixed; bottom: 30px; right: 15px; z-index: 1000;
+    background: rgba(255,255,255,0.92); border-radius: 8px; padding: 12px 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 12px;
+}
+.legend-item { display: flex; align-items: center; margin: 4px 0; }
+.legend-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; flex-shrink: 0; }
+</style>
+<script src="https://webapi.amap.com/maps?v=2.0&key=bffe2259b0ec1636b09aff27ae24db9f"></script>
+</head>
+<body>
+<div id="container"></div>
+<div class="legend">
+<div style="font-weight:bold;margin-bottom:6px;">图例</div>
+<div class="legend-item"><div class="legend-dot" style="background:#1a73e8"></div>行程景点（带序号）</div>
+<div class="legend-item"><div class="legend-dot" style="background:#FF9800"></div>酒店</div>
+<div class="legend-item"><div class="legend-dot" style="background:#4CAF50"></div>餐厅</div>
+</div>
+<script>
+const spotsData = [{"name": "\u975e\u5883\u91cc\u7684\u8346\u95e8", "lng": 112.201657, "lat": 31.05187, "category": "\u5176\u4ed6", "color": "#9E9E9E", "price": 48, "city": "\u8346\u95e8", "area": "\u4e1c\u5b9d", "level": "", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u9650\u6b21", "notes": ""}, {"name": "\u4e09\u5ce1\u5927\u7011\u5e03(\u5937\u9675)", "lng": 111.317242, "lat": 30.93944, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 115, "city": "\u5b9c\u660c", "area": "\u5937\u9675", "level": "A5", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u9650\u6b21", "notes": ""}, {"name": "\u5c48\u539f\u6545\u91cc(\u79ed\u5f52)", "lng": 110.988428, "lat": 30.826058, "category": "\u4eba\u6587\u5386\u53f2", "color": "#FF9800", "price": 80, "city": "\u5b9c\u660c", "area": "\u79ed\u5f52", "level": "A5", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u9650\u6b21", "notes": ""}, {"name": "\u6e05\u6c5f\u65b9\u5c71\u98ce\u666f\u533a(\u957f\u9633)", "lng": 111.006569, "lat": 30.517186, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 135, "city": "\u5b9c\u660c", "area": "\u957f\u9633", "level": "A4", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u9650\u6b21", "notes": ""}, {"name": "\u6e05\u6c5f\u753b\u5eca\u6e38\u8239(\u957f\u9633)", "lng": 111.138347, "lat": 30.466625, "category": "\u5176\u4ed6", "color": "#9E9E9E", "price": 90, "city": "\u5b9c\u660c", "area": "\u957f\u9633", "level": "A5", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u9650\u6b21", "notes": "\u5e74\u5361\u4e0d\u542b\u6e38\u8239\u8d39\u752835\u5143"}, {"name": "\u6069\u65bd\u571f\u53f8\u57ce", "lng": 109.472098, "lat": 30.301061, "category": "\u5176\u4ed6", "color": "#9E9E9E", "price": 45, "city": "\u6069\u65bd", "area": "\u6069\u65bd", "level": "A4", "passes": ["\u6e56\u5317\u6587\u65c5\u7545\u73a9\u5361_200\u5143"], "usage": "\u4e0d\u9650", "notes": ""}, {"name": "\u6069\u65bd\u5927\u5ce1\u8c37-\u5730\u7f1d", "lng": 109.194306, "lat": 30.403162, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 170, "city": "\u6069\u65bd", "area": "\u6069\u65bd", "level": "A4", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u7f34\u6b21", "notes": ""}, {"name": "\u7389\u9f99\u6d1e\u65c5\u6e38\u533a", "lng": 109.150912, "lat": 30.375303, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 58, "city": "\u6069\u65bd", "area": "\u5229\u5ddd", "level": "A4", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u9650\u6b21", "notes": ""}, {"name": "\u9e7f\u82d1\u576a", "lng": 109.192235, "lat": 30.484031, "category": "\u5176\u4ed6", "color": "#9E9E9E", "price": 120, "city": "\u6069\u65bd", "area": "\u6069\u65bd", "level": "", "passes": ["\u6b66\u6c49\u60e0\u6e38\u5e74\u7968_120\u5143", "\u817e\u65c5e\u5361_200\u5143"], "usage": "\u4e0d\u9650\u6b21", "notes": ""}, {"name": "\u817e\u9f99\u6d1e\u666f\u533a", "lng": 108.99141, "lat": 30.333284, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 150, "city": "\u6069\u65bd", "area": "\u5229\u5ddd", "level": "A5", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u514d6\u6b21", "notes": "\u9700\u5237\u8eab\u4efd\u8bc1\u539f\u4ef6\u5165\u56ed"}, {"name": "\u6765\u51e4\u6768\u6885\u53e4\u5be8\u666f\u533a", "lng": 109.30727, "lat": 29.608253, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 70, "city": "\u6069\u65bd", "area": "\u6069\u65bd", "level": "A4", "passes": ["\u957f\u6c5f\u4e2d\u6e38\u4e00\u5361\u901a_300\u5143"], "usage": "6\u6b21", "notes": ""}, {"name": "\u4ed9\u4f5b\u5bfa(\u6765\u51e4)", "lng": 109.459928, "lat": 29.550991, "category": "\u4eba\u6587\u5386\u53f2", "color": "#FF9800", "price": 70, "city": "\u6069\u65bd", "area": "\u6765\u51e4", "level": "A4", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u7f34\u6b21", "notes": ""}];
+const routePolyline = "";
+const hotelsData = [];
+const restaurantsData = [];
+const cityCoords = {"\u6b66\u6c49": [114.305, 30.593], "\u9ec4\u5188": [114.873, 30.447], "\u9102\u5dde": [114.894, 30.388], "\u5b5d\u611f": [113.917, 30.926], "\u54b8\u5b81": [114.302, 29.841], "\u9ec4\u77f3": [115.038, 30.22], "\u8944\u9633": [112.122, 32.042], "\u5b9c\u660c": [111.286, 30.7], "\u8346\u5dde": [112.183, 30.335], "\u8346\u95e8": [112.199, 31.035], "\u968f\u5dde": [113.373, 31.69], "\u5341\u5830": [110.779, 32.645], "\u6069\u65bd": [109.487, 30.283], "\u4ed9\u6843": [113.444, 30.365], "\u5929\u95e8": [113.166, 30.653], "\u6f5c\u6c5f": [112.897, 30.414], "\u795e\u519c\u67b6": [110.671, 31.744], "\u957f\u6c99": [112.983, 28.193], "\u5357\u660c": [115.858, 28.683], "\u5408\u80a5": [117.227, 31.821], "\u5cb3\u9633": [113.128, 29.357], "\u4e5d\u6c5f": [115.98, 29.712], "\u5b89\u5e86": [117.053, 30.531], "\u9ec4\u5c71": [118.337, 29.711], "\u682a\u6d32": [113.134, 27.827], "\u6e58\u6f6d": [112.944, 27.829], "\u629a\u5dde": [116.358, 27.947], "\u5b9c\u6625": [114.417, 27.801], "\u9e70\u6f6d": [117.033, 28.238]};
+
+function initTripMap() {
+    const map = new AMap.Map('container', {zoom: 10, center: [114.305, 30.593]});
+    const infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -10)});
+
+    // Numbered spot markers
+    const markers = [];
+    spotsData.forEach((s, i) => {
+        const content = `<div style="width:28px;height:28px;border-radius:50%;background:#1a73e8;color:#fff;
+            display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:bold;
+            border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,0.3);">${i + 1}</div>`;
+        const marker = new AMap.Marker({
+            position: [s.lng, s.lat],
+            content: content,
+            offset: new AMap.Pixel(-14, -14),
+            extData: s,
+        });
+        marker.on('click', function(e) {
+            const d = e.target.getExtData();
+            infoWindow.setContent(`
+                <div style="font-weight:bold;font-size:14px;">${i + 1}. ${d.name}</div>
+                <div style="color:#666;font-size:12px;">${d.city} ${d.area || ''}</div>
+                <div style="color:#666;font-size:12px;">类型: ${d.category} | 票价: ￥${d.price}</div>
+                <button onclick="window.removeFromTrip('${d.name}')"
+                    style="margin-top:6px;background:#f44336;color:#fff;border:none;border-radius:4px;
+                    padding:3px 10px;font-size:11px;cursor:pointer;">
+                    移除
+                </button>
+            `);
+            infoWindow.open(map, e.target.getPosition());
+        });
+        markers.push(marker);
+    });
+    map.add(markers);
+
+    // Route polyline
+    if (routePolyline && routePolyline.length > 0) {
+        const path = routePolyline.split(';').map(p => {
+            const parts = p.split(',');
+            return [parseFloat(parts[0]), parseFloat(parts[1])];
+        }).filter(p => !isNaN(p[0]) && !isNaN(p[1]));
+
+        if (path.length > 1) {
+            const polyline = new AMap.Polyline({
+                path: path,
+                strokeColor: '#1a73e8',
+                strokeWeight: 5,
+                strokeOpacity: 0.8,
+                lineJoin: 'round',
+                lineCap: 'round',
+            });
+            map.add(polyline);
+        }
+    } else if (spotsData.length > 1) {
+        // Fallback: draw straight lines between ordered spots
+        const path = spotsData.map(s => [s.lng, s.lat]);
+        const polyline = new AMap.Polyline({
+            path: path,
+            strokeColor: '#1a73e8',
+            strokeWeight: 3,
+            strokeOpacity: 0.6,
+            strokeStyle: 'dashed',
+            lineJoin: 'round',
+            lineCap: 'round',
+        });
+        map.add(polyline);
+    }
+
+    // Hotel markers
+    const hotelMarkers = [];
+    hotelsData.forEach(h => {
+        const content = '<div style="width:14px;height:14px;border-radius:50%;background:#FF9800;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></div>';
+        const marker = new AMap.Marker({
+            position: [h.lng, h.lat],
+            content: content,
+            offset: new AMap.Pixel(-7, -7),
+            extData: {...h, _type: 'hotel'},
+        });
+        marker.on('click', function(e) {
+            const d = e.target.getExtData();
+            infoWindow.setContent(`
+                <div style="font-weight:bold;">&#127976; ${d.name}</div>
+                <div style="color:#666;font-size:12px;">${d.address || ''}</div>
+                <div style="color:#999;font-size:11px;">距离: ${d.distance}m</div>
+            `);
+            infoWindow.open(map, e.target.getPosition());
+        });
+        hotelMarkers.push(marker);
+    });
+    map.add(hotelMarkers);
+
+    // Restaurant markers
+    const restMarkers = [];
+    restaurantsData.forEach(r => {
+        const content = '<div style="width:14px;height:14px;border-radius:50%;background:#4CAF50;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></div>';
+        const marker = new AMap.Marker({
+            position: [r.lng, r.lat],
+            content: content,
+            offset: new AMap.Pixel(-7, -7),
+            extData: {...r, _type: 'restaurant'},
+        });
+        marker.on('click', function(e) {
+            const d = e.target.getExtData();
+            infoWindow.setContent(`
+                <div style="font-weight:bold;">&#127860; ${d.name}</div>
+                <div style="color:#666;font-size:12px;">${d.address || ''}</div>
+                <div style="color:#999;font-size:11px;">距离: ${d.distance}m</div>
+            `);
+            infoWindow.open(map, e.target.getPosition());
+        });
+        restMarkers.push(marker);
+    });
+    map.add(restMarkers);
+
+    // Auto-fit
+    const allMarkers = markers.concat(hotelMarkers, restMarkers);
+    if (allMarkers.length > 0) {
+        map.setFitView(allMarkers);
+    }
+}
+
+// Remove from trip
+window.removeFromTrip = function(name) {
+    fetch('/api/remove_from_trip', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name: name})
+    }).then(() => {
+        alert('已移除 ' + name);
+    });
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTripMap);
+} else {
+    initTripMap();
+}
+</script>
+</body>
+</html>

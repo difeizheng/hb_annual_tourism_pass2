@@ -1,0 +1,19 @@
+{
+  "spot_name": "石牌古村落旅游区(钟祥)",
+  "overall_rating": 4.0,
+  "review_count": 1,
+  "reviews": [
+    {
+      "source": "amap",
+      "rating": 4.0,
+      "text": "高德地图综合评分：4.0/5.0",
+      "author": "高德地图",
+      "date": "",
+      "upvotes": 0
+    }
+  ],
+  "cached_at": "2026-05-04T14:29:23.313623+00:00",
+  "sources_used": [
+    "amap"
+  ]
+}

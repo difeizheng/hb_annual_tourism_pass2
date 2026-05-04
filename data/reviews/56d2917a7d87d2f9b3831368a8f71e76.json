@@ -1,0 +1,19 @@
+{
+  "spot_name": "园博园",
+  "overall_rating": 4.7,
+  "review_count": 1,
+  "reviews": [
+    {
+      "source": "amap",
+      "rating": 4.7,
+      "text": "高德地图综合评分：4.7/5.0",
+      "author": "高德地图",
+      "date": "",
+      "upvotes": 0
+    }
+  ],
+  "cached_at": "2026-05-04T15:39:53.382224+00:00",
+  "sources_used": [
+    "amap"
+  ]
+}

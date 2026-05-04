@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body, #container { width: 100%; height: 650px; }
+.amap-info-content { font-size: 13px; max-width: 260px; }
+.info-title { font-weight: bold; font-size: 15px; margin-bottom: 6px; color: #333; }
+.info-row { margin: 3px 0; color: #666; }
+.info-label { color: #999; }
+.legend {
+    position: fixed; bottom: 30px; right: 15px; z-index: 1000;
+    background: rgba(255,255,255,0.92); border-radius: 8px; padding: 12px 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 12px;
+}
+.legend-item { display: flex; align-items: center; margin: 3px 0; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; flex-shrink: 0; }
+.stats-bar {
+    position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1000;
+    background: rgba(255,255,255,0.95); border-radius: 8px; padding: 8px 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12); font-size: 13px; display: flex; gap: 16px;
+}
+.stats-bar span { color: #333; }
+.stats-bar b { color: #1a73e8; }
+</style>
+<script src="https://webapi.amap.com/maps?v=2.0&key=bffe2259b0ec1636b09aff27ae24db9f"></script>
+</head>
+<body>
+<div id="container"></div>
+<div class="stats-bar" id="statsBar">加载中...</div>
+<div class="legend" id="legend"></div>
+<script>
+const markersData = [{"name": "\u592a\u5b50\u5c71\u751f\u6001\u65c5\u6e38\u533a", "lng": 112.905255, "lat": 30.91896, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 80, "city": "\u8346\u95e8", "area": "\u8346\u95e8", "level": "A4", "passes": ["\u6e56\u5317\u6587\u65c5\u7545\u73a9\u5361_200\u5143", "\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143", "\u957f\u6c5f\u4e2d\u6e38\u4e00\u5361\u901a_300\u5143"], "usage": "\u4e0d\u9650", "notes": ""}, {"name": "\u5723\u5883\u82b1\u8c37", "lng": 112.170532, "lat": 31.11124, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 48, "city": "\u8346\u95e8", "area": "\u4e1c\u5b9d", "level": "A3", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u9650\u6b21", "notes": ""}, {"name": "\u975e\u5883\u91cc\u7684\u8346\u95e8", "lng": 112.201657, "lat": 31.05187, "category": "\u5176\u4ed6", "color": "#9E9E9E", "price": 48, "city": "\u8346\u95e8", "area": "\u4e1c\u5b9d", "level": "", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u9650\u6b21", "notes": ""}, {"name": "\u5f6d\u58a9\u4e61\u6751\u65c5\u6e38\u4e16\u754c", "lng": 112.341658, "lat": 30.996829, "category": "\u5176\u4ed6", "color": "#9E9E9E", "price": 40, "city": "\u8346\u95e8", "area": "\u949f\u7965", "level": "A4", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u9650\u6b21", "notes": ""}, {"name": "\u6c47\u6e90\u519c\u8c37\u4f53\u9a8c\u56ed", "lng": 112.798323, "lat": 31.108678, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 98, "city": "\u8346\u95e8", "area": "\u949f\u7965", "level": "A4", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u9650\u6b21", "notes": ""}, {"name": "\u7eff\u6797\u5be8\u666f\u533a", "lng": 113.101703, "lat": 31.352875, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 80, "city": "\u8346\u95e8", "area": "\u4eac\u5c71", "level": "A4", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143", "\u957f\u6c5f\u4e2d\u6e38\u4e00\u5361\u901a_300\u5143"], "usage": "\u4e0d\u9650\u6b21", "notes": ""}, {"name": "\u7f8e\u4eba\u8c37\u666f\u533a", "lng": 113.080873, "lat": 31.309161, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 68, "city": "\u8346\u95e8", "area": "\u4eac\u5c71", "level": "A3", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u9650\u6b21", "notes": ""}, {"name": "\u5cb3\u98de\u57ce\u6587\u5316\u4ea7\u4e1a\u56ed", "lng": 112.205699, "lat": 30.752423, "category": "\u4eba\u6587\u5386\u53f2", "color": "#FF9800", "price": 20, "city": "\u8346\u95e8", "area": "\u6c99\u6d0b", "level": "A2", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u9650\u6b21", "notes": ""}, {"name": "\u660e\u5fb7\u56ed(\u949f\u7965)", "lng": 112.586817, "lat": 31.152503, "category": "\u5176\u4ed6", "color": "#9E9E9E", "price": 65, "city": "\u8346\u95e8", "area": "\u949f\u7965", "level": "A5", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u7f34\u6b21", "notes": ""}, {"name": "\u9ec4\u5c71\u666f\u533a(\u949f\u7965)", "lng": 112.204937, "lat": 30.755351, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 70, "city": "\u8346\u95e8", "area": "\u949f\u7965", "level": "A4", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u7f34\u6b21", "notes": ""}, {"name": "\u77f3\u724c\u53e4\u6751\u843d\u65c5\u6e38\u533a(\u949f\u7965)", "lng": 112.202336, "lat": 31.02742, "category": "\u4eba\u6587\u5386\u53f2", "color": "#FF9800", "price": 70, "city": "\u8346\u95e8", "area": "\u949f\u7965", "level": "", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u7f34\u6b21", "notes": ""}, {"name": "\u6c47\u6e90\u519c\u4e1a\u751f\u6001\u56ed(\u949f\u7965)", "lng": 112.588801, "lat": 31.167006, "category": "\u4f11\u95f2\u519c\u4e1a", "color": "#8BC34A", "price": 98, "city": "\u8346\u95e8", "area": "\u949f\u7965", "level": "A4", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u7f34\u6b21", "notes": ""}, {"name": "\u7eff\u6797\u5be8\u666f\u533a(\u4eac\u5c71)", "lng": 112.198843, "lat": 31.050219, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 80, "city": "\u8346\u95e8", "area": "\u4eac\u5c71", "level": "A4", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u7f34\u6b21", "notes": ""}, {"name": "\u7eff\u6797\u51b2\u7a7a\u6d1e(\u4eac\u5c71)", "lng": 113.108578, "lat": 31.344812, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 60, "city": "\u8346\u95e8", "area": "\u4eac\u5c71", "level": "A4", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u7f34\u6b21", "notes": ""}, {"name": "\u592a\u5b50\u5c71\u751f\u6001\u65c5\u6e38\u533a(\u4eac\u5c71)", "lng": 112.927692, "lat": 30.930543, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 100, "city": "\u8346\u95e8", "area": "\u4eac\u5c71", "level": "A4", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u7f34\u6b21", "notes": ""}, {"name": "\u82b1\u5349\u7530\u56ed(\u4eac\u5c71)", "lng": 112.927692, "lat": 30.930543, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 58, "city": "\u8346\u95e8", "area": "\u4eac\u5c71", "level": "A3", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u7f34\u6b21", "notes": ""}, {"name": "\u6e56\u5317\u5927\u6d2a\u5c71\u6708\u5706(\u4eac\u5c71)", "lng": 112.905201, "lat": 30.918771, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 38, "city": "\u8346\u95e8", "area": "\u4eac\u5c71", "level": "A2", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u7f34\u6b21", "notes": ""}, {"name": "\u5510\u4eba\u53e4\u8857\u533a(\u4eac\u5c71)", "lng": 113.121525, "lat": 31.017525, "category": "\u81ea\u7136\u666f\u89c2", "color": "#4CAF50", "price": 68, "city": "\u8346\u95e8", "area": "\u4eac\u5c71", "level": "", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u7f34\u6b21", "notes": ""}, {"name": "\u5cb3\u98de\u57ce\u6587\u5316\u4ea7\u4e1a(\u6c99\u6d0b)", "lng": 112.203544, "lat": 30.750764, "category": "\u4eba\u6587\u5386\u53f2", "color": "#FF9800", "price": 20, "city": "\u8346\u95e8", "area": "\u6c99\u6d0b", "level": "A2", "passes": ["\u6e56\u5317\u65c5\u6e38\u60e0\u6c11\u5361_300\u5143"], "usage": "\u4e0d\u7f34\u6b21", "notes": ""}];
+const cityCoords = {"\u6b66\u6c49": [114.305, 30.593], "\u9ec4\u5188": [114.873, 30.447], "\u9102\u5dde": [114.894, 30.388], "\u5b5d\u611f": [113.917, 30.926], "\u54b8\u5b81": [114.302, 29.841], "\u9ec4\u77f3": [115.038, 30.22], "\u8944\u9633": [112.122, 32.042], "\u5b9c\u660c": [111.286, 30.7], "\u8346\u5dde": [112.183, 30.335], "\u8346\u95e8": [112.199, 31.035], "\u968f\u5dde": [113.373, 31.69], "\u5341\u5830": [110.779, 32.645], "\u6069\u65bd": [109.487, 30.283], "\u4ed9\u6843": [113.444, 30.365], "\u5929\u95e8": [113.166, 30.653], "\u6f5c\u6c5f": [112.897, 30.414], "\u795e\u519c\u67b6": [110.671, 31.744], "\u957f\u6c99": [112.983, 28.193], "\u5357\u660c": [115.858, 28.683], "\u5408\u80a5": [117.227, 31.821], "\u5cb3\u9633": [113.128, 29.357], "\u4e5d\u6c5f": [115.98, 29.712], "\u5b89\u5e86": [117.053, 30.531], "\u9ec4\u5c71": [118.337, 29.711], "\u682a\u6d32": [113.134, 27.827], "\u6e58\u6f6d": [112.944, 27.829], "\u629a\u5dde": [116.358, 27.947], "\u5b9c\u6625": [114.417, 27.801], "\u9e70\u6f6d": [117.033, 28.238]};
+const selectedCityCenter = ["\u8346\u95e8"];
+const filterPasses = [];
+const filterCities = [];
+const filterCats = [];
+
+function initMap() {
+    window._amap = new AMap.Map('container', {
+        zoom: 10,
+        center: [114.305, 30.593],
+    });
+    // Alias for convenience
+    const map = window._amap;
+
+    // Single reusable InfoWindow
+    const infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -10)});
+
+    // Build legend
+    const legendEl = document.getElementById('legend');
+    const categories = [...new Set(markersData.map(m => m.category))];
+    legendEl.innerHTML = '<div style="font-weight:bold;margin-bottom:6px;">景点类型</div>' +
+        categories.map(cat => {
+            const color = markersData.find(m => m.category === cat)?.color || '#999';
+            return `<div class="legend-item"><div class="legend-dot" style="background:${color}"></div>${cat}</div>`;
+        }).join('');
+
+    // Filter markers
+    function filteredMarkers() {
+        return markersData.filter(m => {
+            if (filterPasses.length > 0 && !m.passes.some(p => filterPasses.some(fp => p.includes(fp)))) return false;
+            if (filterCities.length > 0 && !filterCities.includes(m.city)) return false;
+            if (filterCats.length > 0 && !filterCats.includes(m.category)) return false;
+            return true;
+        });
+    }
+
+    // Dimmed marker content: small gray dot
+    const dimmedContent = '<div style="width:8px;height:8px;border-radius:50%;background:#bbb;opacity:0.4;border:1px solid #999;"></div>';
+
+    // Create markers directly on map (no clustering)
+    let currentMarkers = [];
+    function renderMarkers() {
+        // Remove old markers
+        map.remove(currentMarkers);
+        currentMarkers = [];
+
+        const filtered = filteredMarkers();
+        const hasFilter = filterPasses.length > 0 || filterCities.length > 0 || filterCats.length > 0;
+        const filteredNames = new Set(filtered.map(m => m.name));
+
+        for (let i = 0; i < markersData.length; i++) {
+            const m = markersData[i];
+            const isMatch = !hasFilter || filteredNames.has(m.name);
+
+            const markerOpts = {
+                position: [m.lng, m.lat],
+                extData: m,
+            };
+            if (!isMatch) {
+                markerOpts.content = dimmedContent;
+                markerOpts.offset = new AMap.Pixel(-4, -4);
+            }
+
+            const marker = new AMap.Marker(markerOpts);
+
+            // Add name label above matching markers when filters are active
+            if (isMatch && hasFilter) {
+                marker.setLabel({
+                    content: `<div style="background:#fff;padding:1px 5px;border-radius:3px;font-size:11px;white-space:nowrap;border:1px solid #ddd;box-shadow:0 1px 3px rgba(0,0,0,0.15)">${m.name}</div>`,
+                    direction: 'top',
+                });
+            }
+
+            // Compute index for coord correction UI (use original index in markersData)
+            const idx = i;
+            marker.on('click', function(e) {
+                const d = e.target.getExtData();
+                const passesHtml = d.passes.length > 0
+                    ? '<div class="info-row"><span class="info-label">包含年卡:</span> ' + d.passes.join('、') + '</div>'
+                    : '';
+                const content = `
+                    <div class="info-title">${d.name}</div>
+                    <div class="info-row"><span class="info-label">城市:</span> ${d.city} ${d.area}</div>
+                    <div class="info-row"><span class="info-label">类型:</span> ${d.category}</div>
+                    <div class="info-row"><span class="info-label">票价:</span> ￥${d.price}</div>
+                    <div class="info-row"><span class="info-label">等级:</span> ${d.level || '未评级'}</div>
+                    ${d.usage ? `<div class="info-row"><span class="info-label">使用:</span> ${d.usage}</div>` : ''}
+                    ${passesHtml}
+                    <div style="margin-top:8px;border-top:1px solid #eee;padding-top:6px;">
+                        <button onclick="window.addToTrip('${d.name}',${idx})"
+                            style="background:none;border:1px solid #4caf50;border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer;color:#4caf50;margin-right:6px;">
+                            &#10133; 添加到行程
+                        </button>
+                        <button onclick="window.loadReviews('${d.name}',${idx})"
+                            style="background:none;border:1px solid #1a73e8;border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer;color:#1a73e8;margin-right:6px;">
+                            &#11088; 查看评价
+                        </button>
+                        <button onclick="document.getElementById('coordSearch_${idx}').style.display='block';this.style.display='none';"
+                            style="background:none;border:1px solid #ddd;border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer;color:#666;">
+                            &#128205; 坐标有误？纠正
+                        </button>
+                        <div id="reviews_${idx}" style="display:none;margin-bottom:8px;max-height:200px;overflow-y:auto;"></div>
+                        <div id="coordSearch_${idx}" style="display:none;">
+                            <div style="display:flex;gap:4px;margin-bottom:4px;">
+                                <input type="text" id="coordInput_${idx}" placeholder="搜索地点..." value="${d.name} ${d.city}"
+                                    style="flex:1;font-size:12px;padding:4px 6px;border:1px solid #ddd;border-radius:4px;"
+                                    onkeydown="if(event.key==='Enter')window.correctCoord('${d.name}',${idx})">
+                                <button onclick="window.correctCoord('${d.name}',${idx})"
+                                    style="background:#1a73e8;color:#fff;border:none;border-radius:4px;padding:4px 10px;font-size:12px;cursor:pointer;">
+                                    搜索
+                                </button>
+                            </div>
+                            <div id="coordResults_${idx}"></div>
+                        </div>
+                    </div>
+                `;
+                infoWindow.setContent(content);
+                infoWindow.open(map, e.target.getPosition());
+                window.parent.postMessage({type: 'marker_click', name: d.name}, '*');
+            });
+            currentMarkers.push(marker);
+        }
+        map.add(currentMarkers);
+
+        const citySet = new Set(filtered.map(m => m.city));
+        const filterLabel = hasFilter ? `筛选结果 ` : '';
+        document.getElementById('statsBar').innerHTML =
+            `${filterLabel}<b>${filtered.length}</b> / ${markersData.length} 个景点 · <b>${citySet.size}</b> 个城市`;
+        console.log('rendered', filtered.length, 'markers');
+
+        // Auto-center: single city selected → zoom to that city
+        if (filtered.length === 0) {
+            // no matches, show all
+            if (currentMarkers.length > 0) map.setFitView(currentMarkers);
+            return;
+        }
+        if (hasFilter && currentMarkers.length > 0) {
+            // zoom to fit matching markers
+            map.setFitView(currentMarkers.filter(mk => {
+                const d = mk.getExtData();
+                return filteredNames.has(d.name);
+            }));
+        }
+        if (selectedCityCenter.length === 1) {
+            const city = selectedCityCenter[0];
+            if (cityCoords[city]) {
+                map.setCenter(cityCoords[city]);
+                map.setZoom(11);
+            } else if (currentMarkers.length > 0) {
+                map.setFitView(currentMarkers);
+            }
+        }
+    }
+
+    renderMarkers();
+
+    // Listen for filter updates from parent
+    window.addEventListener('message', function(e) {
+        if (e.data.type === 'update_filters') {
+            filterPasses.length = 0;
+            filterCities.length = 0;
+            filterCats.length = 0;
+            (e.data.passes || []).forEach(p => filterPasses.push(p));
+            (e.data.cities || []).forEach(c => filterCities.push(c));
+            (e.data.categories || []).forEach(c => filterCats.push(c));
+            renderMarkers();
+        }
+        // Receive coordinate correction results from Streamlit
+        if (e.data.type === 'coord_updated') {
+            const name = e.data.name;
+            const newLng = e.data.lng;
+            const newLat = e.data.lat;
+            // Update markersData in place
+            for (let i = 0; i < markersData.length; i++) {
+                if (markersData[i].name === name) {
+                    markersData[i].lng = newLng;
+                    markersData[i].lat = newLat;
+                    break;
+                }
+            }
+            renderMarkers();
+            infoWindow.close();
+        }
+    });
+
+    // Coordinate correction: search and update
+    // Uses backend API (no PlaceSearch plugin needed)
+    window.correctCoord = function(name, idx) {
+        const input = document.getElementById('coordInput_' + idx);
+        const resultsDiv = document.getElementById('coordResults_' + idx);
+        if (!input || !resultsDiv) return;
+
+        const query = input.value.trim();
+        if (!query) return;
+
+        resultsDiv.innerHTML = '<div style="color:#999;font-size:12px;">搜索中...</div>';
+
+        fetch('/api/search_poi?query=' + encodeURIComponent(query))
+            .then(r => r.json())
+            .then(data => {
+                if (!data.pois || data.pois.length === 0) {
+                    resultsDiv.innerHTML = '<div style="color:#999;font-size:12px;">未找到结果</div>';
+                    return;
+                }
+                let html = '';
+                for (const p of data.pois) {
+                    const addr = p.address || p.name;
+                    html += `<div class="coord-result" data-lng="${p.lng}" data-lat="${p.lat}" data-name="${p.name}"
+                        style="padding:8px;margin:4px 0;background:#f5f5f5;border-radius:4px;cursor:pointer;font-size:12px;border:1px solid #ddd;"
+                        onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f5f5f5'">
+                        <div style="font-weight:bold;">${p.name}</div>
+                        <div style="color:#666;font-size:11px;">${addr}</div>
+                        <div style="color:#999;font-size:11px;">(${p.lng.toFixed(4)}, ${p.lat.toFixed(4)})</div>
+                    </div>`;
+                }
+                resultsDiv.innerHTML = html;
+
+                // Click to select
+                resultsDiv.querySelectorAll('.coord-result').forEach(el => {
+                    el.onclick = function() {
+                        const newLng = parseFloat(this.dataset.lng);
+                        const newLat = parseFloat(this.dataset.lat);
+                        const spotName = this.dataset.name;
+                        // Update marker on map
+                        for (let i = 0; i < currentMarkers.length; i++) {
+                            const data = currentMarkers[i].getExtData();
+                            if (data.name === name) {
+                                currentMarkers[i].setPosition([newLng, newLat]);
+                                break;
+                            }
+                        }
+                        // Save via API
+                        fetch('/api/save_coord', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({name: name, lng: newLng, lat: newLat})
+                        }).then(r => r.json()).then(resp => {
+                            if (resp.ok) {
+                                resultsDiv.innerHTML = `<div style="color:#4caf50;font-size:12px;">✓ 已更新: ${spotName} (${newLng.toFixed(4)}, ${newLat.toFixed(4)})</div>`;
+                            } else {
+                                resultsDiv.innerHTML = `<div style="color:#f44336;font-size:12px;">保存失败: ${resp.error}</div>`;
+                            }
+                        }).catch(err => {
+                            resultsDiv.innerHTML = `<div style="color:#f44336;font-size:12px;">保存失败: ${err.message}</div>`;
+                        });
+                    };
+                });
+            })
+            .catch(err => {
+                resultsDiv.innerHTML = `<div style="color:#f44336;font-size:12px;">搜索失败: ${err.message}</div>`;
+            });
+    };
+
+    // Load and display reviews
+    window.loadReviews = function(name, idx) {
+        const reviewsDiv = document.getElementById('reviews_' + idx);
+        if (!reviewsDiv) return;
+        if (reviewsDiv.style.display === 'block') {
+            reviewsDiv.style.display = 'none';
+            return;
+        }
+        reviewsDiv.style.display = 'block';
+        reviewsDiv.innerHTML = '<div style="color:#999;font-size:12px;">加载评价中...</div>';
+
+        // Find city from markersData
+        const m = markersData.find(x => x.name === name);
+        const city = m ? m.city : '';
+        fetch('/api/reviews?name=' + encodeURIComponent(name) + '&city=' + encodeURIComponent(city))
+            .then(r => r.json())
+            .then(data => {
+                if (!data.reviews || data.reviews.length === 0) {
+                    reviewsDiv.innerHTML = '<div style="color:#999;font-size:12px;padding:8px 0;">暂无真实评价</div>';
+                    return;
+                }
+                // Overall rating
+                let html = '<div style="margin-bottom:8px;">';
+                html += `<span style="font-size:16px;font-weight:bold;color:#ff9800;">${data.overall_rating.toFixed(1)}</span>`;
+                html += ' <span style="color:#999;font-size:11px;">/ 5.0 (' + data.review_count + '条评价)</span>';
+                // Source tags
+                if (data.sources_used) {
+                    data.sources_used.forEach(s => {
+                        const label = s === 'mafengwo' ? '马蜂窝' : s;
+                        html += ` <span style="background:#e3f2fd;color:#1565c0;padding:1px 5px;border-radius:3px;font-size:10px;">${label}</span>`;
+                    });
+                }
+                html += '</div>';
+
+                // Individual reviews
+                data.reviews.forEach(r => {
+                    const stars = '★'.repeat(Math.round(r.rating)) + '☆'.repeat(5 - Math.round(r.rating));
+                    html += `<div style="border-top:1px solid #eee;padding:6px 0;font-size:11px;">`;
+                    html += `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">`;
+                    html += `<span style="color:#ff9800;">${stars}</span>`;
+                    html += `<span style="color:#666;">${r.author || '匿名'} · ${r.date || ''}</span>`;
+                    html += `</div>`;
+                    const text = r.text.length > 100 ? r.text.substring(0, 100) + '...' : r.text;
+                    html += `<div style="color:#333;line-height:1.5;">${text}</div>`;
+                    html += `</div>`;
+                });
+                reviewsDiv.innerHTML = html;
+            })
+            .catch(err => {
+                reviewsDiv.innerHTML = `<div style="color:#f44336;font-size:12px;padding:8px 0;">加载失败: ${err.message}</div>`;
+            });
+    };
+
+    // Add spot to trip via map server API
+    window.addToTrip = function(name, idx) {
+        const m = markersData.find(x => x.name === name);
+        if (!m) return;
+        fetch('/api/add_to_trip', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(m)
+        }).then(r => r.json()).then(resp => {
+            const msg = resp.action === 'added' ? `已添加 ${name} 到行程` : `${name} 已在行程中`;
+            alert(msg);
+        }).catch(err => {
+            alert('添加失败: ' + err.message);
+        });
+    };
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMap);
+} else {
+    initMap();
+}
+</script>
+</body>
+</html>
