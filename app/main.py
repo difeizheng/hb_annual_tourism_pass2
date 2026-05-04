@@ -930,7 +930,16 @@ if (document.readyState === 'loading') {{
 # Ensure map server is running (must be called after Streamlit init)
 
 st.set_page_config(page_title="湖北旅游年卡知识图谱", page_icon="🗺️", layout="wide")
-st.title("湖北/武汉旅游年卡景点知识图谱系统")
+
+PAGE_TITLES = {
+    "🗺️ 地图探索": "地图探索",
+    "🎫 年卡对比": "年卡对比",
+    "💡 选卡助手": "选卡助手",
+    "🌿 季节指南": "季节指南",
+    "📊 数据总览": "数据总览",
+    "📝 行程规划": "行程规划",
+    "🧳 我的行程": "我的行程",
+}
 
 with st.spinner("加载中..."):
     raw_records, cleaned, alignment, graph_data = get_or_create_data()
@@ -986,7 +995,7 @@ page = st.sidebar.radio(
 # Page 1: Map Exploration (default)
 # ============================================================
 if page == "🗺️ 地图探索":
-    st.header("地图探索")
+    st.title("地图探索")
 
     # API Key setup
     web_key = st.secrets.get("amap_web_key", "")
@@ -1013,6 +1022,10 @@ if page == "🗺️ 地图探索":
         sel_city = st.sidebar.multiselect("城市", all_cities, default=[])
         sel_cat = st.sidebar.multiselect("类型", all_cats, default=[])
         sel_pass = st.sidebar.multiselect("年卡", all_passes, default=[])
+
+        has_active = sel_city or sel_cat or sel_pass
+        if has_active and st.sidebar.button("清除筛选", type="secondary", use_container_width=True):
+            st.rerun()
 
         # Apply filters
         filtered = spots_with_coords
@@ -1042,18 +1055,22 @@ if page == "🗺️ 地图探索":
 
         # Spot details (shows when marker clicked)
         st.subheader("景点详情")
-        search = st.text_input("搜索景点", placeholder="输入名称...")
+        c_search, c_btn = st.columns([3, 1])
+        with c_search:
+            search = st.text_input("搜索景点", placeholder="输入名称...")
         if search:
             matched = [s for s in filtered if search in s["name"]]
             if matched:
-                cols = st.columns(min(3, len(matched)))
-                for i, s in enumerate(matched[:3]):
-                    with cols[i]:
-                        st.markdown(f"**{s['name']}**")
-                        st.caption(f"{s['city']} {s['area']}")
-                        st.write(f"票价: ¥{s['price']}")
-                        st.write(f"类型: {s['category']}")
-                        st.write(f"等级: {s['level'] or '未评级'}")
+                st.caption(f"找到 {len(matched)} 个结果")
+                for s in matched[:6]:
+                    with st.container(border=True):
+                        cc1, cc2 = st.columns([3, 2])
+                        with cc1:
+                            st.markdown(f"**{s['name']}**")
+                            st.caption(f"{s['city']} {s['area']} · {s['category']} · {s['level'] or '未评级'}")
+                        with cc2:
+                            st.metric("票价", f"¥{s['price']}")
+                            st.caption(f"年卡: {', '.join(s['passes']) if s['passes'] else '无'}")
                         st.write(f"包含年卡: {', '.join(s['passes'])}")
 
 
@@ -1061,7 +1078,7 @@ if page == "🗺️ 地图探索":
 # Page 2: Pass Comparison (map-based)
 # ============================================================
 elif page == "🎫 年卡对比":
-    st.header("年卡对比（地图模式）")
+    st.title("年卡对比（地图模式）")
 
     passes_list = sorted(set(s["pass_name"] for s in cleaned))
     selected = st.multiselect("选择 2 张年卡对比", passes_list, default=passes_list[:2] if len(passes_list) >= 2 else passes_list)
@@ -1125,9 +1142,32 @@ elif page == "🎫 年卡对比":
 <style>
 * {{ margin: 0; padding: 0; box-sizing: border-box; }}
 html, body, #container {{ width: 100%; height: 650px; }}
-.amap-info-content {{ font-size: 13px; max-width: 260px; }}
-.info-title {{ font-weight: bold; font-size: 15px; margin-bottom: 6px; color: #333; }}
-.info-row {{ margin: 3px 0; color: #666; }}
+.amap-info-content {{ font-size: 13px; max-width: 300px; padding: 0 !important; }}
+.amap-info-content .amap-info-tip {{ display: none; }}
+.info-title {{ font-weight: 700; font-size: 16px; margin-bottom: 8px; color: #1a1a1a; line-height: 1.3; }}
+.info-row {{ margin: 4px 0; color: #555; font-size: 13px; }}
+.info-label {{ color: #888; margin-right: 4px; }}
+.info-badge {{
+    display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px;
+    background: #f0f4ff; color: #4a6cf7; margin-right: 4px; margin-bottom: 3px;
+}}
+.info-badge.green {{ background: #e8f5e9; color: #2e7d32; }}
+.info-badge.orange {{ background: #fff3e0; color: #e65100; }}
+.info-badge.purple {{ background: #f3e5f5; color: #7b1fa2; }}
+.info-price {{ font-size: 20px; font-weight: 700; color: #e53935; margin: 8px 0; }}
+.info-divider {{ border: 0; border-top: 1px solid #f0f0f0; margin: 10px 0; }}
+.info-actions {{ display: flex; gap: 8px; margin-top: 10px; }}
+.btn-action {{
+    flex: 1; border: none; border-radius: 8px; padding: 8px 6px; font-size: 12px;
+    font-weight: 600; cursor: pointer; transition: all 0.15s ease;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+}}
+.btn-action:active {{ transform: scale(0.96); }}
+.btn-add {{ background: linear-gradient(135deg, #4caf50, #2e7d32); color: #fff; }}
+.btn-review {{ background: linear-gradient(135deg, #1a73e8, #1565c0); color: #fff; }}
+.info-pass-tag {{ display: inline-block; background: #fce4ec; color: #c62828; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin: 2px 3px 2px 0; }}
+@keyframes toastIn {{ from {{ opacity: 0; transform: translateY(20px); }} to {{ opacity: 1; transform: translateY(0); }} }}
+@keyframes toastOut {{ from {{ opacity: 1; transform: translateY(0); }} to {{ opacity: 0; transform: translateY(20px); }} }}
 .legend {{
     position: fixed; bottom: 30px; right: 15px; z-index: 1000;
     background: rgba(255,255,255,0.92); border-radius: 8px; padding: 12px 14px;
@@ -1150,14 +1190,16 @@ html, body, #container {{ width: 100%; height: 650px; }}
 const markersData = {json.dumps(comparison_markers, ensure_ascii=True)};
 window._amap = new AMap.Map('container', {{zoom: 8, center: [114.305, 30.593]}});
 const map = window._amap;
-const infoWindow = new AMap.InfoWindow({{offset: new AMap.Pixel(0, -10)}});
+const infoWindow = new AMap.InfoWindow({{offset: new AMap.Pixel(0, -18), autoMove: true}});
+const _compP1 = "{p1.split('_')[0]}";
+const _compP2 = "{p2.split('_')[0]}";
 
 // Create colored marker content
 function makeMarkerContent(color) {{
     return `<div style="width:18px;height:18px;border-radius:50%;background:${{color}};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.35);"></div>`;
 }}
 
-const markerList = markersData.map(m => {{
+const markerList = markersData.map((m, i) => {{
     return new AMap.Marker({{
         position: [m.lng, m.lat],
         content: makeMarkerContent(m.color),
@@ -1165,18 +1207,137 @@ const markerList = markersData.map(m => {{
         extData: m,
     }});
 }});
-markerList.forEach(marker => {{
+markerList.forEach((marker, i) => {{
     marker.on('click', function(e) {{
         const d = e.target.getExtData();
-        const content = `<div class="info-title">${{d.name}}</div>
-                <div class="info-row">票价: ￥${{d.price}}</div>
-                <div class="info-row">类型: ${{d.category}}</div>`;
+        const inP1 = d.passes.some(p => p.includes(_compP1));
+        const inP2 = d.passes.some(p => p.includes(_compP2));
+        const compLabel = (inP1 && inP2) ? '<span class="info-badge purple">两张都含</span>'
+            : inP1 ? `<span class="info-badge">仅${{_compP1}}</span>`
+            : `<span class="info-badge orange">仅${{_compP2}}</span>`;
+        const passesHtml = d.passes.length > 0
+            ? d.passes.map(p => `<span class="info-pass-tag">${{p}}</span>`).join('')
+            : '';
+        const content = `
+            <div style="padding: 14px 16px;">
+                <div class="info-title">${{d.name}}</div>
+                <div style="margin-bottom:6px;"><span class="info-badge green">${{d.category}}</span> ${{compLabel}}</div>
+                <div class="info-row"><span class="info-label">位置</span>${{d.city}} ${{d.area}}</div>
+                <div class="info-price">￥${{d.price}}</div>
+                ${{passesHtml ? `
+                    <div style="margin-bottom:6px;">
+                        <div class="info-row" style="margin-bottom:4px;"><span class="info-label">包含年卡</span></div>
+                        <div>${{passesHtml}}</div>
+                    </div>
+                ` : ''}}
+                <hr class="info-divider">
+                <div class="info-actions">
+                    <button class="btn-action btn-add" onclick="window.addToTrip('${{d.name}}',${{i}})">
+                        &#10133; 添加到行程
+                    </button>
+                    <button class="btn-action btn-review" onclick="window.loadReviews('${{d.name}}',${{i}})">
+                        &#11088; 查看评价
+                    </button>
+                </div>
+                <div id="reviews_comp_${{i}}" style="display:none;margin-top:10px;max-height:200px;overflow-y:auto;border-top:1px solid #f0f0f0;padding-top:8px;"></div>
+            </div>
+        `;
         infoWindow.setContent(content);
         infoWindow.open(map, e.target.getPosition());
         window.parent.postMessage({{type: 'marker_click', name: d.name}}, '*');
     }});
     map.add(marker);
 }});
+
+window.addToTrip = function(name, idx) {{
+    const m = markersData.find(x => x.name === name);
+    if (!m) return;
+    fetch('/api/add_to_trip', {{
+        method: 'POST',
+        headers: {{'Content-Type': 'application/json'}},
+        body: JSON.stringify(m)
+    }}).then(r => r.json()).then(resp => {{
+        const type = resp.action === 'added' ? 'success' : 'info';
+        const icon = type === 'success' ? '&#10003;' : '&#8505;';
+        const msg = resp.action === 'added' ? `已添加 ${{name}} 到行程` : `${{name}} 已在行程中`;
+        window.showToast(icon + ' ' + msg, type);
+    }}).catch(err => {{
+        window.showToast('&#10007; 添加失败: ' + err.message, 'error');
+    }});
+}};
+
+window.loadReviews = function(name, idx) {{
+    const reviewsDiv = document.getElementById('reviews_comp_' + idx);
+    if (!reviewsDiv) return;
+    if (reviewsDiv.style.display === 'block') {{
+        reviewsDiv.style.display = 'none';
+        return;
+    }}
+    reviewsDiv.style.display = 'block';
+    reviewsDiv.innerHTML = '<div style="color:#999;font-size:12px;padding:8px 0;text-align:center;">加载评价中...</div>';
+    const m = markersData.find(x => x.name === name);
+    const city = m ? m.city : '';
+    fetch('/api/reviews?name=' + encodeURIComponent(name) + '&city=' + encodeURIComponent(city))
+        .then(r => r.json())
+        .then(data => {{
+            if (!data.reviews || data.reviews.length === 0) {{
+                reviewsDiv.innerHTML = '<div style="color:#999;font-size:13px;padding:12px 0;text-align:center;">暂无真实评价</div>';
+                return;
+            }}
+            let html = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">';
+            html += `<div style="font-size:28px;font-weight:800;color:#ff9800;">${{data.overall_rating.toFixed(1)}}</div>`;
+            html += '<div style="font-size:12px;color:#999;line-height:1.4;">/ 5.0<br>' + data.review_count + '条评价</div>';
+            if (data.sources_used) {{
+                data.sources_used.forEach(s => {{
+                    const label = s === 'mafengwo' ? '马蜂窝' : s === 'amap' ? '高德' : s;
+                    html += ` <span style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);color:#1565c0;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;">${{label}}</span>`;
+                }});
+            }}
+            html += '</div>';
+            data.reviews.forEach(r => {{
+                const stars = '★'.repeat(Math.round(r.rating)) + '☆'.repeat(5 - Math.round(r.rating));
+                html += `<div style="background:#fafafa;border-radius:8px;padding:10px;margin-bottom:8px;font-size:12px;">`;
+                html += `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">`;
+                html += `<span style="color:#ff9800;font-size:13px;">${{stars}}</span>`;
+                html += `<span style="color:#666;font-size:11px;">${{r.author || '匿名'}} · ${{r.date || ''}}</span>`;
+                html += `</div>`;
+                const text = r.text.length > 120 ? r.text.substring(0, 120) + '...' : r.text;
+                html += `<div style="color:#444;line-height:1.6;font-size:12px;">${{text}}</div>`;
+                html += `</div>`;
+            }});
+            reviewsDiv.innerHTML = html;
+        }})
+        .catch(err => {{
+            reviewsDiv.innerHTML = `<div style="color:#f44336;font-size:12px;padding:12px 0;text-align:center;">加载失败: ${{err.message}}</div>`;
+        }});
+}};
+
+window.showToast = function(message, type) {{
+    const existing = document.querySelectorAll('.trip-toast');
+    existing.forEach(el => el.remove());
+    const colors = {{
+        success: {{bg: '#e8f5e9', border: '#4caf50', text: '#2e7d32'}},
+        info: {{bg: '#e3f2fd', border: '#2196f3', text: '#1565c0'}},
+        error: {{bg: '#ffebee', border: '#f44336', text: '#c62828'}},
+    }};
+    const c = colors[type] || colors.info;
+    const toast = document.createElement('div');
+    toast.className = 'trip-toast';
+    toast.innerHTML = message;
+    toast.style.cssText = `
+        position: fixed; bottom: 80px; right: 20px; z-index: 9999;
+        background: ${{c.bg}}; border-left: 4px solid ${{c.border}};
+        color: ${{c.text}}; padding: 12px 20px; border-radius: 8px;
+        font-size: 13px; font-weight: 600; max-width: 320px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        animation: toastIn 0.3s ease-out forwards;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => {{
+        toast.style.animation = 'toastOut 0.3s ease-in forwards';
+        setTimeout(() => toast.remove(), 300);
+    }}, 2500);
+}};
 </script>
 </body>
 </html>"""
@@ -1197,7 +1358,7 @@ markerList.forEach(marker => {{
 # Page 3: Card Selector Assistant
 # ============================================================
 elif page == "💡 选卡助手":
-    st.header("选卡助手")
+    st.title("选卡助手")
 
     st.write("回答 3 个问题，帮你找到最合适的年卡。")
 
@@ -1262,13 +1423,14 @@ elif page == "💡 选卡助手":
 # Page 4: Seasonal Guide
 # ============================================================
 elif page == "🌿 季节指南":
-    st.header("季节游玩指南")
+    st.title("季节游玩指南")
 
     month = st.selectbox("选择月份", list(range(1, 13)), index=0)
     season_data = recommend_by_season_from_graph(graph_data, month)
 
-    season_emoji = {"winter": "❄️ 冬季", "spring": "🌸 春季", "summer": "☀️ 夏季", "autumn": "🍂 秋季"}
-    st.subheader(f"{season_emoji.get(season_data.get('season', ''), '')} — {len(season_data.get('spots', []))} 个推荐景点")
+    season_emoji = {"冬季": "❄️ 冬季", "春季": "🌸 春季", "夏季": "☀️ 夏季", "秋季": "🍂 秋季"}
+    season_label = season_emoji.get(season_data.get('season', ''), season_data.get('season', ''))
+    st.subheader(f"{season_label} — {len(season_data.get('spots', []))} 个推荐景点")
 
     if season_data.get("spots"):
         df = pd.DataFrame([{
@@ -1285,7 +1447,7 @@ elif page == "🌿 季节指南":
 # Page 5: Dashboard (simplified)
 # ============================================================
 elif page == "📊 数据总览":
-    st.header("数据总览")
+    st.title("数据总览")
 
     stats = graph_data.get("stats", {})
     col1, col2, col3, col4 = st.columns(4)
@@ -1337,7 +1499,7 @@ elif page == "📊 数据总览":
 # Page 6: Trip Planner (行程规划)
 # ============================================================
 elif page == "📝 行程规划":
-    st.header("行程规划")
+    st.title("行程规划")
 
     # Sub-navigation
     sub_page = st.radio(
@@ -1364,7 +1526,7 @@ elif page == "📝 行程规划":
         st.subheader("新建行程")
 
         # Step 1: Settings
-        c1, c2, c3, c4 = st.columns(4)
+        c1, c2, c3 = st.columns(3)
         with c1:
             all_cities_for_dep = sorted(set(s["city"] for s in spots_with_coords if s["city"]))
             dep_city = st.selectbox("出发城市", all_cities_for_dep, index=all_cities_for_dep.index("武汉") if "武汉" in all_cities_for_dep else 0)
@@ -1372,11 +1534,6 @@ elif page == "📝 行程规划":
             dep_date = st.date_input("出发日期")
         with c3:
             num_days = st.number_input("游玩天数", 1, 7, 3)
-        with c4:
-            st.write("")
-            st.write("")
-            if st.button("优化行程", type="primary", use_container_width=True):
-                pass  # trigger rerun via spot selection below
 
         st.session_state.departure_city = dep_city
         st.session_state.departure_date = str(dep_date)
@@ -1468,9 +1625,10 @@ elif page == "📝 行程规划":
 
             # Save button
             plan_name = st.text_input("行程名称", value=f"{plan['departure_city']}出发-{plan['num_days']}日游")
-            if st.button("保存行程"):
+            if st.button("保存行程", type="primary"):
                 plan_data = {
                     "name": plan_name,
+                    "trip_type": "trip_planner",
                     **plan,
                 }
                 plan_id = save_plan(plan_data)
@@ -1618,7 +1776,7 @@ elif page == "📝 行程规划":
 # Page 7: My Trip (我的行程)
 # ============================================================
 elif page == "🧳 我的行程":
-    st.header("我的行程")
+    st.title("我的行程")
 
     trip_origin = st.session_state.trip_origin
     all_cities_for_dep = sorted(set(s["city"] for s in spots_with_coords if s["city"]))
@@ -1862,6 +2020,3 @@ elif page == "🧳 我的行程":
                         os.remove(_REMOVE_FLAG)
                     except OSError:
                         pass
-
-            # Auto-rerun to catch removal signals (only when trip spots exist)
-            st.rerun(run_every=3)
