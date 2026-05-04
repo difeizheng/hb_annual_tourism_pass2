@@ -746,7 +746,29 @@ def _build_trip_map_html(
 <style>
 * {{ margin: 0; padding: 0; box-sizing: border-box; }}
 html, body, #container {{ width: 100%; height: {height}; }}
-.amap-info-content {{ font-size: 13px; max-width: 260px; }}
+.amap-info-content {{ font-size: 13px; max-width: 300px; padding: 0 !important; }}
+.amap-info-content .amap-info-tip {{ display: none; }}
+.info-title {{ font-weight: 700; font-size: 16px; margin-bottom: 8px; color: #1a1a1a; line-height: 1.3; }}
+.info-row {{ margin: 4px 0; color: #555; font-size: 13px; }}
+.info-label {{ color: #888; margin-right: 4px; }}
+.info-badge {{
+    display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px;
+    background: #f0f4ff; color: #4a6cf7; margin-right: 4px; margin-bottom: 3px;
+}}
+.info-badge.green {{ background: #e8f5e9; color: #2e7d32; }}
+.info-badge.orange {{ background: #fff3e0; color: #e65100; }}
+.info-price {{ font-size: 20px; font-weight: 700; color: #e53935; margin: 8px 0; }}
+.info-divider {{ border: 0; border-top: 1px solid #f0f0f0; margin: 10px 0; }}
+.info-actions {{ display: flex; gap: 8px; margin-top: 10px; }}
+.btn-action {{
+    flex: 1; border: none; border-radius: 8px; padding: 8px 6px; font-size: 12px;
+    font-weight: 600; cursor: pointer; transition: all 0.15s ease;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+}}
+.btn-action:active {{ transform: scale(0.96); }}
+.btn-remove {{ background: linear-gradient(135deg, #f44336, #c62828); color: #fff; }}
+.btn-remove:hover {{ background: linear-gradient(135deg, #e53935, #b71c1c); }}
+.info-pass-tag {{ display: inline-block; background: #fce4ec; color: #c62828; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin: 2px 3px 2px 0; }}
 .legend {{
     position: fixed; bottom: 30px; right: 15px; z-index: 1000;
     background: rgba(255,255,255,0.92); border-radius: 8px; padding: 12px 14px;
@@ -790,15 +812,29 @@ function initTripMap() {{
         }});
         marker.on('click', function(e) {{
             const d = e.target.getExtData();
+            const catBadge = d.category ? `<span class="info-badge">${{d.category}}</span>` : '';
+            const levelBadge = d.level ? `<span class="info-badge green">${{d.level}}</span>` : '';
+            const passesHtml = (d.passes && d.passes.length > 0) ?
+                d.passes.map(p => `<span class="info-pass-tag">${{p}}</span>`).join('') : '';
             infoWindow.setContent(`
-                <div style="font-weight:bold;font-size:14px;">${{i + 1}}. ${{d.name}}</div>
-                <div style="color:#666;font-size:12px;">${{d.city}} ${{d.area || ''}}</div>
-                <div style="color:#666;font-size:12px;">类型: ${{d.category}} | 票价: ￥${{d.price}}</div>
-                <button onclick="window.removeFromTrip('${{d.name}}')"
-                    style="margin-top:6px;background:#f44336;color:#fff;border:none;border-radius:4px;
-                    padding:3px 10px;font-size:11px;cursor:pointer;">
-                    移除
-                </button>
+                <div style="padding: 14px 16px;">
+                    <div class="info-title">${{d.name}}</div>
+                    <div style="margin-bottom:6px;">${{catBadge}} ${{levelBadge}}</div>
+                    <div class="info-row"><span class="info-label">位置</span>${{d.city}} ${{d.area || ''}}</div>
+                    <div class="info-price">￥${{d.price}}</div>
+                    ${{passesHtml ? `
+                        <div style="margin-bottom:6px;">
+                            <div class="info-row" style="margin-bottom:4px;"><span class="info-label">包含年卡</span></div>
+                            <div>${{passesHtml}}</div>
+                        </div>
+                    ` : ''}}
+                    <hr class="info-divider">
+                    <div class="info-actions">
+                        <button class="btn-action btn-remove" onclick="window.removeFromTrip('${{d.name}}')">
+                            &#10060; 从行程移除
+                        </button>
+                    </div>
+                </div>
             `);
             infoWindow.open(map, e.target.getPosition());
         }});
@@ -1070,8 +1106,8 @@ if page == "🗺️ 地图探索":
                             st.caption(f"{s['city']} {s['area']} · {s['category']} · {s['level'] or '未评级'}")
                         with cc2:
                             st.metric("票价", f"¥{s['price']}")
-                            st.caption(f"年卡: {', '.join(s['passes']) if s['passes'] else '无'}")
-                        st.write(f"包含年卡: {', '.join(s['passes'])}")
+                        if s["passes"]:
+                            st.caption(f"包含年卡: {', '.join(s['passes'])}")
 
 
 # ============================================================
@@ -1753,10 +1789,11 @@ elif page == "📝 行程规划":
         st.subheader("历史行程")
 
         saved_plans = list_plans()
-        if not saved_plans:
+        planner_plans = [p for p in saved_plans if p.get("trip_type") == "trip_planner"]
+        if not planner_plans:
             st.info("暂无保存的行程")
         else:
-            for p in saved_plans:
+            for p in planner_plans:
                 with st.expander(f"**{p['name']}** - {p['num_days']}天 · {p['total_spots']}个景点 · {p['updated_at'][:10]}"):
                     c1, c2, c3 = st.columns([4, 1, 1])
                     c1.write(f"出发日期: {p.get('departure_date', '未设置')}")
