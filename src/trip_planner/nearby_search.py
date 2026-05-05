@@ -4,6 +4,38 @@ from __future__ import annotations
 import requests
 
 
+def geocode_address(address: str, api_key: str, city: str = "") -> dict | None:
+    """Geocode an address string via AMap /v3/geocode/geo.
+
+    Returns {lng, lat, formatted_address} or None.
+    """
+    url = "https://restapi.amap.com/v3/geocode/geo"
+    params = {
+        "key": api_key,
+        "address": address,
+        "output": "json",
+    }
+    if city:
+        params["city"] = city
+
+    try:
+        resp = requests.get(url, params=params, timeout=10)
+        data = resp.json()
+    except Exception:
+        return None
+
+    if data.get("status") != "1" or not data.get("geocodes"):
+        return None
+
+    gc = data["geocodes"][0]
+    loc = gc.get("location", "").split(",")
+    return {
+        "lng": float(loc[0]) if loc[0] else 0,
+        "lat": float(loc[1]) if loc[1] else 0,
+        "formatted_address": gc.get("formatted_address", address),
+    }
+
+
 def search_nearby(
     lng: float,
     lat: float,
