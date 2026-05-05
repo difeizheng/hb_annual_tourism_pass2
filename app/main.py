@@ -1382,7 +1382,8 @@ elif page == "💡 选卡助手":
     for node in graph_data["nodes"]:
         if node.get("type") == "pass":
             price_m = re.search(r"(\d+)元", node.get("name", ""))
-            pass_info[node["name"]] = {
+            pass_info[node["id"]] = {
+                "name_key": node["name"],
                 "display": node["name"].split("_")[0],
                 "price": int(price_m.group(1)) if price_m else 0,
                 "spots": [], "cities": set(), "categories": set(),
@@ -1391,7 +1392,7 @@ elif page == "💡 选卡助手":
     # Assign spots to passes
     for edge in graph_data["edges"]:
         target = edge.get("target", "")
-        if target.startswith("pass:") and target in pass_info:
+        if target in pass_info:
             source = edge.get("source", "")
             for n in graph_data["nodes"]:
                 if n.get("id") == source and n.get("type") == "spot":
