@@ -188,8 +188,14 @@ def _build_and_reply(intent, ss, spots_with_coords, graph_data, cleaned, city_co
     dep = city_coords.get(dep_city) or {"name": dep_city, "lng": 114.30, "lat": 30.59}
 
     # 5. Build (coords from spot_coordinates.json — import_pass_spots lacks them)
+    # NOTE: app/chat_planner.py → parent.parent = project root; dirname×3 lands
+    # ABOVE the root and silently yields coords={} → pool loses all coordinates
+    # → plan_multi_city assigns 0 days (found via headless UI smoke).
     import os
-    coords_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "data", "spot_coordinates.json")
+    coords_path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "data", "spot_coordinates.json",
+    )
     coords = {}
     try:
         with open(coords_path, encoding="utf-8") as f:
@@ -222,7 +228,7 @@ def _build_and_reply(intent, ss, spots_with_coords, graph_data, cleaned, city_co
 def _render_trip_result(ss, city_coords):
     trip = ss.chat_trip
     from src.trip_planner.cost_estimator import estimate_trip_cost
-    from src.trip_planner.pass_coverage import calculate_pass_coverage
+    from src.trip_planner.pass_coverage import compute_pass_coverage
 
     # --- Day-by-day overview ---
     with st.expander("📅 每日行程", expanded=True):

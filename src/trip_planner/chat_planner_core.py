@@ -292,7 +292,11 @@ def build_trip_from_intent(
 
     # Merge name variants across passes/library (恩施大峡谷·七星寨 == 恩施大峡谷)
     pool, merged_dupes = _dedupe_spots(pool)
-    num_days = int(intent.get("num_days") or 3)
+    # LLM may return "14" / 14.0 — coerce robustly, default 3
+    try:
+        num_days = int(float(str(intent.get("num_days") or 3)))
+    except (TypeError, ValueError):
+        num_days = 3
 
     result = plan_multi_city(
         spots=pool,
