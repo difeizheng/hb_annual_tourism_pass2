@@ -8,3 +8,5 @@ venv/
 .env
 *.toml
 data/trip_plans/
+static/
+!static/.gitkeep

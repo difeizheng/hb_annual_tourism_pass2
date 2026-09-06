@@ -740,12 +740,40 @@ def _build_trip_map_html(
     hotels: list[dict] | None = None,
     restaurants: list[dict] | None = None,
     height: str = "600px",
+    day_plan: dict | None = None,
+    parkings: list[dict] | None = None,
 ) -> str:
-    """Generate AMap HTML for the trip page with numbered spots, route line, and amenities."""
+    """Generate AMap HTML for the trip page with numbered spots, route line, and amenities.
+
+    day_plan: optional multi_city_planner result. When present, enables the
+    day-toggle UI: spots/hotels/restaurants/parkings are grouped per day and
+    shown/hidden via top buttons. Default view = all days (hotels only extras).
+    """
     js_key = st.secrets.get("amap_js_key", "") if hasattr(st, "secrets") else ""
 
     hotels = hotels or []
     restaurants = restaurants or []
+    parkings = parkings or []
+
+    # --- Day grouping (for day-toggle UI) ---
+    day_groups = None
+    if day_plan and day_plan.get("days"):
+        # name -> day_num for each spot
+        spot_day = {}
+        for d in day_plan["days"]:
+            for s in d.get("spots", []):
+                spot_day[s.get("name", "")] = d["day_num"]
+        day_groups = spot_day
+
+    # Precompute JS data blobs (avoid brace-escaping issues inside f-string expressions)
+    spot_day_json = json.dumps(day_groups if day_groups is not None else {}, ensure_ascii=True)
+    if day_plan and day_plan.get("days"):
+        day_count = len(day_plan["days"])
+        day_meta = {d["day_num"]: {"city": d.get("city", ""), "transfer": bool(d.get("is_transfer_day"))} for d in day_plan["days"]}
+    else:
+        day_count = 0
+        day_meta = {}
+    day_meta_json = json.dumps(day_meta, ensure_ascii=True)
 
     html = f"""<!DOCTYPE html>
 <html>
@@ -800,11 +828,74 @@ const spotsData = {json.dumps(selected_spots, ensure_ascii=True)};
 const routePolyline = {json.dumps(route_polyline)};
 const hotelsData = {json.dumps(hotels, ensure_ascii=True)};
 const restaurantsData = {json.dumps(restaurants, ensure_ascii=True)};
+const parkingsData = {json.dumps(parkings, ensure_ascii=True)};
 const cityCoords = {json.dumps(CITY_COORDS)};
+const spotDayMap = {spot_day_json};
+const dayCount = {day_count};
+const dayMeta = {day_meta_json};
+
+// Grouped marker registry for day toggling
+let dayMarkers = {{}};  // day_num -> [markers]
+let spotMarkerById = {{}};  // name -> marker
+let allExtras = [];  // hotel/restaurant/parking markers (with _day attr)
 
 function initTripMap() {{
     const map = new AMap.Map('container', {{zoom: 10, center: [114.305, 30.593]}});
     const infoWindow = new AMap.InfoWindow({{offset: new AMap.Pixel(0, -10)}});
+
+    // Day toggle bar (only when day plan exists)
+    if (dayCount > 0) {{
+        const bar = document.createElement('div');
+        bar.style.cssText = 'position:absolute;top:10px;left:10px;z-index:1000;display:flex;gap:6px;flex-wrap:wrap;background:rgba(255,255,255,0.95);padding:8px 10px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.18);max-width:70%;';
+        const allBtn = mkBtn('全部', 0);
+        bar.appendChild(allBtn);
+        for (let d = 1; d <= dayCount; d++) {{
+            const meta = dayMeta[d] || {{}};
+            const label = meta.transfer ? `🚗 D${{d}} ${{meta.city}}` : `D${{d}} ${{meta.city}}`;
+            bar.appendChild(mkBtn(label, d));
+        }}
+        document.getElementById('container').appendChild(bar);
+    }}
+
+    function mkBtn(label, dayNum) {{
+        const b = document.createElement('button');
+        b.textContent = label;
+        b.style.cssText = 'border:1px solid #ddd;background:#fff;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;font-weight:600;';
+        if (dayNum === 0) b.style.cssText += 'background:#1a73e8;color:#fff;border-color:#1a73e8;';
+        b.onclick = () => {{
+            setActiveDay(dayNum);
+            [...bar.children].forEach(c => {{
+                c.style.background = '#fff'; c.style.color = '#333'; c.style.borderColor = '#ddd';
+            }});
+            b.style.background = '#1a73e8'; b.style.color = '#fff'; b.style.borderColor = '#1a73e8';
+        }};
+        return b;
+    }}
+
+    let currentDay = 0;
+    function setActiveDay(dayNum) {{
+        currentDay = dayNum;
+        // dayNum 0 = all days: spots always on; extras per rule
+        Object.values(spotMarkerById).forEach(m => m.show());
+        allExtras.forEach(m => {{
+            const ext = m.getExtData();
+            const d = ext._day || 0;
+            const isHotel = ext._type === 'hotel';
+            if (dayNum === 0) {{
+                // default view: hotels only
+                isHotel ? m.show() : m.hide();
+            }} else {{
+                (d === dayNum) ? m.show() : m.hide();
+            }}
+        }});
+        // Fit view to visible markers (filter by rule, not getVisible)
+        const visible = Object.values(spotMarkerById).concat(allExtras.filter(m => {{
+            const ext = m.getExtData();
+            if (dayNum === 0) return ext._type === 'hotel';
+            return (ext._day || 0) === dayNum;
+        }}));
+        if (visible.length > 0) map.setFitView(visible);
+    }}
 
     // Numbered spot markers
     const markers = [];
@@ -824,10 +915,12 @@ function initTripMap() {{
             const levelBadge = d.level ? `<span class="info-badge green">${{d.level}}</span>` : '';
             const passesHtml = (d.passes && d.passes.length > 0) ?
                 d.passes.map(p => `<span class="info-pass-tag">${{p}}</span>`).join('') : '';
+            const dayInfo = spotDayMap[d.name] ? `<div class="info-row"><span class="info-label">天数</span>第 ${{spotDayMap[d.name]}} 天</div>` : '';
             infoWindow.setContent(`
                 <div style="padding: 14px 16px;">
                     <div class="info-title">${{d.name}}</div>
                     <div style="margin-bottom:6px;">${{catBadge}} ${{levelBadge}}</div>
+                    <div style="margin-bottom:6px;">${{dayInfo}}</div>
                     <div class="info-row"><span class="info-label">位置</span>${{d.city}} ${{d.area || ''}}</div>
                     <div class="info-price">￥${{d.price}}</div>
                     ${{passesHtml ? `
@@ -847,6 +940,7 @@ function initTripMap() {{
             infoWindow.open(map, e.target.getPosition());
         }});
         markers.push(marker);
+        spotMarkerById[s.name] = marker;
     }});
     map.add(markers);
 
@@ -891,18 +985,19 @@ function initTripMap() {{
             position: [h.lng, h.lat],
             content: content,
             offset: new AMap.Pixel(-7, -7),
-            extData: {{...h, _type: 'hotel'}},
+            extData: {{...h, _type: 'hotel', _day: h.day_num || 0}},
         }});
         marker.on('click', function(e) {{
             const d = e.target.getExtData();
             infoWindow.setContent(`
                 <div style="font-weight:bold;">&#127976; ${{d.name}}</div>
                 <div style="color:#666;font-size:12px;">${{d.address || ''}}</div>
-                <div style="color:#999;font-size:11px;">距离: ${{d.distance}}m</div>
+                <div style="color:#999;font-size:11px;">距离质心: ${{d.distance}}m · 住 ${{d.nights || '?'}} 晚</div>
             `);
             infoWindow.open(map, e.target.getPosition());
         }});
         hotelMarkers.push(marker);
+        allExtras.push(marker);
     }});
     map.add(hotelMarkers);
 
@@ -914,7 +1009,7 @@ function initTripMap() {{
             position: [r.lng, r.lat],
             content: content,
             offset: new AMap.Pixel(-7, -7),
-            extData: {{...r, _type: 'restaurant'}},
+            extData: {{...r, _type: 'restaurant', _day: r.day_num || 0}},
         }});
         marker.on('click', function(e) {{
             const d = e.target.getExtData();
@@ -926,11 +1021,41 @@ function initTripMap() {{
             infoWindow.open(map, e.target.getPosition());
         }});
         restMarkers.push(marker);
+        allExtras.push(marker);
     }});
     map.add(restMarkers);
 
+    // Parking markers
+    const parkMarkers = [];
+    parkingsData.forEach(p => {{
+        const content = '<div style="width:14px;height:14px;border-radius:3px;background:#9C27B0;color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:bold;border:1px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.3);">P</div>';
+        const marker = new AMap.Marker({{
+            position: [p.lng, p.lat],
+            content: content,
+            offset: new AMap.Pixel(-7, -7),
+            extData: {{...p, _type: 'parking', _day: p.day_num || 0}},
+        }});
+        marker.on('click', function(e) {{
+            const d = e.target.getExtData();
+            infoWindow.setContent(`
+                <div style="font-weight:bold;">🅿️ ${{d.name}}</div>
+                <div style="color:#666;font-size:12px;">${{d.address || ''}}</div>
+                <div style="color:#999;font-size:11px;">距 ${{d.spot_name || ''}}: ${{d.distance}}m</div>
+            `);
+            infoWindow.open(map, e.target.getPosition());
+        }});
+        parkMarkers.push(marker);
+        allExtras.push(marker);
+    }});
+    map.add(parkMarkers);
+
+    // Initial visibility: if day plan exists, apply default (hotels only)
+    if (dayCount > 0) {{
+        setActiveDay(0);
+    }}
+
     // Auto-fit
-    const allMarkers = markers.concat(hotelMarkers, restMarkers);
+    const allMarkers = markers.concat(hotelMarkers, restMarkers, parkMarkers);
     if (allMarkers.length > 0) {{
         map.setFitView(allMarkers);
     }}
