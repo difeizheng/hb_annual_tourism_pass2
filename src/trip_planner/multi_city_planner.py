@@ -3,7 +3,8 @@
 Sits ABOVE the existing time_aware_assigner. Flow:
   1. Determine city visit order (LLM may suggest, or nearest-chain from departure)
   2. Allocate days per city (weighted by spot pool size + travel cost)
-  3. Per city, reuse assign_spots_with_duration for intra-city assignment
+  3. Per city: pre-select spots by value to fit total capacity (prevents overflow),
+     then reuse assign_spots_with_duration for intra-city assignment
   4. Insert transfer days between distant cities when needed
 
 Single-city input degrades gracefully to the existing assigner output shape.
@@ -13,6 +14,7 @@ from __future__ import annotations
 
 from src.trip_planner.route_optimizer import haversine_distance
 from src.trip_planner.time_aware_assigner import assign_spots_with_duration
+from src.trip_planner.play_duration import estimate_play_duration
 
 # --- Tuning constants -------------------------------------------------------
 MIN_DAYS_PER_CITY = 1
@@ -119,6 +121,65 @@ def _transfer_km(a: dict, b: dict) -> float:
     )
 
 
+def _select_spots_for_capacity(
+    city_spots: list[dict],
+    travel_month: int,
+    days: int = 1,
+    per_day: float = 8.0,
+    first_day_capacity: float | None = None,
+) -> tuple[list[dict], list[dict]]:
+    """Pre-select spots by seasonal score × duration value to fit daily bins.
+
+    First-fit-decreasing over `days` bins. Transfer days only reduce the FIRST
+    bin (morning drive); later days run at full `per_day`.
+    Returns (selected, leftover).
+    """
+    from src.seasonal_recommender import calculate_seasonal_score
+
+    enriched = []
+    for s in city_spots:
+        score, _reason = calculate_seasonal_score(s, _month_to_season(travel_month))
+        hours = estimate_play_duration(
+            category=s.get("category", ""),
+            sub_category=s.get("sub_category", ""),
+            level=s.get("level", ""),
+            price=s.get("price", 0),
+        )
+        enriched.append({**s, "_play_hours": hours, "_seasonal_score": score})
+
+    # value = seasonal score per hour of budget spent; long+good spots first
+    enriched.sort(
+        key=lambda s: (-(s["_seasonal_score"] * s["_play_hours"]), -s["_play_hours"])
+    )
+
+    n = max(days, 1)
+    limits = [per_day] * n
+    if first_day_capacity is not None:
+        limits[0] = first_day_capacity
+    used = [0.0] * n
+
+    selected: list[dict] = []
+    leftover: list[dict] = []
+    for s in enriched:
+        h = s["_play_hours"]
+        if h > per_day:
+            leftover.append(s)  # single spot longer than a whole day — skip
+            continue
+        for i in range(n):
+            if used[i] + h <= limits[i]:
+                used[i] += h
+                selected.append(s)
+                break
+        else:
+            leftover.append(s)
+    return selected, leftover
+
+
+def _month_to_season(month: int) -> str:
+    from src.seasonal_recommender import MONTH_TO_SEASON
+    return MONTH_TO_SEASON.get(month, "spring")
+
+
 def plan_multi_city(
     spots: list[dict],
     departure: dict,
@@ -152,9 +213,21 @@ def plan_multi_city(
     if num_days <= 0:
         num_days = 1
 
+    # Drop spots without usable coords — they'd crash distance math downstream.
+    # Keep them listed so the UI can mention them as "无坐标，未纳入行程".
+    usable, no_coords = [], []
+    for s in spots:
+        try:
+            if s.get("lng") is not None and s.get("lat") is not None and float(s["lng"]) and float(s["lat"]):
+                usable.append(s)
+            else:
+                no_coords.append(s)
+        except (TypeError, ValueError):
+            no_coords.append(s)
+
     # Group by city (preserve spots lacking coords in their city bucket)
     by_city: dict[str, list[dict]] = {}
-    for s in spots:
+    for s in usable:
         by_city.setdefault(s.get("city", "其他"), []).append(s)
 
     order = order_cities(by_city, departure, suggested_order=city_order)
@@ -183,15 +256,28 @@ def plan_multi_city(
             ) > TRANSFER_DISTANCE_KM
         )
 
-        # Reduced capacity on transfer days (morning drive eats the day)
-        capacity = daily_capacity - (TRANSFER_HOUR_LOSS if needs_transfer and days_here > 1 else 0.0)
+        # Transfer-in morning eats the FIRST day only; later days run full.
+        first_cap = (daily_capacity - TRANSFER_HOUR_LOSS) if needs_transfer else None
+
+        # Pre-select by value into per-day bins — the assigner's overflow
+        # fallback would otherwise cram everything in regardless of capacity.
+        city_spots_sel, leftover = _select_spots_for_capacity(
+            city_spots, travel_month,
+            days=days_here, per_day=daily_capacity,
+            first_day_capacity=first_cap,
+        )
+        unassigned_all.extend(
+            f"{s.get('name', s.get('spot_name', '未知景点'))}（容量不足，未排入）"
+            for s in leftover
+        )
 
         result = assign_spots_with_duration(
-            spots=city_spots,
+            spots=city_spots_sel,
             departure=departure,
             num_days=days_here,
             travel_month=travel_month,
-            daily_capacity=capacity,
+            daily_capacity=daily_capacity,
+            first_day_capacity=first_cap,
         )
         warnings_all.extend(result.get("seasonal_warnings", []))
         unassigned_all.extend(result.get("unassigned", []))
@@ -207,6 +293,12 @@ def plan_multi_city(
 
         prev_city_centroid = cen
         prev_city_name = city
+
+    if no_coords:
+        unassigned_all.extend(
+            f"{s.get('name', s.get('spot_name', '未知景点'))}（无坐标，未纳入行程）"
+            for s in no_coords
+        )
 
     return {
         "city_order": order,

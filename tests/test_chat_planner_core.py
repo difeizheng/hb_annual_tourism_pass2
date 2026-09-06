@@ -76,3 +76,68 @@ class TestValidateIntent:
     def test_all_covered(self):
         spots = [_spot("A", "宜昌", 111.3, 30.7)]
         assert validate_intent_against_pool({"cities": ["宜昌"]}, spots) == []
+
+
+class TestDedupeVariants:
+    def test_name_variants_merged(self):
+        from src.trip_planner.chat_planner_core import _dedupe_spots
+        spots = [
+            {"name": "恩施大峡谷", "city": "恩施", "lng": 109.5, "lat": 30.3},
+            {"name": "恩施大峡谷·七星寨", "city": "恩施", "lng": 109.51, "lat": 30.31},
+            {"name": "三峡大瀑布", "city": "宜昌", "lng": 111.3, "lat": 30.7},
+            {"name": "三峡大瀑布(夷陵区)", "city": "宜昌", "lng": 111.31, "lat": 30.71},
+            {"name": "腾龙洞", "city": "恩施", "lng": 109.4, "lat": 30.3},
+        ]
+        uniq, dropped = _dedupe_spots(spots)
+        assert len(uniq) == 3
+        assert len(dropped) == 2
+        assert any("七星寨" in d for d in dropped)
+
+    def test_dedupe_in_full_pipeline(self):
+        # same attraction under two names must NOT occupy two days
+        intent = {"cities": ["恩施"], "num_days": 4}
+        spots = (
+            [_spot(f"恩施大峡谷{'·七星寨' if i else ''}", "恩施", 109.5, 30.3, 6.5) for i in range(2)]
+            + [_spot("腾龙洞", "恩施", 109.4, 30.3, 6.0)]
+        )
+        result = build_trip_from_intent(intent, spots, WUHAN)
+        names = [s["name"] for d in result["days"] for s in d["spots"]]
+        # variant should appear at most once
+        from src.trip_planner.chat_planner_core import _normalize_name
+        norm = [_normalize_name(n) for n in names]
+        assert len(norm) == len(set(norm))
+
+    def test_normalize_name(self):
+        from src.trip_planner.chat_planner_core import _normalize_name
+        assert _normalize_name("三峡大瀑布（夷陵区）") == "三峡大瀑布"
+        assert _normalize_name("恩施大峡谷·七星寨") == "恩施大峡谷"
+        assert _normalize_name("黄鹤楼公园") == "黄鹤楼公园"
+
+
+class TestDedupeKeySuffix:
+    def test_suffix_words_stripped(self):
+        from src.trip_planner.chat_planner_core import _dedupe_key
+        assert _dedupe_key("腾龙洞景区") == _dedupe_key("腾龙洞")
+        # 1-char fuzzy variants (神龙溪 vs 神农溪) are NOT auto-merged — too risky
+        # (清江方山 vs 清江画廊 also differ by 1 char but are distinct spots).
+        # The chat UI lets the user drop duplicates interactively instead.
+        assert _dedupe_key("黄鹤楼公园") == _dedupe_key("黄鹤楼")
+
+
+class TestPassResolution:
+    def test_wuhan_huimin_maps_to_province_card(self):
+        # 用户说"武汉惠民卡"指的常是湖北旅游惠民卡（地名前缀误导）
+        from src.trip_planner.chat_planner_core import resolve_pass_name
+        assert resolve_pass_name("武汉惠民卡") == "湖北旅游惠民卡_300元"
+        assert resolve_pass_name("惠民") == "湖北旅游惠民卡_300元"
+        assert resolve_pass_name("畅玩") == "湖北文旅畅玩卡_200元"
+        assert resolve_pass_name("江城卡") == "武汉文旅江城卡_150元"
+
+    def test_exact_canonical_name(self):
+        from src.trip_planner.chat_planner_core import resolve_pass_name
+        assert resolve_pass_name("湖北旅游年卡_300元") == "湖北旅游年卡_300元"
+
+    def test_unknown_returns_none(self):
+        from src.trip_planner.chat_planner_core import resolve_pass_name
+        assert resolve_pass_name("不存在的卡") is None
+        assert resolve_pass_name(None) is None

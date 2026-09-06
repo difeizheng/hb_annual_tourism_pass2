@@ -133,3 +133,62 @@ class TestPlanMultiCity:
         result = plan_multi_city([], WUHAN, num_days=3)
         assert result["days"] == []
         assert result["city_order"] == []
+
+
+class TestCoordRobustness:
+    DEP = {"name": "武汉", "lng": 114.305, "lat": 30.593}
+
+    def test_none_coords_dont_crash(self):
+        """Real-data regression: spots with lng/lat=None must not crash float()."""
+        spots = [
+            {"name": "A", "city": "宜昌", "lng": 111.3, "lat": 30.7, "_play_hours": 3.0},
+            {"name": "B", "city": "宜昌", "lng": None, "lat": None, "_play_hours": 3.0},
+            {"name": "C", "city": "宜昌", "lng": "abc", "lat": "def", "_play_hours": 3.0},
+        ]
+        r = plan_multi_city(spots, self.DEP, num_days=1)
+        # only usable spot scheduled
+        assert sum(len(d["spots"]) for d in r["days"]) == 1
+        assert any("无坐标" in u for u in r["unassigned"])
+
+    def test_none_coords_reported_not_silently_dropped(self):
+        spots = [
+            {"name": "好景点", "city": "宜昌", "lng": None, "lat": None},
+        ]
+        r = plan_multi_city(spots, self.DEP, num_days=1)
+        assert r["unassigned"] == ["好景点（无坐标，未纳入行程）"]
+
+
+class TestCapacityConservation:
+    """Real-data regression: 101-spot pool vs 14 days must NOT cram or starve."""
+
+    def _pool(self):
+        return (
+            [{"name": f"宜昌{i}", "city": "宜昌", "lng": 111.28 + i*0.02, "lat": 30.69, "_play_hours": 4.0} for i in range(12)]
+            + [{"name": f"恩施{i}", "city": "恩施", "lng": 109.49 + i*0.02, "lat": 30.27, "_play_hours": 4.0} for i in range(8)]
+        )
+
+    def test_no_day_exceeds_capacity_after_transfer_fix(self):
+        # 10 days, 宜昌→恩施 transfer: every day ≤ 8h, first 恩施 day ≤ 5h
+        r = plan_multi_city(self._pool(), {"name": "武汉", "lng": 114.305, "lat": 30.593}, num_days=10)
+        for d in r["days"]:
+            assert d["play_hours"] <= 8.0 + 0.01, f"D{d['day_num']} {d['city']} {d['play_hours']}h"
+
+    def test_first_day_of_transfer_city_gets_reduced_bin_not_all_days(self):
+        # after fix: only the transfer day's selection bin is reduced
+        r = plan_multi_city(self._pool(), {"name": "武汉", "lng": 114.305, "lat": 30.593}, num_days=10)
+        es_days = [d for d in r["days"] if d["city"] == "恩施"]
+        assert es_days, "恩施 must be scheduled"
+        first = es_days[0]
+        assert first["is_transfer_day"] is True
+        assert first["play_hours"] <= 5.0 + 0.01
+
+    def test_head_spots_not_starved(self):
+        # big attractions (6.5h) must still fit when transfer reduces day 1
+        pool = (
+            [{"name": f"宜昌{i}", "city": "宜昌", "lng": 111.28 + i*0.02, "lat": 30.69, "_play_hours": 4.0} for i in range(12)]
+            + [{"name": "恩施大峡谷", "city": "恩施", "lng": 109.5, "lat": 30.3, "_play_hours": 6.5},
+               {"name": "腾龙洞", "city": "恩施", "lng": 109.4, "lat": 30.3, "_play_hours": 6.5}]
+        )
+        r = plan_multi_city(pool, {"name": "武汉", "lng": 114.305, "lat": 30.593}, num_days=10)
+        scheduled = [s["name"] for d in r["days"] for s in d["spots"]]
+        assert "恩施大峡谷" in scheduled and "腾龙洞" in scheduled

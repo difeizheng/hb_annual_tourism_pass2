@@ -17,6 +17,7 @@ def assign_spots_with_duration(
     num_days: int,
     travel_month: int = 6,
     daily_capacity: float = DEFAULT_DAILY_CAPACITY,
+    first_day_capacity: float | None = None,
 ) -> dict:
     """Assign spots to days respecting play duration and seasonal availability.
 
@@ -25,14 +26,8 @@ def assign_spots_with_duration(
     2. Group by city
     3. Sort city groups by distance from departure
     4. Greedy fill into day buckets up to daily_capacity hours
+       (day 1 may have a lower limit when transferring in that morning)
     5. Sort each day's spots by proximity
-
-    Returns:
-        {
-            "days": [{spots, play_hours, city, travel_km}],
-            "seasonal_warnings": [{spot, score, reason}],
-            "unassigned": [spot_names],
-        }
     """
     if num_days <= 0:
         num_days = 1
@@ -91,18 +86,35 @@ def assign_spots_with_duration(
     # Step 5: Greedy fill into day buckets
     days: list[list[dict]] = [[] for _ in range(num_days)]
     day_hours: list[float] = [0.0] * num_days
+    day_limits: list[float] = [daily_capacity] * num_days
+    if first_day_capacity is not None:
+        day_limits[0] = first_day_capacity
 
     for group in city_groups:
         for spot in group:
             hours = spot["_play_hours"]
-            # Find day with most remaining capacity that can fit this spot
+            # Among days that can fit this spot, prefer geographic coherence:
+            # minimize distance to the day's existing spots (empty day → departure).
+            # Falls back to most-remaining-capacity when nothing fits exactly.
             best_day = None
-            best_remaining = -1
+            best_dist = float("inf")
             for d in range(num_days):
-                remaining = daily_capacity - day_hours[d]
-                if remaining >= hours and remaining > best_remaining:
-                    best_day = d
-                    best_remaining = remaining
+                remaining = day_limits[d] - day_hours[d]
+                if remaining >= hours:
+                    peers = days[d] or [departure]
+                    dist = sum(
+                        haversine_distance(
+                            float(s.get("lng", 0)), float(s.get("lat", 0)),
+                            float(spot.get("lng", 0)), float(spot.get("lat", 0)),
+                        )
+                        for s in peers
+                    ) / len(peers)
+                    if dist < best_dist:
+                        best_day = d
+                        best_dist = dist
+            if best_day is None:
+                # No day has enough capacity — put in the day with most remaining
+                best_day = max(range(num_days), key=lambda d: day_limits[d] - day_hours[d])
 
             if best_day is not None:
                 days[best_day].append(spot)

@@ -164,14 +164,19 @@ def _build_and_reply(intent, ss, spots_with_coords, graph_data, cleaned, city_co
     else:
         intent["_travel_month"] = date.today().month
 
-    # 2. Pass spots pool
-    pass_name = intent.get("pass_name") or ""
+    # 2. Pass spots pool (deterministic closed-set resolution, not LLM)
+    from src.trip_planner.chat_planner_core import resolve_pass_name
+    pass_canon = resolve_pass_name(intent.get("pass_name"))
     pool = []
-    if pass_name:
-        pool = import_pass_spots(pass_name, graph_data, cleaned)
+    if pass_canon:
+        pool = import_pass_spots(pass_canon, graph_data, cleaned)
     if not pool:
         pool = spots_with_coords
-        st.markdown("ℹ️ 未识别年卡，使用全部景点库。")
+        st.markdown(
+            f"ℹ️ 未识别年卡「{intent.get('pass_name') or ''}」，使用全部景点库。"
+        )
+    else:
+        st.markdown(f"🎫 已识别年卡：**{pass_canon}**（{len(pool)} 个景点）")
 
     # 3. Validate city coverage
     warnings = validate_intent_against_pool(intent, pool)
@@ -182,14 +187,27 @@ def _build_and_reply(intent, ss, spots_with_coords, graph_data, cleaned, city_co
     dep_city = intent.get("departure_city") or "武汉"
     dep = city_coords.get(dep_city) or {"name": dep_city, "lng": 114.30, "lat": 30.59}
 
-    # 5. Build
-    trip = build_trip_from_intent(intent, pool, dep)
+    # 5. Build (coords from spot_coordinates.json — import_pass_spots lacks them)
+    import os
+    coords_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "data", "spot_coordinates.json")
+    coords = {}
+    try:
+        with open(coords_path, encoding="utf-8") as f:
+            coords = json.load(f)
+    except Exception:
+        pass
+    trip = build_trip_from_intent(intent, pool, dep, coords=coords, all_spots=spots_with_coords)
     ss.chat_trip = trip
     ss.chat_stage = "plan_ready"
 
     # 6. Reply with summary
     meta = trip["intent_meta"]
     lines = ["✅ 行程已生成！", ""]
+    if meta.get("uncovered_cities"):
+        lines.append(
+            f"⚠️ 年卡不覆盖「{'、'.join(meta['uncovered_cities'])}」，"
+            f"已从全库选取该城景点（需自费购票）。"
+        )
     if holiday:
         lines.append(f"📅 **{holiday['note']}**")
     lines.append(f"🏠 出发：{meta['departure_city']} → {' → '.join(trip['city_order'])}")

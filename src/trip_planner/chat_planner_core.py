@@ -91,6 +91,53 @@ def parse_intent(user_text: str, secrets: dict | None) -> dict | None:
 _HOLIDAY_KEYWORDS = ["国庆", "中秋", "春节", "清明", "端午", "劳动节", "五一", "元旦"]
 
 
+# ---------------------------------------------------------------------------
+# Deterministic pass-name resolution (closed-set, no LLM guessing)
+# ---------------------------------------------------------------------------
+
+# Canonical pass list — keep in sync with knowledge_graph.json pass nodes
+PASS_ALIASES: dict[str, list[str]] = {
+    "湖北旅游惠民卡_300元": ["惠民", "惠民卡", "旅游惠民", "湖北惠民"],
+    "湖北旅游年卡_300元": ["年卡", "旅游年卡", "湖北年卡", "300年卡"],
+    "湖北旅游年票_200元": ["年票", "旅游年票", "200年票"],
+    "湖北文旅畅玩卡_200元": ["畅玩", "畅玩卡", "文旅畅玩"],
+    "湖北职工惠游年票_100元": ["职工", "职工惠游", "惠游年票", "工惠"],
+    "武汉惠游年票_120元": ["惠游", "惠游年票_120", "武汉惠游"],
+    "大武汉景区旅游年卡_200元": ["大武汉", "大武汉年卡"],
+    "武汉文旅江城卡_150元": ["江城", "江城卡", "文旅江城"],
+    "腾旅e卡_200元": ["腾旅", "e卡", "腾旅e"],
+    "长江中游一卡通_300元": ["一卡通", "长江中游", "中游一卡通"],
+}
+
+
+def resolve_pass_name(phrase: str | None) -> str | None:
+    """Deterministically map a user phrase to a canonical pass name.
+
+    Order: exact alias hit > longest common substring with canonical name.
+    Returns None when nothing matches well.
+    """
+    if not phrase:
+        return None
+    p = phrase.strip()
+    # 1. alias table
+    for canon, aliases in PASS_ALIASES.items():
+        if p in aliases:
+            return canon
+    # 2. substring: canonical name contains phrase (e.g. full name typed)
+    for canon in PASS_ALIASES:
+        if p in canon:
+            return canon
+    # 3. fuzzy: any alias contained in the phrase (longest alias wins)
+    best = None
+    best_len = 0
+    for canon, aliases in PASS_ALIASES.items():
+        for a in aliases:
+            if a and a in p and len(a) > best_len:
+                best = canon
+                best_len = len(a)
+    return best
+
+
 def resolve_holiday_dates(
     holiday_phrase: str | None,
     leave_days: int | None,
@@ -155,32 +202,97 @@ def resolve_holiday_dates(
 # Trip orchestration
 # ---------------------------------------------------------------------------
 
+def _normalize_name(name: str) -> str:
+    """Cut variant suffixes: '三峡大瀑布(夷陵区)' / '恩施大峡谷·七星寨' → main name."""
+    for sep in ("（", "(", "·"):
+        name = name.split(sep)[0]
+    return name.strip()
+
+
+# Generic trailing tokens that don't distinguish attractions: strip for dedupe key
+_SUFFIX_WORDS = ("景区", "风景区", "旅游区", "文化旅游区", "生态旅游区", "度假村", "公园", "森林公园", "小镇")
+
+
+def _dedupe_key(name: str) -> str:
+    """Stricter key: normalized name minus generic suffixes."""
+    base = _normalize_name(name)
+    changed = True
+    while changed:
+        changed = False
+        for w in sorted(_SUFFIX_WORDS, key=len, reverse=True):  # longest first
+            if base.endswith(w) and len(base) > len(w) + 1:
+                base = base[: -len(w)]
+                changed = True
+    return base
+
+
+def _dedupe_spots(spots: list[dict]) -> tuple[list[dict], list[str]]:
+    """Dedupe name variants of the same attraction (different passes name them differently).
+
+    Keeps the first occurrence (pass-covered entries come first in the pool);
+    later variants are reported so the UI can mention them.
+    """
+    seen: dict[str, dict] = {}
+    dropped: list[str] = []
+    for s in spots:
+        key = _dedupe_key(s.get("name") or s.get("spot_name", ""))
+        if not key:
+            continue
+        if key in seen:
+            dropped.append(f"{s.get('name', '')}（与 {seen[key].get('name', '')} 同一景点，已合并）")
+        else:
+            seen[key] = s
+    return list(seen.values()), dropped
+
+
 def build_trip_from_intent(
     intent: dict,
     pass_spots: list[dict],
     departure: dict,
+    coords: dict | None = None,
+    all_spots: list[dict] | None = None,
 ) -> dict:
     """Run the deterministic pipeline from parsed intent.
 
     Args:
         intent: parse_intent output (validated)
         pass_spots: spots covered by the user's pass (import_pass_spots result)
-        departure: {name, lng, lat}
+    departure: {name, lng, lat}
+        coords: optional spot_coordinates.json dict, merged when given
+        all_spots: full library (with coords); used to honor city intent when
+            the pass doesn't cover requested cities (self-pay fallback)
 
     Returns:
         plan_multi_city result + meta (dates, style, etc.)
     """
+    if coords:
+        pass_spots = _attach_coordinates(pass_spots, coords)
     cities = intent.get("cities") or []
-    num_days = int(intent.get("num_days") or 3)
 
     # Filter pass spots to requested cities when specified
+    pool = pass_spots
+    uncovered: list[str] = []
     if cities:
-        pool = [s for s in pass_spots if s.get("city") in cities]
+        covered = {s.get("city", "") for s in pass_spots}
+        uncovered = [c for c in cities if c not in covered]
+        in_pass = [s for s in pass_spots if s.get("city") in cities]
+        # Honor city intent above pass coverage: pull those cities from full lib
+        if uncovered and all_spots:
+            from_full = [s for s in all_spots if s.get("city") in uncovered]
+            if from_full:
+                pool = in_pass + from_full
+                intent = {**intent, "_uncovered_cities": uncovered}
+            else:
+                pool = in_pass
+        else:
+            pool = in_pass
         # keep spots whose city is in list OR unlisted-but-nearby; fall back to all
         if not pool:
             pool = pass_spots
-    else:
-        pool = pass_spots
+
+    # Merge name variants across passes/library (恩施大峡谷·七星寨 == 恩施大峡谷)
+    pool, merged_dupes = _dedupe_spots(pool)
+    num_days = int(intent.get("num_days") or 3)
 
     result = plan_multi_city(
         spots=pool,
@@ -200,8 +312,19 @@ def build_trip_from_intent(
         "companions": intent.get("companions"),
         "budget": intent.get("budget"),
         "holiday": intent.get("_holiday_resolved"),
+        "uncovered_cities": intent.get("_uncovered_cities", []),
+        "merged_dupes": merged_dupes,
     }
     return result
+
+
+def _attach_coordinates(spots: list[dict], coords: dict) -> list[dict]:
+    """Merge lng/lat from spot_coordinates.json (import_pass_spots returns None)."""
+    for s in spots:
+        c = coords.get(s.get("name") or s.get("spot_name", ""))
+        if c and s.get("lng") is None:
+            s["lng"], s["lat"] = c.get("lng"), c.get("lat")
+    return spots
 
 
 def validate_intent_against_pool(intent: dict, pass_spots: list[dict]) -> list[str]:
