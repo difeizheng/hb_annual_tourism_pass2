@@ -271,15 +271,13 @@ def _render_trip_result(ss, city_coords):
 
     # --- Map ---
     with st.expander("🗺️ 行程地图（按天切换）", expanded=True):
-        web_key = st.secrets.get("amap_web_key", "") if hasattr(st, "secrets") else ""
         if st.button("渲染行程地图", key="chat_gen_map"):
             _render_map(ss)
 
         if ss.chat_trip and ss.chat_trip.get("map_url"):
-            st.components.v1.html(
-                open(ss.chat_trip["map_url"], encoding="utf-8").read(),
-                height=620,
-            )
+            # map_url 是 map_server 的 HTTP URL（static/ 由它服务），用 iframe 嵌入，
+            # 与主流程行程页一致；open(url) 会报 OSError [Errno 22]。
+            st.components.v1.iframe(ss.chat_trip["map_url"], height=620)
 
     # --- Cost & save ---
     col1, col2 = st.columns(2)
