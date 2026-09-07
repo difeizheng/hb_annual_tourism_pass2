@@ -3086,7 +3086,9 @@ elif page == "📝 行程规划":
             with c2:
                 travel_month = st.selectbox("出行月份", range(1, 13), index=month - 1)
             with c3:
-                num_days = st.number_input("天数", 1, 7, st.session_state.tp_num_days)
+                # 上限 30：对话规划可生成 10+ 天长线行程，加载后要能原样显示；
+                # 此前写死 7 导致 StreamlitValueAboveMaxError
+                num_days = st.number_input("天数", 1, 30, st.session_state.tp_num_days)
             with c4:
                 daily_cap = st.slider("每日时长(h)", 6.0, 12.0, 8.0, 0.5)
 
