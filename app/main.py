@@ -2901,6 +2901,34 @@ elif page == "📝 行程规划":
     tab1, tab2, tab3, tab4 = st.tabs(["智能选景", "行程编排", "路线优化", "行程总览"])
 
     # ============================================================
+    # 历史记录（页面顶层：不依赖 tp_cart，进页即可加载/删除）
+    # ============================================================
+    st.divider()
+    st.subheader("历史记录")
+    saved = list_plans()
+    # chat_planner_v1 的数据形状与 tp_* 同构（cart/assignment/departure_city/
+    # num_days/travel_month），一并纳入，可加载到行程规划页精调。
+    v2_plans = [p for p in saved if p.get("trip_type") in ("trip_planner_v2", "chat_planner_v1")]
+    if not v2_plans:
+        st.caption("暂无保存的行程")
+    else:
+        for p in v2_plans:
+            date_str = p["updated_at"][:10] if p.get("updated_at") else ""
+            with st.expander(f"**{p['name']}** · {p.get('num_days', 0)}天 · {p.get('total_spots', 0)}个景点 · {date_str}"):
+                if st.button("加载", key=f"tp_load_{p['id']}"):
+                    plan = load_plan(p["id"])
+                    if plan:
+                        st.session_state.tp_cart = plan.get("cart", [])
+                        st.session_state.tp_assignment = plan.get("assignment")
+                        st.session_state.tp_departure_city = plan.get("departure_city", "武汉")
+                        st.session_state.tp_num_days = plan.get("num_days", 3)
+                        st.session_state.tp_travel_month = plan.get("travel_month", 6)
+                        st.rerun()
+                if st.button("删除", key=f"tp_del_{p['id']}"):
+                    delete_plan(p["id"])
+                    st.rerun()
+
+    # ============================================================
     # Tab 1: 智能选景
     # ============================================================
     with tab1:
@@ -3331,31 +3359,6 @@ elif page == "📝 行程规划":
             if pass_savings > 0:
                 st.success(f"使用年卡预计节省 ¥{pass_savings:.0f}")
 
-            # Load saved plans
-            st.divider()
-            st.subheader("历史记录")
-            saved = list_plans()
-            # chat_planner_v1 的数据形状与 tp_* 同构（cart/assignment/departure_city/
-            # num_days/travel_month），一并纳入，可加载到行程规划页精调。
-            v2_plans = [p for p in saved if p.get("trip_type") in ("trip_planner_v2", "chat_planner_v1")]
-            if not v2_plans:
-                st.caption("暂无保存的行程")
-            else:
-                for p in v2_plans:
-                    date_str = p["updated_at"][:10] if p.get("updated_at") else ""
-                    with st.expander(f"**{p['name']}** · {p.get('num_days', 0)}天 · {p.get('total_spots', 0)}个景点 · {date_str}"):
-                        if st.button("加载", key=f"tp_load_{p['id']}"):
-                            plan = load_plan(p["id"])
-                            if plan:
-                                st.session_state.tp_cart = plan.get("cart", [])
-                                st.session_state.tp_assignment = plan.get("assignment")
-                                st.session_state.tp_departure_city = plan.get("departure_city", "武汉")
-                                st.session_state.tp_num_days = plan.get("num_days", 3)
-                                st.session_state.tp_travel_month = plan.get("travel_month", 6)
-                                st.rerun()
-                        if st.button("删除", key=f"tp_del_{p['id']}"):
-                            delete_plan(p["id"])
-                            st.rerun()
 
 
 # ============================================================
