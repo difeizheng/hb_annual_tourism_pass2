@@ -3335,7 +3335,9 @@ elif page == "📝 行程规划":
             st.divider()
             st.subheader("历史记录")
             saved = list_plans()
-            v2_plans = [p for p in saved if p.get("trip_type") == "trip_planner_v2"]
+            # chat_planner_v1 的数据形状与 tp_* 同构（cart/assignment/departure_city/
+            # num_days/travel_month），一并纳入，可加载到行程规划页精调。
+            v2_plans = [p for p in saved if p.get("trip_type") in ("trip_planner_v2", "chat_planner_v1")]
             if not v2_plans:
                 st.caption("暂无保存的行程")
             else:
@@ -3412,6 +3414,24 @@ elif page == "🧳 我的行程":
                             st.session_state.trip_nearby = {"hotels": [], "restaurants": []}
                             st.rerun()
                     if st.button("删除", key=f"del_trip_{p['id']}"):
+                        delete_plan(p["id"])
+                        st.rerun()
+
+        # Chat-planner saved trips: read-only list (view detail → trip planner page)
+        chat_plans = [p for p in saved if p.get("trip_type") == "chat_planner_v1"]
+        if chat_plans:
+            st.subheader("对话规划行程")
+            for p in chat_plans:
+                date_str = p["updated_at"][:10] if p.get("updated_at") else ""
+                with st.expander(f"**{p['name']}** · {p.get('num_days', 0)}天 · {p.get('total_spots', 0)}个景点 · {date_str}"):
+                    full = load_plan(p["id"])
+                    if full:
+                        for d in (full.get("assignment", {}) or {}).get("days", []):
+                            tag = " 🚗转场" if d.get("is_transfer_day") else ""
+                            names = " → ".join(s["name"] for s in d.get("spots", [])) or "（空闲日）"
+                            st.markdown(f"**D{d['day_num']} · {d.get('city','')}**{tag}")
+                            st.markdown(f"　{names}")
+                    if st.button("🗑 删除", key=f"del_chat_trip_{p['id']}"):
                         delete_plan(p["id"])
                         st.rerun()
 
