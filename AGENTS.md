@@ -14,7 +14,8 @@ Streamlit 单体应用（`app/main.py`，3400+ 行）：年卡对比选卡 + 景
 - **依赖无清单**：`.gitignore` 忽略 `*.toml`，所以没有 requirements.txt/pyproject.toml；新环境需手动装 streamlit、pandas、plotly、requests、openpyxl、pytest。不要试图提交 toml 文件，会被 ignore
 - **密钥走 Streamlit secrets**：`app/.streamlit/secrets.toml`（被 gitignore，本地文件），key 名：`amap_js_key`（前端渲染）、`amap_web_key`（地理编码/POI）、`llm_api_key`/`llm_api_base`（OpenAI 兼容接口，默认 dashscope）。读取统一用 `st.secrets`，勿改环境变量方案
 - **data/reviews/ 文件名是景点名 MD5**：`review_scraper.py:69`，按文件名找不到景点时需反向对照 MD5
-- **地图服务是独立子进程**：`app/map_server.py` 由 main.py 启动（避免 Streamlit 线程问题），日志在 `data/map_server.log`，调试地图先看这个日志
+- **地图服务是独立子进程**：`app/map_server.py` 由 main.py 启动（避免 Streamlit 线程问题），日志在 `data/map_server.log`，调试地图先看这个日志。
+  首选端口 18793 若被 Windows 排除端口区段（Hyper-V/WSL 动态保留，重启漂移）挡住会自动向后协商，实际端口写在 `data/map_server.port`，main.py 与 e2e 从该文件读取
 - LLM 客户端封装在 `src/trip_planner/llm_client.py`，OpenAI 兼容协议，新功能复用它而非直接 requests
 
 ## 禁区与坑

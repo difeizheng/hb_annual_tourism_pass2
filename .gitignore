@@ -10,3 +10,5 @@ venv/
 data/trip_plans/
 static/
 !static/.gitkeep
+data/map_server.port
+data/map_server.log

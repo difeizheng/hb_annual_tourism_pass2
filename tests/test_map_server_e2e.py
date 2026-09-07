@@ -19,7 +19,18 @@ import requests
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT_ROOT)
 
-MAP_PORT = 18793  # app/map_server.py hardcodes this port
+PREFERRED_PORT = 18793  # app/map_server.py 首选端口；被系统排除时自动向后协商
+PORT_FILE = os.path.join(PROJECT_ROOT, "data", "map_server.port")
+
+
+def _resolve_port():
+    """Actual port: data/map_server.port written by the server after binding,
+    falling back to the preferred port."""
+    try:
+        with open(PORT_FILE, "r", encoding="utf-8") as f:
+            return int(f.read().strip())
+    except (OSError, ValueError):
+        return PREFERRED_PORT
 
 
 def _wait_port(port, timeout=10):
@@ -52,20 +63,27 @@ FLAG_FILE = os.path.join(PROJECT_ROOT, "data", "_remove_spot_flag.json")
 def map_server():
     # Snapshot files the server may write, restore after the module.
     snapshots = {}
-    for f in (COORD_FILE, TRIP_FILE, FLAG_FILE):
+    for f in (COORD_FILE, TRIP_FILE, FLAG_FILE, PORT_FILE):
         if os.path.exists(f):
             with open(f, "r", encoding="utf-8") as fh:
                 snapshots[f] = fh.read()
     proc = None
-    if not _server_is_healthy(MAP_PORT):
+    if not _server_is_healthy(_resolve_port()):
         proc = subprocess.Popen(
             [sys.executable, MAP_SERVER_SCRIPT],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         )
-        if not _wait_port(MAP_PORT) or not _server_is_healthy(MAP_PORT):
+        # Bind may negotiate a different port (Windows reserved ranges);
+        # wait until the server answers on whatever port it picked.
+        deadline = time.time() + 10
+        while time.time() < deadline:
+            if _server_is_healthy(_resolve_port()):
+                break
+            time.sleep(0.2)
+        else:
             if proc:
                 proc.terminate()
-            pytest.skip("map server failed to start on 18793")
+            pytest.skip("map server failed to start")
     # If a healthy server already listens (the app starts one as a
     # subprocess), reuse it and leave it running after tests.
     yield
@@ -78,14 +96,14 @@ def map_server():
     for f, content in snapshots.items():
         with open(f, "w", encoding="utf-8") as fh:
             fh.write(content)
-    for f in (TRIP_FILE, FLAG_FILE):
+    for f in (TRIP_FILE, FLAG_FILE, PORT_FILE):
         if f not in snapshots and os.path.exists(f):
             os.remove(f)
 
 
 @pytest.fixture(scope="module")
 def port():
-    return MAP_PORT
+    return _resolve_port()
 
 
 def _base(port):

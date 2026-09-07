@@ -20,7 +20,10 @@ sys.path.insert(0, PROJECT_ROOT)
 
 STATIC_DIR = os.path.join(PROJECT_ROOT, 'static')
 DATA_DIR = os.path.join(PROJECT_ROOT, 'data')
-MAP_PORT = 18793
+# 首选端口。Windows 上 Hyper-V/WSL 动态端口排除区每次重启会漂移，可能把
+# 首选端口整个段保留掉（bind 报 WinError 10013），所以绑定失败时自动向后
+# 找可用端口，并把实际端口写入 data/map_server.port 供 main.py/e2e 读取。
+PREFERRED_PORT = 18793
 
 # Try to load API key from Streamlit secrets file
 SECRETS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.streamlit', 'secrets.toml')
@@ -292,10 +295,34 @@ class MapHandler(SimpleHTTPRequestHandler):
         pass
 
 
+def _bind_with_fallback():
+    """Try PREFERRED_PORT first, then scan outward. Windows reserved ranges
+    (Hyper-V/WSL dynamic exclusions) can span hundreds of contiguous ports,
+    so the scan window must be wide (observed: 400 ports in a row)."""
+    candidates = [PREFERRED_PORT]
+    candidates += list(range(PREFERRED_PORT + 1, PREFERRED_PORT + 500))
+    candidates += list(range(PREFERRED_PORT - 1, PREFERRED_PORT - 500, -1))
+    last_err = None
+    for port in candidates:
+        try:
+            return HTTPServer(("127.0.0.1", port), MapHandler), port
+        except OSError as e:
+            last_err = e
+            continue
+    return None, last_err
+
+
 def main():
     os.makedirs(STATIC_DIR, exist_ok=True)
-    server = HTTPServer(("127.0.0.1", MAP_PORT), MapHandler)
-    print(f"Map server started on http://127.0.0.1:{MAP_PORT}")
+    os.makedirs(DATA_DIR, exist_ok=True)
+    server, port = _bind_with_fallback()
+    if server is None:
+        print(f"ERROR: no bindable port in {PREFERRED_PORT}..{PREFERRED_PORT + 20}: {port}")
+        sys.exit(1)
+    port_file = os.path.join(DATA_DIR, 'map_server.port')
+    with open(port_file, 'w', encoding='utf-8') as f:
+        f.write(str(port))
+    print(f"Map server started on http://127.0.0.1:{port}")
     print(f"  Static dir: {STATIC_DIR}")
     print(f"  API key loaded: {'yes' if AMAP_WEB_KEY else 'no'}")
     try:

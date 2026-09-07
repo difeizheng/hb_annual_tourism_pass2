@@ -3,6 +3,7 @@
 import json
 import os
 import sys
+import time
 from collections import defaultdict
 import re
 import hashlib
@@ -71,7 +72,19 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW_DATA_DIR = os.path.join(PROJECT_ROOT, "raw_data")
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 STATIC_DIR = os.path.join(PROJECT_ROOT, "static")
-MAP_PORT = 18793
+DEFAULT_MAP_PORT = 18793
+
+
+def _resolve_map_port() -> int:
+    """map_server 绑定失败会自动向后换端口，并把实际端口写进
+    data/map_server.port；这里优先读文件，退回默认值。
+    """
+    port_file = os.path.join(DATA_DIR, "map_server.port")
+    try:
+        with open(port_file, "r", encoding="utf-8") as f:
+            return int(f.read().strip())
+    except (OSError, ValueError):
+        return DEFAULT_MAP_PORT
 os.makedirs(STATIC_DIR, exist_ok=True)
 
 # Start a local HTTP server for map HTML files (once per process)
@@ -82,14 +95,19 @@ def _start_map_server():
     log_path = os.path.join(PROJECT_ROOT, 'data', 'map_server.log')
     os.makedirs(os.path.dirname(log_path), exist_ok=True)
 
-    # Check if already running
+    # Check if already running: probe both the resolved port and the default,
+    # since a previously-negotiated server may sit on a non-default port.
     import socket
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    result = sock.connect_ex(('127.0.0.1', MAP_PORT))
-    sock.close()
-    if result == 0:
-        with open(log_path, 'a') as f:
-            f.write(f"[{pd.Timestamp.now()}] port already in use\n")
+
+    def _listening(port):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            return sock.connect_ex(('127.0.0.1', port)) == 0
+        finally:
+            sock.close()
+
+    resolved = _resolve_map_port()
+    if _listening(resolved) or _listening(DEFAULT_MAP_PORT):
         return
 
     map_server_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'map_server.py')
@@ -102,6 +120,13 @@ def _start_map_server():
     )
     with open(log_path, 'a') as f:
         f.write(f"[{pd.Timestamp.now()}] launched map_server subprocess\n")
+    # map_server picks its port after binding; wait for the port file so the
+    # first iframe URL points at the right port.
+    for _ in range(50):
+        if _resolve_map_port() != resolved or _listening(_resolve_map_port()):
+            break
+        time.sleep(0.2)
+
 
 _start_map_server()
 
@@ -731,7 +756,7 @@ def _save_map_html(html: str) -> str:
     fpath = os.path.join(STATIC_DIR, fname)
     with open(fpath, "w", encoding="utf-8") as f:
         f.write(html)
-    return f"http://127.0.0.1:{MAP_PORT}/{fname}"
+    return f"http://127.0.0.1:{_resolve_map_port()}/{fname}"
 
 
 def _build_trip_map_html(
