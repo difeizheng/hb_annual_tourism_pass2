@@ -825,7 +825,7 @@ if os.path.exists(_QUICK_TRIP_FILE):
 # ============================================================
 page = st.sidebar.radio(
     "导航",
-    ["🗺️ 地图探索", "🎫 年卡对比", "💡 选卡助手", "🌿 季节指南", "📊 数据总览", "📝 行程规划", "💬 对话规划", "🧳 我的行程", "🚗 周末出发"],
+    ["🗺️ 地图探索", "🎫 年卡对比", "💡 选卡助手", "🌿 季节指南", "📊 数据总览", "📝 行程规划", "💬 对话规划", "🧭 单日路线", "🧳 我的行程", "🚗 周末出发"],
     index=0,
 )
 
@@ -3643,6 +3643,10 @@ elif page == "💬 对话规划":
         for name, lnglat in CITY_COORDS.items()
     }
     render_chat_planner_page(spots_with_coords, graph_data, cleaned, dep_coords)
+
+elif page == "🧭 单日路线":
+    from app.day_route import render_day_route_page
+    render_day_route_page(spots_with_coords, graph_data, cleaned)
 
 
 # ============================================================
