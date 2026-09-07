@@ -11,6 +11,7 @@ from datetime import date
 import streamlit as st
 
 from src.trip_planner.chat_planner_core import (
+    IntentParseError,
     parse_intent,
     resolve_holiday_dates,
     build_trip_from_intent,
@@ -82,7 +83,11 @@ def _handle_user_message(prompt, ss, spots_with_coords, graph_data, cleaned, cit
     if ss.chat_stage == "clarify" and ss.clarify_pending and ss.chat_intent:
         field, question = ss.clarify_pending
         merged = f"{json.dumps(ss.chat_intent, ensure_ascii=False)}\n补充信息：{prompt}"
-        intent = parse_intent(merged, secrets) or ss.chat_intent
+        try:
+            intent = parse_intent(merged, secrets) or ss.chat_intent
+        except IntentParseError as e:
+            st.markdown(f"⚠️ 补充信息解析失败：{e}\n\n请稍后重试，或使用 📝 行程规划 页手动规划。")
+            return
         intent.setdefault("num_days", None)
         ss.chat_intent = intent
         ss.clarify_pending = None
@@ -100,7 +105,14 @@ def _handle_user_message(prompt, ss, spots_with_coords, graph_data, cleaned, cit
         return
 
     # Fresh intake
-    intent = parse_intent(prompt, secrets)
+    try:
+        intent = parse_intent(prompt, secrets)
+    except IntentParseError as e:
+        st.markdown(
+            f"⚠️ LLM 调用失败：{e}\n\n请稍后重试；若持续失败请检查 `llm_api_base/llm_api_key/llm_model` 配置，"
+            "或使用 📝 行程规划 页手动规划。"
+        )
+        return
     if intent is None:
         st.markdown(
             "⚠️ LLM 服务不可用（未配置 `llm_api_base/llm_api_key/llm_model` 于 secrets）。"

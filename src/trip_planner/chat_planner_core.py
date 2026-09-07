@@ -18,6 +18,8 @@ from datetime import date, timedelta
 
 import requests
 
+from src.trip_planner.llm_client import chat_completion
+
 from src.trip_planner.holidays import find_holiday_by_name, merge_off_blocks
 from src.trip_planner.multi_city_planner import plan_multi_city
 
@@ -47,28 +49,39 @@ INTENT_SYSTEM_PROMPT = """你是旅游行程规划的意图解析器。从用户
 - 仅输出 JSON，无其他文字"""
 
 
+class IntentParseError(RuntimeError):
+    """LLM configured but call/parse failed (network, timeout, HTTP, JSON)."""
+
+
+# Thinking models (qwen3.5-plus etc.) burn thousands of reasoning tokens
+# before answering; measured 86s vs 4s for intent parsing with thinking off.
+# Endpoints that reject the flag (HTTP 400) are retried without it.
+_LLM_TIMEOUT = 60
+
+
 def parse_intent(user_text: str, secrets: dict | None) -> dict | None:
-    """Call LLM to extract trip params. Returns None if LLM unavailable/fails."""
+    """Call LLM to extract trip params.
+
+    Returns None only when LLM is NOT configured (caller shows config hint).
+    Raises IntentParseError when configured but the call/parse fails, so the
+    UI can show the real reason instead of a misleading config message.
+    """
     base = secrets.get("llm_api_base", "") if secrets else ""
     key = secrets.get("llm_api_key", "") if secrets else ""
     model = secrets.get("llm_model", "") if secrets else ""
     if not (base and key and model):
         return None
+    body = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": INTENT_SYSTEM_PROMPT},
+            {"role": "user", "content": user_text},
+        ],
+        "max_tokens": 400,
+        "temperature": 0.1,
+    }
     try:
-        resp = requests.post(
-            f"{base.rstrip('/')}/chat/completions",
-            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-            json={
-                "model": model,
-                "messages": [
-                    {"role": "system", "content": INTENT_SYSTEM_PROMPT},
-                    {"role": "user", "content": user_text},
-                ],
-                "max_tokens": 400,
-                "temperature": 0.1,
-            },
-            timeout=20,
-        )
+        resp = chat_completion(base, key, body, _LLM_TIMEOUT)
         resp.raise_for_status()
         content = resp.json()["choices"][0]["message"]["content"].strip()
         if "```" in content:
@@ -79,9 +92,11 @@ def parse_intent(user_text: str, secrets: dict | None) -> dict | None:
         parsed = json.loads(content)
         if isinstance(parsed, dict):
             return parsed
-    except Exception:
-        return None
-    return None
+        raise IntentParseError("LLM returned non-object JSON: " + content[:80])
+    except IntentParseError:
+        raise
+    except Exception as e:
+        raise IntentParseError(f"LLM call failed: {type(e).__name__}: {e}") from e
 
 
 # ---------------------------------------------------------------------------

@@ -63,6 +63,22 @@ def _get_llm_config(secrets: dict | None) -> dict | None:
     return None
 
 
+def chat_completion(base: str, key: str, body: dict, timeout: float = 30):
+    """OpenAI-compatible POST /chat/completions with thinking disabled.
+
+    Thinking models (qwen3.5-plus etc.) burn thousands of reasoning tokens
+    first (measured 86s vs 4s); the flag is dropped on HTTP 400 for
+    endpoints that do not support it.
+    """
+    url = f"{base.rstrip('/')}/chat/completions"
+    headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
+    resp = requests.post(url, headers=headers,
+                         json={**body, "enable_thinking": False}, timeout=timeout)
+    if resp.status_code == 400:
+        resp = requests.post(url, headers=headers, json=body, timeout=timeout)
+    return resp
+
+
 def _llm_recommendation(
     name, city, category, level, price, notes, tags, area, cfg: dict
 ) -> SpotRecommendation:
@@ -82,10 +98,9 @@ def _llm_recommendation(
         "level": level, "price": price, "notes": notes, "tags": tags,
     }, ensure_ascii=False)
 
-    resp = requests.post(
-        f"{cfg['base']}/chat/completions",
-        headers={"Authorization": f"Bearer {cfg['key']}", "Content-Type": "application/json"},
-        json={
+    resp = chat_completion(
+        cfg["base"], cfg["key"],
+        {
             "model": cfg["model"],
             "messages": [
                 {"role": "system", "content": system_msg},
@@ -94,7 +109,7 @@ def _llm_recommendation(
             "max_tokens": 300,
             "temperature": 0.3,
         },
-        timeout=15,
+        timeout=30,
     )
     resp.raise_for_status()
     data = resp.json()
