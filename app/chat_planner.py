@@ -362,9 +362,7 @@ def _generate_amenities(ss):
 
 def _render_map(ss):
     """Build day-toggle map HTML via _build_trip_map_html and stash URL."""
-    import sys, os
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from app.main import _build_trip_map_html, _save_map_html
+    from app.map_html import _build_trip_map_html, _save_map_html
 
     trip = ss.chat_trip
     all_spots = [s for d in trip["days"] for s in d["spots"]]

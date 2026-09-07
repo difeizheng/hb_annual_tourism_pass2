@@ -24,4 +24,4 @@ Streamlit 单体应用（`app/main.py`，3400+ 行）：年卡对比选卡 + 景
 - `app/.streamlit/secrets.toml` 含真实 API key，绝不提交、不硬编码进源码
 - `.gitignore` 忽略 `*.txt`、`*.bat`、`data/trip_plans/`（运行时产物/本地笔记）；根目录的 `zdf.txt`、`_coord_check.txt` 是未跟踪的调研笔记，勿删
 - `data/` 下 json 均为管道生成物，改源码后重跑生成而非手改；`static/` 是地图前端产物
-- **chat_planner 页三处坑**（f238aac 修过，别回退）：① 从 `app/` 下文件取项目根用 `dirname(dirname(__file__))` 两级，三级会跳出根导致 spot_coordinates.json 读空 → 行程 0 天；② `pass_coverage` 的函数名是 `compute_pass_coverage`；③ `num_days` 可能是字符串，core 层已做 `int(float(str()))` 强转
+- **chat_planner 页三处坑**（f238aac 修过，别回退）：① 从 `app/` 下文件取项目根用 `dirname(dirname(__file__))` 两级，三级会跳出根导致 spot_coordinates.json 读空 → 行程 0 天；② `pass_coverage` 的函数名是 `compute_pass_coverage`；③ `num_days` 可能是字符串，core 层已做 `int(float(str()))` 强转；④ 页面代码**禁止 `from app.main import …`**——Streamlit 以 `__main__` 跑 main.py，二次 import 会整页重执行，报 StreamlitDuplicateElementId；共用函数放 `app/map_html.py`（地图 HTML 构建/落盘，自包含无 st 依赖）
