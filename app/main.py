@@ -3110,8 +3110,9 @@ elif page == "📝 行程规划":
             # Display assignment
             assignment = st.session_state.tp_assignment
             if assignment:
-                # Seasonal warnings banner
-                if assignment["seasonal_warnings"]:
+                # 兼容 chat_planner_v1 的 assignment（只有 days 键；
+                # tp_v2 的 assign_spots_with_duration 才带 seasonal_warnings）
+                if assignment.get("seasonal_warnings"):
                     st.warning("⚠️ 季节性提醒：")
                     for w in assignment["seasonal_warnings"]:
                         st.caption(f"❌ {w['spot_name']} — {w['reason']}")
