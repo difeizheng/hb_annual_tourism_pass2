@@ -211,8 +211,11 @@ function initTripMap() {{
     let currentDay = 0;
     function setActiveDay(dayNum) {{
         currentDay = dayNum;
-        // dayNum 0 = all days: spots always on; extras per rule
-        Object.values(spotMarkerById).forEach(m => m.show());
+        // dayNum 0 = all days; else only that day's spots (no-day spots stay)
+        Object.values(spotMarkerById).forEach(m => {{
+            if (dayNum === 0 || m._day === 0 || m._day === dayNum) m.show();
+            else m.hide();
+        }});
         allExtras.forEach(m => {{
             const ext = m.getExtData();
             const d = ext._day || 0;
@@ -230,7 +233,9 @@ function initTripMap() {{
             dayPolylines[dn].forEach(pl => on ? pl.show() : pl.hide());
         }});
         // Fit view to visible markers (filter by rule, not getVisible)
-        const visible = Object.values(spotMarkerById).concat(allExtras.filter(m => {{
+        const visible = Object.values(spotMarkerById).filter(m =>
+            dayNum === 0 || m._day === 0 || m._day === dayNum
+        ).concat(allExtras.filter(m => {{
             const ext = m.getExtData();
             if (dayNum === 0) return ext._type === 'hotel';
             return (ext._day || 0) === dayNum;
@@ -238,12 +243,17 @@ function initTripMap() {{
         if (visible.length > 0) map.setFitView(visible);
     }}
 
-    // Numbered spot markers
+    // Numbered spot markers (per-day numbering when day plan exists)
     const markers = [];
+    const dayNumCounters = {{}};
     spotsData.forEach((s, i) => {{
+        const dn = s.day_num || spotDayMap[s.name] || 0;
+        let mlabel;
+        if (dn > 0) {{ dayNumCounters[dn] = (dayNumCounters[dn] || 0) + 1; mlabel = dayNumCounters[dn]; }}
+        else {{ mlabel = i + 1; }}
         const content = `<div style="width:28px;height:28px;border-radius:50%;background:#1a73e8;color:#fff;
             display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:bold;
-            border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,0.3);">${{i + 1}}</div>`;
+            border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,0.3);">${{mlabel}}</div>`;
         const marker = new AMap.Marker({{
             position: [s.lng, s.lat],
             content: content,
@@ -256,7 +266,7 @@ function initTripMap() {{
             const levelBadge = d.level ? `<span class="info-badge green">${{d.level}}</span>` : '';
             const passesHtml = (d.passes && d.passes.length > 0) ?
                 d.passes.map(p => `<span class="info-pass-tag">${{p}}</span>`).join('') : '';
-            const dayInfo = spotDayMap[d.name] ? `<div class="info-row"><span class="info-label">天数</span>第 ${{spotDayMap[d.name]}} 天</div>` : '';
+            const dayInfo = dn ? `<div class="info-row"><span class="info-label">天数</span>第 ${{dn}} 天</div>` : '';
             const locHtml = d.city ? `<div class="info-row"><span class="info-label">位置</span>${{d.city}} ${{d.area || ''}}</div>` : '';
             const priceHtml = (d.price !== undefined && d.price !== null && d.price !== '') ? `<div class="info-price">￥${{d.price}}</div>` : '';
             const arriveHtml = d.arrive ? `<div class="info-row"><span class="info-label">到达</span>${{d.arrive}}</div>` : '';
@@ -289,7 +299,8 @@ function initTripMap() {{
             infoWindow.open(map, e.target.getPosition());
         }});
         markers.push(marker);
-        spotMarkerById[s.name] = marker;
+        marker._day = dn;
+        spotMarkerById[s.name + '#' + dn] = marker;
     }});
     map.add(markers);
 
