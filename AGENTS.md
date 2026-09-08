@@ -25,3 +25,4 @@ Streamlit 单体应用（`app/main.py`，3400+ 行）：年卡对比选卡 + 景
 - `.gitignore` 忽略 `*.txt`、`*.bat`、`data/trip_plans/`（运行时产物/本地笔记）；根目录的 `zdf.txt`、`_coord_check.txt` 是未跟踪的调研笔记，勿删
 - `data/` 下 json 均为管道生成物，改源码后重跑生成而非手改；`static/` 是地图前端产物
 - **chat_planner 页三处坑**（f238aac 修过，别回退）：① 从 `app/` 下文件取项目根用 `dirname(dirname(__file__))` 两级，三级会跳出根导致 spot_coordinates.json 读空 → 行程 0 天；② `pass_coverage` 的函数名是 `compute_pass_coverage`；③ `num_days` 可能是字符串，core 层已做 `int(float(str()))` 强转；④ 页面代码**禁止 `from app.main import …`**——Streamlit 以 `__main__` 跑 main.py，二次 import 会整页重执行，报 StreamlitDuplicateElementId；共用函数放 `app/map_html.py`（地图 HTML 构建/落盘，自包含无 st 依赖）
+- **无头冒烟容器 stub 陷阱**（行程导入页踩过，e7751cf）：`st.columns` 返回 MagicMock 元素时，容器内 `col.button()` 恒真值——同帧两个按钮全"被点击"（解析后立刻被清除分支抹掉 session），且无任何报错；容器必须真 stub（button 返回 False、selectbox 返回业务值）。另：单测 mock 掉 `chat_completion` 只验证解析逻辑，返回值形状（Response vs dict）与 secrets 读取路径必须留一次真实调用验收（e67eb75 两处真 bug 都是 mock 掩盖的）。详见知识库 `patterns/streamlit-无头UI冒烟固定套路.md`
