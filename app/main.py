@@ -3423,6 +3423,41 @@ elif page == "🧳 我的行程":
                         delete_plan(p["id"])
                         st.rerun()
 
+        # Imported itineraries: read-only day-by-day detail
+        imported_plans = [p for p in saved if p.get("trip_type") == "imported_itinerary"]
+        if imported_plans:
+            st.subheader("导入的行程")
+            for p in imported_plans:
+                date_str = p["updated_at"][:10] if p.get("updated_at") else ""
+                with st.expander(f"**{p['name']}** · {p.get('num_days', 0)}天 · {p.get('total_spots', 0)}个景点 · {date_str}"):
+                    full = load_plan(p["id"])
+                    if full:
+                        for d in full.get("days", []):
+                            rt = d.get("route")
+                            if rt:
+                                mins = int(rt.get("min", 0))
+                                rt_txt = "🚗 {:.0f}km / {}h{:02d}m 自 {}".format(
+                                    rt.get("km", 0), mins // 60, mins % 60,
+                                    rt.get("from", ""))
+                            else:
+                                rt_txt = "（当日无可定位站点）"
+                            st.markdown("**D{} · {}**　{}".format(
+                                d.get("day_num", ""), d.get("label", "") or "",
+                                rt_txt))
+                            for s in d.get("stops", []):
+                                flag = "⚠️未定位 " if s.get("_unresolved") else ""
+                                line = flag + "• " + s.get("name", "")
+                                if s.get("arrive"):
+                                    line += "　" + s["arrive"]
+                                if s.get("hours"):
+                                    line += "（{:g}h）".format(s["hours"])
+                                if s.get("note"):
+                                    line += "　备注：" + s["note"]
+                                st.markdown("　" + line)
+                    if st.button("🗑 删除", key=f"del_imp_trip_{p['id']}"):
+                        delete_plan(p["id"])
+                        st.rerun()
+
         # Chat-planner saved trips: read-only list (view detail → trip planner page)
         chat_plans = [p for p in saved if p.get("trip_type") == "chat_planner_v1"]
         if chat_plans:
