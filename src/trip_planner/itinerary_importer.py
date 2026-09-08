@@ -10,24 +10,41 @@ from __future__ import annotations
 
 import json
 import os
-import re
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 DATA_DIR = os.path.join(PROJECT_ROOT, 'data')
 CUSTOM_STOPS_FILE = os.path.join(DATA_DIR, 'custom_stops.json')
 
+CITY_COORDS = {
+    '武汉': [114.305, 30.593], '黄冈': [114.873, 30.447], '鄂州': [114.894, 30.388],
+    '孝感': [113.917, 30.926], '咸宁': [114.302, 29.841], '黄石': [115.038, 30.22],
+    '十堰': [110.797, 32.629], '宜昌': [111.286, 30.692], '襄阳': [112.122, 32.009],
+    '荆门': [112.204, 31.035], '荆州': [112.241, 30.332], '恩施': [109.488, 30.272],
+    '随州': [113.383, 31.691], '仙桃': [113.454, 30.365], '潜江': [112.897, 30.402],
+    '天门': [113.166, 30.665], '神农架': [110.676, 31.744],
+}
+
+# 常见旅游县级市/县（含在站名里时短路为县城坐标，防全国 POI 乱匹配）
+COUNTY_COORDS = {
+    '利川': [108.942, 30.291], '宣恩': [109.490, 29.990],
+    '建始': [109.722, 30.600], '巴东': [110.340, 31.040],
+    '鹤峰': [110.040, 29.890], '来凤': [109.390, 29.490],
+    '咸丰': [109.140, 29.860], '长阳': [111.200, 30.470],
+    '秭归': [110.984, 30.823],
+}
+
 
 def _extract_json_array(text):
-    start = text.find(chr(91))
-    end = text.rfind(chr(93))
+    start = text.find('[')
+    end = text.rfind(']')
     if start < 0 or end <= start:
         raise ValueError("no JSON array in LLM output")
-    return json.loads(text[start:end+1])
+    return json.loads(text[start:end + 1])
 
 
 PARSE_SYSTEM_PROMPT = (
-'    You are an itinerary text parser. Convert the pasted multi-day itinerary text into a JSON array. Each element: {day_num:int, date:str, label:str, transport:str, stops:[{name:str, arrive:str, hours:float, note:str}], hotel:str}. Rules: only structure what the user'
-'    wrote; never add, retime anything. MISSING TIME = empty string; hours default 0; note holds hints such as raincoat or reservation required; hotel location goes into the hotel field; output ONLY the JSON array, no prose.'
+    '    You are an itinerary text parser. Convert the pasted multi-day itinerary text into a JSON array. Each element: {day_num:int, date:str, label:str, transport:str, stops:[{name:str, arrive:str, hours:float, note:str}], hotel:str}. Rules: only structure what the user'
+    '    wrote; never add, retime anything. MISSING TIME = empty string; hours default 0; note holds hints such as raincoat or reservation required; hotel location goes into the hotel field; output ONLY the JSON array, no prose.'
 )
 
 
@@ -47,6 +64,12 @@ def _to_int(v, default):
 
 def parse_itinerary_text(text, secrets=None):
     """LLM-parse pasted itinerary into structured days (list of dicts)."""
+    if secrets is None:
+        try:
+            import streamlit as st
+            secrets = dict(st.secrets)
+        except Exception:
+            secrets = {}
     from src.trip_planner.llm_client import chat_completion, _get_llm_config
     cfg = _get_llm_config(secrets)
     if not cfg:
@@ -59,6 +82,8 @@ def parse_itinerary_text(text, secrets=None):
         ],
     }
     resp = chat_completion(cfg["base"], cfg["key"], body, timeout=120)
+    if hasattr(resp, "json"):
+        resp = resp.json()
     try:
         content = resp["choices"][0]["message"]["content"]
     except (KeyError, IndexError, TypeError):
@@ -103,14 +128,44 @@ def _load_custom_stops():
         return {}
 
 
-def _poi_search(name, web_key):
+# 中转型站名填充词：去掉城市名后只剩这些 → 当中转点用城市坐标
+WAYPOINT_FILLERS = ('出发', '休整', '返程', '返回', '抵达', '住宿', '集合',
+                    '县城', '市区')
+
+
+def _split_city_name(name):
+    """(coord, rest) if name mentions a city/county, else (None, name).
+
+    rest = name minus city name minus filler words; empty rest means
+    the stop is a waypoint (武汉出发/利川休整) not a searchable POI.
+    """
+    for table in (CITY_COORDS, COUNTY_COORDS):
+        for city, coord in table.items():
+            if city in name:
+                rest = name.replace(city, '')
+                for f in WAYPOINT_FILLERS:
+                    rest = rest.replace(f, '')
+                return {"lng": coord[0], "lat": coord[1]}, rest.strip()
+    return None, name
+
+
+def _poi_search(name, web_key, anchor=None):
+    """AMap text search for one stop name.
+
+    anchor: {lng,lat} nearby-city hint — biases the search by distance and
+    radius so generic names (博物馆/滨江公园) don't match another province.
+    """
     import requests
+    params = {"key": web_key, "keywords": name,
+              "output": "json", "pagesize": 1}
+    if anchor:
+        params["location"] = "%.6f,%.6f" % (anchor["lng"], anchor["lat"])
+        params["radius"] = "50000"
+        params["sortrule"] = "distance"
     try:
         resp = requests.get(
             "https://restapi.amap.com/v3/place/text",
-            params={"key": web_key, "keywords": name,
-                    "output": "json", "pagesize": 1},
-            timeout=10)
+            params=params, timeout=10)
         data = resp.json()
         if data.get("status") == "1" and data.get("pois"):
             p = data["pois"][0]
@@ -122,8 +177,14 @@ def _poi_search(name, web_key):
     return None
 
 
-def resolve_stop_coords(days, pass_pool, web_key):
+def resolve_stop_coords(days, pass_pool, web_key, prev_days=None):
     """Geocode stop names: pass pool -> custom stops -> AMap POI.
+
+    Two deterministic guards against wild POI matches:
+    1. stop name containing a Hubei city name -> use that city's coord
+       (武汉出发 / 恩施 / 利川休整 are waypoints, not searchable POIs);
+    2. with anchor (previous day's last resolved stop, or the day's own
+       earlier stops), POI search is biased within 50km of the anchor.
 
     Returns {name: {lng,lat,source}}; unresolved stops get
     stop["_unresolved"]=True (flagged in place, never dropped).
@@ -131,26 +192,50 @@ def resolve_stop_coords(days, pass_pool, web_key):
     coords = {}
     pool_by_name = {s["name"]: s for s in pass_pool}
     custom = _load_custom_stops()
+    anchor = None
+    if prev_days and prev_days[-1].get("stops"):
+        ps = prev_days[-1]["stops"][-1]
+        if ps.get("lng") and ps.get("lat"):
+            anchor = {"lng": ps["lng"], "lat": ps["lat"]}
     for day in days:
         for s in day["stops"]:
             name = s["name"]
             if name in coords:
+                anchor = coords[name]
                 continue
             hit = pool_by_name.get(name)
             if hit and hit.get("lng") and hit.get("lat"):
                 coords[name] = {"lng": float(hit["lng"]),
                                 "lat": float(hit["lat"]),
                                 "source": "pass"}
+                anchor = coords[name]
                 continue
             cs = custom.get(name)
             if cs and cs.get("lng") and cs.get("lat"):
                 coords[name] = {"lng": float(cs["lng"]),
                                 "lat": float(cs["lat"]),
                                 "source": "custom"}
+                anchor = coords[name]
                 continue
-            poi = _poi_search(name, web_key)
+            city_coord, rest = _split_city_name(name)
+            if city_coord and len(rest) < 2:
+                coords[name] = {**city_coord, "source": "city"}
+                anchor = coords[name]
+                continue
+            if city_coord:
+                # real POI whose name contains a city — try precise POI
+                # first (anchor-biased), city center as fallback
+                poi = _poi_search(name, web_key, anchor=anchor)
+                if poi:
+                    coords[name] = poi
+                else:
+                    coords[name] = {**city_coord, "source": "city"}
+                anchor = coords[name]
+                continue
+            poi = _poi_search(name, web_key, anchor=anchor)
             if poi:
                 coords[name] = poi
+                anchor = poi
             else:
                 s["_unresolved"] = True
     return coords

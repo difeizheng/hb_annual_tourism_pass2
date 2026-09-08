@@ -96,7 +96,7 @@ class TestResolve:
         days = self._days()
         poi = {"lng": 111.5, "lat": 30.9, "source": "poi"}
         with patch.object(ii, "_poi_search",
-                          side_effect=lambda n, k: poi if n == "神秘新景点" else None):
+                          side_effect=lambda n, k=None, **_: poi if n == "神秘新景点" else None):
             coords = ii.resolve_stop_coords(days, pool, "key")
         assert coords["神秘新景点"]["source"] == "poi"
         assert days[0]["stops"][1].get("_unresolved") is not True
@@ -158,3 +158,40 @@ class TestSave:
         assert saved["num_days"] == 1
         assert saved["total_spots"] == 2
         assert saved["departure_city"] == "武汉"
+
+
+class TestGeoGuards:
+    """Deterministic guards against wild POI matches."""
+
+    def test_city_in_name_uses_city_coord(self):
+        days = [{"day_num": 1, "stops": [{"name": "武汉出发"},
+                                         {"name": "利川休整"}]}]
+        calls = []
+
+        def fake_poi(name, key, anchor=None):
+            calls.append((name, anchor))
+            return {"lng": 1.0, "lat": 2.0, "source": "poi"}
+
+        with patch.object(ii, "_poi_search", side_effect=fake_poi):
+            coords = ii.resolve_stop_coords(days, [], "key")
+        assert coords["武汉出发"]["source"] == "city"
+        assert coords["利川休整"]["source"] == "city"
+        # no POI calls at all for city names
+        assert calls == []
+
+    def test_poi_search_gets_anchor_bias(self):
+        days = [{"day_num": 1, "stops": [{"name": "博物馆"}]}]
+        seen = {}
+
+        def fake_poi(name, key, anchor=None):
+            seen["anchor"] = anchor
+            return {"lng": 111.3, "lat": 30.7, "source": "poi"}
+
+        with patch.object(ii, "_poi_search", side_effect=fake_poi):
+            coords = ii.resolve_stop_coords(
+                days, [], "key",
+                prev_days=[{"day_num": 0,
+                            "stops": [{"name": "前站",
+                                       "lng": 111.286, "lat": 30.692}]}])
+        assert seen["anchor"] == {"lng": 111.286, "lat": 30.692}
+        assert coords["博物馆"]["source"] == "poi"
