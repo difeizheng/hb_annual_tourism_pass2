@@ -827,6 +827,7 @@ page = st.sidebar.radio(
     "导航",
     ["🗺️ 地图探索", "🎫 年卡对比", "💡 选卡助手", "🌿 季节指南", "📊 数据总览", "📝 行程规划", "💬 对话规划", "🧭 单日路线", "📥 行程导入", "🧳 我的行程", "🚗 周末出发"],
     index=0,
+    key="nav_page",
 )
 
 # ============================================================
@@ -3664,7 +3665,63 @@ elif page == "🧳 我的行程":
                                 if s.get("note"):
                                     line += "　备注：" + s["note"]
                                 st.markdown("　" + line)
-                    if st.button("🗑 删除", key=f"del_imp_trip_{p['id']}"):
+                    # ---- map rebuilt from stored coords: zero API calls ----
+                    if full:
+                        _imp_spots = []
+                        _imp_routes = {}
+                        _imp_dp = []
+                        _imp_has_xy = False
+                        for _d in full.get("days", []):
+                            _ds = []
+                            for _s in _d.get("stops", []):
+                                if _s.get("lng") and _s.get("lat"):
+                                    _imp_has_xy = True
+                                    _ms = dict(_s)
+                                    _ms["day_num"] = _d.get("day_num")
+                                    _ms["noRemove"] = True
+                                    _imp_spots.append(_ms)
+                                    _ds.append(_ms)
+                            _imp_routes[str(_d.get("day_num"))] = (
+                                _d.get("route") or {}).get("polyline", "")
+                            _imp_dp.append({
+                                "day_num": _d.get("day_num"),
+                                "city": _d.get("label") or _d.get("hotel") or "",
+                                "spots": _ds,
+                            })
+                        if _imp_has_xy:
+                            _imp_url = _save_map_html(_build_trip_map_html(
+                                _imp_spots, height="430px",
+                                day_plan={"days": _imp_dp},
+                                day_routes=_imp_routes))
+                            st.components.v1.iframe(_imp_url, height=450)
+                        else:
+                            st.caption("此行程未存坐标（旧版本保存）；点「✏️ 编辑」重新定位后即可上图")
+                    _c_ed, _c_de = st.columns(2)
+                    if _c_ed.button("✏️ 编辑", key=f"edit_imp_{p['id']}"):
+                        if full:
+                            from app.map_html import CITY_COORDS as _CC
+                            _xy = {}
+                            for _d in full.get("days", []):
+                                for _s in _d.get("stops", []):
+                                    if _s.get("lng") and _s.get("lat"):
+                                        _xy[_s["name"]] = {
+                                            "lng": _s["lng"], "lat": _s["lat"],
+                                            "source": _s.get("source", "stored")}
+                            st.session_state.ii_days = full.get("days", [])
+                            st.session_state.ii_coords = _xy or None
+                            st.session_state.ii_edit_plan_id = p["id"]
+                            st.session_state.ii_edit_name = full.get("name", "")
+                            st.session_state.ii_name = full.get("name", "")
+                            _dep = full.get("departure_city") or "武汉"
+                            if _dep in _CC:
+                                st.session_state.ii_origin = _dep
+                            st.session_state.ii_dirty = False
+                            st.session_state.ii_error = ""
+                            st.session_state.ii_edit_open = None
+                            st.session_state.ii_add_open = None
+                            st.session_state.nav_page = "📥 行程导入"
+                            st.rerun()
+                    if _c_de.button("🗑 删除", key=f"del_imp_trip_{p['id']}"):
                         delete_plan(p["id"])
                         st.rerun()
         with tab_chat:

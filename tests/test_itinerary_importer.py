@@ -195,3 +195,65 @@ class TestGeoGuards:
                                        "lng": 111.286, "lat": 30.692}]}])
         assert seen["anchor"] == {"lng": 111.286, "lat": 30.692}
         assert coords["博物馆"]["source"] == "poi"
+
+
+class TestSaveWithCoords:
+    def test_coords_merged_into_stops_without_mutating_input(self):
+        days = [{"day_num": 1, "stops": [{"name": "A"}, {"name": "B"}]}]
+        coords = {"A": {"lng": 111.0, "lat": 30.0, "source": "poi"}}
+        with patch("src.trip_planner.plan_manager.save_plan") as sp:
+            sp.return_value = "TP-XY"
+            ii.save_imported_itinerary(days, "n", "武汉", coords=coords)
+        saved_days = sp.call_args[0][0]["days"]
+        assert saved_days[0]["stops"][0]["lng"] == 111.0
+        assert saved_days[0]["stops"][0]["source"] == "poi"
+        assert "lng" not in saved_days[0]["stops"][1]  # B unresolved: no coords
+        # original days NOT mutated (deepcopy)
+        assert "lng" not in days[0]["stops"][0]
+
+    def test_plan_id_enables_overwrite(self):
+        days = [{"day_num": 1, "stops": [{"name": "A"}]}]
+        with patch("src.trip_planner.plan_manager.save_plan") as sp:
+            sp.return_value = "TP-OLD"
+            ii.save_imported_itinerary(days, "n", "武汉", plan_id="TP-OLD")
+        assert sp.call_args[0][0]["id"] == "TP-OLD"
+
+    def test_no_coords_keeps_days_asis(self):
+        days = [{"day_num": 1, "stops": [{"name": "A"}]}]
+        with patch("src.trip_planner.plan_manager.save_plan") as sp:
+            sp.return_value = "TP-1"
+            ii.save_imported_itinerary(days, "n", "武汉")
+        assert "id" not in sp.call_args[0][0]
+        assert sp.call_args[0][0]["days"] is days
+
+
+class TestResolveSingle:
+    def test_pass_pool_hit(self):
+        pool = [{"name": "三峡大瀑布", "lng": 111.4, "lat": 30.8}]
+        c = ii.resolve_single_stop("三峡大瀑布", pool, "key")
+        assert c["source"] == "pass" and c["lng"] == 111.4
+
+    def test_city_filler_uses_city_coord_without_poi(self):
+        with patch.object(ii, "_poi_search", side_effect=AssertionError("must not call POI")):
+            c = ii.resolve_single_stop("利川休整", [], "key")
+        assert c["source"] == "city"
+        assert c["lng"] == ii.COUNTY_COORDS["利川"][0]
+
+    def test_city_name_poi_first_then_city_fallback(self):
+        with patch.object(ii, "_poi_search", return_value=None):
+            c = ii.resolve_single_stop("荆州古城墙", [], "key")
+        assert c["source"] == "city"
+        with patch.object(ii, "_poi_search",
+                          return_value={"lng": 112.1, "lat": 30.3, "source": "poi"}):
+            c2 = ii.resolve_single_stop("荆州古城墙", [], "key")
+        assert c2["source"] == "poi"
+
+    def test_plain_name_poi_and_unresolved(self):
+        with patch.object(ii, "_poi_search",
+                          return_value={"lng": 1.0, "lat": 2.0, "source": "poi"}) as m:
+            c = ii.resolve_single_stop("某小景点", [], "key",
+                                       anchor={"lng": 9.0, "lat": 9.0})
+        assert c["source"] == "poi"
+        assert m.call_args[1]["anchor"] == {"lng": 9.0, "lat": 9.0}
+        with patch.object(ii, "_poi_search", return_value=None):
+            assert ii.resolve_single_stop("某小景点", [], "key") is None

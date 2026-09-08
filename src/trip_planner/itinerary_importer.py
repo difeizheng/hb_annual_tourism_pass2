@@ -241,6 +241,29 @@ def resolve_stop_coords(days, pass_pool, web_key, prev_days=None):
     return coords
 
 
+def resolve_single_stop(name, pass_pool, web_key, anchor=None):
+    """Resolve ONE stop name -> {lng,lat,source} or None.
+
+    Same deterministic chain as resolve_stop_coords (pass pool -> custom
+    stops -> city-name guard -> anchor-biased POI), for editor add/rename.
+    """
+    for s in pass_pool:
+        if s.get("name") == name and s.get("lng") and s.get("lat"):
+            return {"lng": float(s["lng"]), "lat": float(s["lat"]),
+                    "source": "pass"}
+    cs = _load_custom_stops().get(name)
+    if cs and cs.get("lng") and cs.get("lat"):
+        return {"lng": float(cs["lng"]), "lat": float(cs["lat"]),
+                "source": "custom"}
+    city_coord, rest = _split_city_name(name)
+    if city_coord and len(rest) < 2:
+        return {**city_coord, "source": "city"}
+    if city_coord:
+        poi = _poi_search(name, web_key, anchor=anchor)
+        return poi if poi else {**city_coord, "source": "city"}
+    return _poi_search(name, web_key, anchor=anchor)
+
+
 def attach_day_routes(days, coords, origin, web_key):
     """Attach day["route"] = {polyline,km,min,from} per day.
 
@@ -266,15 +289,35 @@ def attach_day_routes(days, coords, origin, web_key):
     return days
 
 
-def save_imported_itinerary(days, name, departure_city):
-    """Persist to plan_manager with trip_type=imported_itinerary."""
+def save_imported_itinerary(days, name, departure_city, coords=None,
+                            plan_id=None):
+    """Persist to plan_manager with trip_type=imported_itinerary.
+
+    coords: optional {name: {lng,lat,source}} — merged into stop dicts so
+    the saved plan can re-render its map without any API calls.
+    plan_id: pass an existing plan id to OVERWRITE that plan file.
+    """
+    import copy
     from src.trip_planner.plan_manager import save_plan
+    out_days = days
+    if coords:
+        out_days = copy.deepcopy(days)
+        for d in out_days:
+            for s in d.get("stops", []):
+                c = coords.get(s.get("name", ""))
+                if c:
+                    s["lng"] = c["lng"]
+                    s["lat"] = c["lat"]
+                    if c.get("source"):
+                        s["source"] = c["source"]
     plan_data = {
         'name': name,
         'trip_type': 'imported_itinerary',
-        'days': days,
+        'days': out_days,
         'departure_city': departure_city,
-        'num_days': len(days),
-        'total_spots': sum(len(d['stops']) for d in days),
+        'num_days': len(out_days),
+        'total_spots': sum(len(d['stops']) for d in out_days),
     }
+    if plan_id:
+        plan_data['id'] = plan_id
     return save_plan(plan_data)
