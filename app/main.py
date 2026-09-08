@@ -825,7 +825,7 @@ if os.path.exists(_QUICK_TRIP_FILE):
 # ============================================================
 page = st.sidebar.radio(
     "导航",
-    ["🗺️ 地图探索", "🎫 年卡对比", "💡 选卡助手", "🌿 季节指南", "📊 数据总览", "📝 行程规划", "💬 对话规划", "🧭 单日路线", "🧳 我的行程", "🚗 周末出发"],
+    ["🗺️ 地图探索", "🎫 年卡对比", "💡 选卡助手", "🌿 季节指南", "📊 数据总览", "📝 行程规划", "💬 对话规划", "🧭 单日路线", "📥 行程导入", "🧳 我的行程", "🚗 周末出发"],
     index=0,
 )
 
@@ -3647,6 +3647,10 @@ elif page == "💬 对话规划":
 elif page == "🧭 单日路线":
     from app.day_route import render_day_route_page
     render_day_route_page(spots_with_coords, graph_data, cleaned)
+
+elif page == "📥 行程导入":
+    from app.itinerary_import import render_itinerary_import_page
+    render_itinerary_import_page(spots_with_coords, graph_data, cleaned)
 
 
 # ============================================================

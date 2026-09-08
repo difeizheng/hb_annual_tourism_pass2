@@ -76,6 +76,7 @@ def _build_trip_map_html(
     height: str = "600px",
     day_plan: dict | None = None,
     parkings: list[dict] | None = None,
+    day_routes: dict | None = None,
 ) -> str:
     """Generate AMap HTML for the trip page with numbered spots, route line, and amenities.
 
@@ -108,6 +109,7 @@ def _build_trip_map_html(
         day_count = 0
         day_meta = {}
     day_meta_json = json.dumps(day_meta, ensure_ascii=True)
+    day_routes_json = json.dumps(day_routes or {}, ensure_ascii=True)
 
     html = f"""<!DOCTYPE html>
 <html>
@@ -222,6 +224,11 @@ function initTripMap() {{
                 (d === dayNum) ? m.show() : m.hide();
             }}
         }});
+        // Per-day route polylines follow the day toggle
+        Object.keys(dayPolylines).forEach(dn => {{
+            const on = (parseInt(dn, 10) === dayNum);
+            dayPolylines[dn].forEach(pl => on ? pl.show() : pl.hide());
+        }});
         // Fit view to visible markers (filter by rule, not getVisible)
         const visible = Object.values(spotMarkerById).concat(allExtras.filter(m => {{
             const ext = m.getExtData();
@@ -277,6 +284,30 @@ function initTripMap() {{
         spotMarkerById[s.name] = marker;
     }});
     map.add(markers);
+
+    // Per-day route polylines (toggled with day buttons)
+    const dayRoutes = {day_routes_json};
+    const dayPolylines = {{}};
+    Object.keys(dayRoutes).forEach(dn => {{
+        const raw = dayRoutes[dn] || '';
+        if (!raw) return;
+        const segs = raw.split(';').map(seg => seg.split(',').map(pt => {{
+            const xy = pt.split(',');
+            return [parseFloat(xy[0]), parseFloat(xy[1])];
+        }}).filter(p => !isNaN(p[0]) && !isNaN(p[1])));
+        const pls = [];
+        segs.forEach(path => {{
+            if (path.length > 1) {{
+                const pl = new AMap.Polyline({{
+                    path: path, strokeColor: '#e53935', strokeWeight: 4,
+                    strokeOpacity: 0.75, lineJoin: 'round', lineCap: 'round',
+                }});
+                map.add(pl);
+                pls.push(pl);
+            }}
+        }});
+        dayPolylines[dn] = pls;
+    }});
 
     // Route polyline
     if (routePolyline && routePolyline.length > 0) {{
