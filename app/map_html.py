@@ -257,13 +257,23 @@ function initTripMap() {{
             const passesHtml = (d.passes && d.passes.length > 0) ?
                 d.passes.map(p => `<span class="info-pass-tag">${{p}}</span>`).join('') : '';
             const dayInfo = spotDayMap[d.name] ? `<div class="info-row"><span class="info-label">天数</span>第 ${{spotDayMap[d.name]}} 天</div>` : '';
+            const locHtml = d.city ? `<div class="info-row"><span class="info-label">位置</span>${{d.city}} ${{d.area || ''}}</div>` : '';
+            const priceHtml = (d.price !== undefined && d.price !== null && d.price !== '') ? `<div class="info-price">￥${{d.price}}</div>` : '';
+            const arriveHtml = d.arrive ? `<div class="info-row"><span class="info-label">到达</span>${{d.arrive}}</div>` : '';
+            const hoursHtml = d.hours ? `<div class="info-row"><span class="info-label">游玩</span>${{d.hours}}h</div>` : '';
+            const noteHtml = d.note ? `<div style="margin:6px 0;font-size:13px;color:#666;">${{d.note}}</div>` : '';
+            const removeHtml = d.noRemove ? '' : `
+                        <button class="btn-action btn-remove" onclick="window.removeFromTrip('${{d.name}}')">
+                            &#10060; 从行程移除
+                        </button>`;
             infoWindow.setContent(`
                 <div style="padding: 14px 16px;">
                     <div class="info-title">${{d.name}}</div>
                     <div style="margin-bottom:6px;">${{catBadge}} ${{levelBadge}}</div>
-                    <div style="margin-bottom:6px;">${{dayInfo}}</div>
-                    <div class="info-row"><span class="info-label">位置</span>${{d.city}} ${{d.area || ''}}</div>
-                    <div class="info-price">￥${{d.price}}</div>
+                    <div style="margin-bottom:6px;">${{dayInfo}} ${{arriveHtml}} ${{hoursHtml}}</div>
+                    ${{locHtml}}
+                    ${{priceHtml}}
+                    ${{noteHtml}}
                     ${{passesHtml ? `
                         <div style="margin-bottom:6px;">
                             <div class="info-row" style="margin-bottom:4px;"><span class="info-label">包含年卡</span></div>
@@ -272,9 +282,7 @@ function initTripMap() {{
                     ` : ''}}
                     <hr class="info-divider">
                     <div class="info-actions">
-                        <button class="btn-action btn-remove" onclick="window.removeFromTrip('${{d.name}}')">
-                            &#10060; 从行程移除
-                        </button>
+                        ${{removeHtml}}
                     </div>
                 </div>
             `);

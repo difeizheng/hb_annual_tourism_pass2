@@ -116,6 +116,7 @@ def render_itinerary_import_page(spots_with_coords, graph_data, cleaned):
             ms = dict(s)
             ms.update(c)
             ms["day_num"] = d["day_num"]
+            ms["noRemove"] = True
             map_spots.append(ms)
             day_spots.append(ms)
         rt = d.get("route") or {}
@@ -169,4 +170,4 @@ def render_itinerary_import_page(spots_with_coords, graph_data, cleaned):
     name = st.text_input("行程名称", value="导入的行程", key="ii_name")
     if st.button("💾 保存到我的行程", key="ii_save_btn", type="primary"):
         pid = ii.save_imported_itinerary(days, name or "导入的行程", origin_name)
-        st.success("已保存（ID: {}），可在「🧳 我的行程」页查看".format(pid))
+        st.success("已保存（ID: {}）。到「🧳 我的行程」页，主区域底部「保存的行程 → 📥 导入的行程」查看".format(pid))
