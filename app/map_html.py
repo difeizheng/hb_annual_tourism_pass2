@@ -148,11 +148,19 @@ html, body, #container {{ width: 100%; height: {height}; }}
 }}
 .legend-item {{ display: flex; align-items: center; margin: 4px 0; }}
 .legend-dot {{ width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; flex-shrink: 0; }}
+.fs-btn {{
+    position: absolute; top: 10px; right: 10px; z-index: 1000;
+    border: 1px solid #ddd; background: #fff; border-radius: 6px;
+    padding: 4px 10px; font-size: 12px; font-weight: 600; cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12); color: #333;
+}}
+.fs-btn:hover {{ background: #f0f4ff; border-color: #1a73e8; color: #1a73e8; }}
 </style>
 <script src="https://webapi.amap.com/maps?v=2.0&key={js_key}"></script>
 </head>
 <body>
 <div id="container"></div>
+<button id="fsBtn" class="fs-btn">⛶ 全屏</button>
 <div class="legend">
 <div style="font-weight:bold;margin-bottom:6px;">图例</div>
 <div class="legend-item"><div class="legend-dot" style="background:#1a73e8"></div>行程景点（带序号）</div>
@@ -178,6 +186,40 @@ let allExtras = [];  // hotel/restaurant/parking markers (with _day attr)
 function initTripMap() {{
     const map = new AMap.Map('container', {{zoom: 10, center: [114.305, 30.593]}});
     const infoWindow = new AMap.InfoWindow({{offset: new AMap.Pixel(0, -10)}});
+
+    // Fullscreen support: request the Fullscreen API on the page root.
+    // Works standalone (map opened in its own tab) and inside Streamlit's
+    // component iframe (whose allow-policy includes `fullscreen`); if the
+    // browser still refuses, fall back to opening the map in a new tab.
+    const fsBtn = document.getElementById('fsBtn');
+    const fsRoot = document.documentElement;
+    const fsIconOn = '\u2715 \u9000\u51fa\u5168\u5c4f';
+    const fsIconOff = '\u26f6 \u5168\u5c4f';
+    function fsSync() {{
+        const on = !!(document.fullscreenElement || document.webkitFullscreenElement);
+        fsBtn.textContent = on ? fsIconOn : fsIconOff;
+        document.getElementById('container').style.height =
+            on ? '100vh' : '{height}';
+    }}
+    document.addEventListener('fullscreenchange', fsSync);
+    document.addEventListener('webkitfullscreenchange', fsSync);
+    fsBtn.onclick = function() {{
+        const cur = document.fullscreenElement || document.webkitFullscreenElement;
+        if (cur) {{
+            (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+        }} else {{
+            const req = fsRoot.requestFullscreen || fsRoot.webkitRequestFullscreen;
+            if (req) {{
+                const p = req.call(fsRoot);
+                if (p && p.catch) {{
+                    p.catch(function() {{ window.open(location.href, '_blank'); }});
+                }}
+            }} else {{
+                window.open(location.href, '_blank');
+            }}
+        }}
+    }};
+
 
     // Day toggle bar (only when day plan exists)
     if (dayCount > 0) {{
