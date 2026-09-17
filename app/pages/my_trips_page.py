@@ -295,7 +295,7 @@ def _open_in_editor(plan):
     ss.ed_edit_open = None
     ss.ed_add_open = None
     ss.ph_mode = "✏️ 编辑器"
-    ss.nav_page = "🗓️ 规划中心"
+    ss._nav_pending = "🗓️ 规划中心"
     st.rerun()
 
 
