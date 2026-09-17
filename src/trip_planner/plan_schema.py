@@ -79,6 +79,8 @@ def normalize_day(raw: dict, day_num: int) -> dict:
         "km": float(route_raw.get("km") or 0),
         "min": float(route_raw.get("min") or 0),
     }
+    if route_raw.get("from"):
+        route["from"] = str(route_raw["from"])
     return {
         "day_num": int(raw.get("day_num") or day_num),
         "city": str(raw.get("city") or raw.get("primary_city") or raw.get("label", "") or ""),
@@ -238,6 +240,32 @@ def _migrate_quick(raw: dict) -> dict:
 # ----------------------------------------------------------------------
 # View helpers
 # ----------------------------------------------------------------------
+def plan_to_editor_days(plan):
+    """Unified plan -> (editor day dicts, coord map) for app/plan_editor.py.
+
+    Day extras (hotel/transport/label) are restored from meta.day_extras;
+    coords are derived from stop lng/lat so the editor can re-render the
+    map and re-geocode renamed stops with zero extra state.
+    """
+    days, coords = [], {}
+    extras = (plan.get("meta") or {}).get("day_extras", {})
+    for d in plan.get("days", []):
+        ed = {"day_num": d.get("day_num"), "city": d.get("city", ""),
+              "date": d.get("date", ""),
+              "stops": [dict(s) for s in d.get("stops", [])],
+              "route": dict(d.get("route") or {})}
+        ex = extras.get(str(d.get("day_num"))) or {}
+        for k in ("hotel", "transport", "label"):
+            if ex.get(k):
+                ed[k] = ex[k]
+        days.append(ed)
+        for s in ed["stops"]:
+            if s.get("lng") is not None and s.get("lat") is not None:
+                coords[s["name"]] = {"lng": s["lng"], "lat": s["lat"],
+                                     "source": s.get("coord_source") or "saved"}
+    return days, coords
+
+
 def plan_summary(plan: dict) -> dict:
     """Compact summary for list rendering."""
     cities = []

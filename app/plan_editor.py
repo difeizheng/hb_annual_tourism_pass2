@@ -81,7 +81,7 @@ def reset_editor_state(ss, sp):
 
 def render_plan_editor(*, days_key, coords_key, pool, web_key, origin_name,
                        origin_coord, state_prefix, widget_prefix, source,
-                       default_name="我的行程"):
+                       default_name="我的行程", meta=None, travel_month=None):
     """Map + per-day editor + save for the day dicts at ss[days_key].
 
     days:  [{day_num, stops: [{name, arrive, hours, note, ...}], route, ...}]
@@ -227,12 +227,14 @@ def render_plan_editor(*, days_key, coords_key, pool, web_key, origin_name,
                       key="{}_save_overwrite".format(wp)):
             pid = save_days_plan(days, name or default_name, source,
                                  origin_city=origin_name, coords=coords,
-                                 plan_id=edit_plan_id)
+                                 plan_id=edit_plan_id, meta=meta,
+                                 travel_month=travel_month)
             ss["{}_edit_name".format(sp)] = name or default_name
             st.success("已覆盖保存（ID: {}，含坐标与路线）。「🧳 我的行程」可直接看地图".format(pid))
         if sc2.button("📄 另存为新行程", key="{}_save_as".format(wp)):
             pid = save_days_plan(days, name or default_name, source,
-                                 origin_city=origin_name, coords=coords)
+                                 origin_city=origin_name, coords=coords,
+                                 meta=meta, travel_month=travel_month)
             ss["{}_edit_plan_id".format(sp)] = pid
             ss["{}_edit_name".format(sp)] = name or default_name
             st.success("已另存为新行程（ID: {}）".format(pid))
@@ -240,7 +242,8 @@ def render_plan_editor(*, days_key, coords_key, pool, web_key, origin_name,
         if st.button("💾 保存到我的行程", type="primary",
                      key="{}_save_btn".format(wp)):
             pid = save_days_plan(days, name or default_name, source,
-                                 origin_city=origin_name, coords=coords)
+                                 origin_city=origin_name, coords=coords,
+                                 meta=meta, travel_month=travel_month)
             ss["{}_edit_plan_id".format(sp)] = pid
             ss["{}_edit_name".format(sp)] = name or default_name
             st.success("已保存（ID: {}，含坐标与路线）。到「🧳 我的行程」查看（含地图）".format(pid))

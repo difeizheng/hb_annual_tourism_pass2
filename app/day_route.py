@@ -10,6 +10,7 @@ import streamlit as st
 
 from app.map_html import _build_trip_map_html, _save_map_html
 from src.trip_planner import day_route_planner as drp
+from src.trip_planner.plan_manager import save_days_plan
 
 
 def _render_day_route_map(route, stops):
@@ -204,3 +205,22 @@ def render_day_route_page(spots_with_coords, graph_data, cleaned):
         st.subheader("🗺 地图")
         if ss.dr_map_url:
             st.components.v1.iframe(ss.dr_map_url, height=560)
+
+    # --- save as unified plan ---
+    st.divider()
+    dr_name = st.text_input("行程名称", key="dr_save_name",
+                            value="单日路线·" + "-".join(
+                                s["name"] for s in ss.dr_stops[:3]))
+    if st.button("💾 保存到我的行程", key="dr_save_btn", type="primary"):
+        pid = save_days_plan(
+            [{"day_num": 1, "city": origin_name,
+              "stops": [dict(s) for s in ss.dr_stops],
+              "route": {"polyline": route.ordered_polyline,
+                        "km": route.total_distance_km,
+                        "min": route.total_duration_min,
+                        "from": origin_name}}],
+            dr_name, "day_route",
+            origin_city=origin_name,
+            origin_lng=origin["lng"], origin_lat=origin["lat"],
+            meta={"timeline": tl})
+        st.success(f"已保存（ID: {pid}）。到「🧳 我的行程」查看/编辑")

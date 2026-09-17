@@ -22,7 +22,7 @@ from src.trip_planner.amenity_planner import (
     plan_meals_for_day,
     find_parking_for_spot,
 )
-from src.trip_planner.plan_manager import save_plan
+from src.trip_planner.plan_manager import save_days_plan
 
 
 def render_chat_planner_page(spots_with_coords, graph_data, cleaned, departure_city_coords):
@@ -291,20 +291,15 @@ def _render_trip_result(ss, city_coords):
             st.rerun()
     with col2:
         if st.button("💾 保存到我的行程", key="chat_save_plan", type="primary"):
-            plan_data = {
-                "name": f"对话规划·{trip['intent_meta'].get('departure_city','')}→{'-'.join(trip['city_order'])}",
-                "trip_type": "chat_planner_v1",
-                "cart": [s for d in trip["days"] for s in d["spots"]],
-                "assignment": {"days": trip["days"]},
-                "city_order": trip["city_order"],
-                "intent_meta": trip["intent_meta"],
-                "departure_city": trip["intent_meta"].get("departure_city", "武汉"),
-                "num_days": len(trip["days"]),
-                "travel_month": trip["intent_meta"].get("_travel_month", 10),
-                "total_spots": sum(len(d["spots"]) for d in trip["days"]),
-            }
-            plan_id = save_plan(plan_data)
-            st.success(f"已保存！行程 ID: {plan_id}（可在 🧳 我的行程 查看/导入到行程规划页精调）")
+            plan_id = save_days_plan(
+                trip["days"],
+                f"对话规划·{trip['intent_meta'].get('departure_city','')}→{'-'.join(trip['city_order'])}",
+                "chat",
+                origin_city=trip["intent_meta"].get("departure_city", "武汉"),
+                travel_month=trip["intent_meta"].get("_travel_month", 10),
+                meta={"intent_meta": trip["intent_meta"],
+                      "city_order": trip["city_order"]})
+            st.success(f"已保存！行程 ID: {plan_id}（可在 🧳 我的行程 查看/编辑）")
 
 
 def _generate_amenities(ss):
