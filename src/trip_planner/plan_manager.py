@@ -82,6 +82,38 @@ def list_plans() -> list[dict]:
     return plans
 
 
+def save_days_plan(days, name, source, origin_city="", coords=None,
+                   plan_id=None, meta=None, travel_month=None,
+                   origin_lng=None, origin_lat=None) -> str:
+    """Build a unified v2 plan from day dicts (+ optional coord map) and save.
+
+    coords: {name: {lng, lat, source}} merged into stops before save so the
+    plan re-renders its map with zero API calls. Non-standard day extras
+    (hotel/transport/label) are preserved in meta.day_extras.
+    """
+    import copy
+    from src.trip_planner.plan_schema import build_plan
+    out_days = copy.deepcopy(days)
+    if coords:
+        for d in out_days:
+            for s in d.get("stops", []):
+                c = coords.get(s.get("name", ""))
+                if c:
+                    s["lng"] = c["lng"]
+                    s["lat"] = c["lat"]
+                    if c.get("source") and not s.get("coord_source"):
+                        s["coord_source"] = c["source"]
+    meta = dict(meta or {})
+    for d in out_days:
+        extras = {k: d[k] for k in ("hotel", "transport", "label") if d.get(k)}
+        if extras:
+            meta.setdefault("day_extras", {})[str(d.get("day_num"))] = extras
+    origin = {"city": origin_city or "", "lng": origin_lng, "lat": origin_lat}
+    plan = build_plan(name, out_days, source, origin=origin,
+                      travel_month=travel_month, meta=meta, plan_id=plan_id)
+    return save_plan(plan)
+
+
 def delete_plan(plan_id: str) -> bool:
     """Delete a plan file. Returns True if deleted."""
     fpath = os.path.join(PLAN_DIR, f"{plan_id}.json")

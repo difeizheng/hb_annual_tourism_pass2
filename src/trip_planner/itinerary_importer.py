@@ -291,33 +291,12 @@ def attach_day_routes(days, coords, origin, web_key):
 
 def save_imported_itinerary(days, name, departure_city, coords=None,
                             plan_id=None):
-    """Persist to plan_manager with trip_type=imported_itinerary.
+    """Persist as a unified v2 plan (source='import').
 
-    coords: optional {name: {lng,lat,source}} — merged into stop dicts so
-    the saved plan can re-render its map without any API calls.
-    plan_id: pass an existing plan id to OVERWRITE that plan file.
+    Kept for backward compatibility — thin wrapper over
+    plan_manager.save_days_plan. coords: {name: {lng,lat,source}} merged
+    into stops; plan_id overwrites that plan file.
     """
-    import copy
-    from src.trip_planner.plan_manager import save_plan
-    out_days = days
-    if coords:
-        out_days = copy.deepcopy(days)
-        for d in out_days:
-            for s in d.get("stops", []):
-                c = coords.get(s.get("name", ""))
-                if c:
-                    s["lng"] = c["lng"]
-                    s["lat"] = c["lat"]
-                    if c.get("source"):
-                        s["source"] = c["source"]
-    plan_data = {
-        'name': name,
-        'trip_type': 'imported_itinerary',
-        'days': out_days,
-        'departure_city': departure_city,
-        'num_days': len(out_days),
-        'total_spots': sum(len(d['stops']) for d in out_days),
-    }
-    if plan_id:
-        plan_data['id'] = plan_id
-    return save_plan(plan_data)
+    from src.trip_planner.plan_manager import save_days_plan
+    return save_days_plan(days, name, "import", origin_city=departure_city,
+                          coords=coords, plan_id=plan_id)

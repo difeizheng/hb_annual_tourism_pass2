@@ -148,16 +148,18 @@ class TestRoutes:
 
 class TestSave:
     def test_save_contract(self):
+        """Unified v2 contract: source/schema/origin instead of legacy trip_type."""
         days = [{"day_num": 1, "stops": [{"name": "A"}, {"name": "B"}]}]
         with patch("src.trip_planner.plan_manager.save_plan") as sp:
             sp.return_value = "TP-TEST"
             pid = ii.save_imported_itinerary(days, "我的12天", "武汉")
         assert pid == "TP-TEST"
         saved = sp.call_args[0][0]
-        assert saved["trip_type"] == "imported_itinerary"
+        assert saved["source"] == "import"
+        assert saved["schema_version"] == 2
         assert saved["num_days"] == 1
         assert saved["total_spots"] == 2
-        assert saved["departure_city"] == "武汉"
+        assert saved["origin"]["city"] == "武汉"
 
 
 class TestGeoGuards:
@@ -206,8 +208,8 @@ class TestSaveWithCoords:
             ii.save_imported_itinerary(days, "n", "武汉", coords=coords)
         saved_days = sp.call_args[0][0]["days"]
         assert saved_days[0]["stops"][0]["lng"] == 111.0
-        assert saved_days[0]["stops"][0]["source"] == "poi"
-        assert "lng" not in saved_days[0]["stops"][1]  # B unresolved: no coords
+        assert saved_days[0]["stops"][0]["coord_source"] == "poi"
+        assert saved_days[0]["stops"][1]["lng"] is None  # B unresolved
         # original days NOT mutated (deepcopy)
         assert "lng" not in days[0]["stops"][0]
 
@@ -219,12 +221,16 @@ class TestSaveWithCoords:
         assert sp.call_args[0][0]["id"] == "TP-OLD"
 
     def test_no_coords_keeps_days_asis(self):
-        days = [{"day_num": 1, "stops": [{"name": "A"}]}]
+        """Without coords, stop content survives normalization unchanged."""
+        days = [{"day_num": 1, "stops": [{"name": "A", "arrive": "09:00"}]}]
         with patch("src.trip_planner.plan_manager.save_plan") as sp:
             sp.return_value = "TP-1"
             ii.save_imported_itinerary(days, "n", "武汉")
-        assert "id" not in sp.call_args[0][0]
-        assert sp.call_args[0][0]["days"] is days
+        saved = sp.call_args[0][0]
+        assert "id" not in saved
+        stop = saved["days"][0]["stops"][0]
+        assert stop["name"] == "A" and stop["arrive"] == "09:00"
+        assert stop["lng"] is None
 
 
 class TestResolveSingle:
