@@ -1,0 +1,19 @@
+{
+  "spot_name": "盛世闻樱",
+  "overall_rating": 4.3,
+  "review_count": 1,
+  "reviews": [
+    {
+      "source": "amap",
+      "rating": 4.3,
+      "text": "高德地图综合评分：4.3/5.0",
+      "author": "高德地图",
+      "date": "",
+      "upvotes": 0
+    }
+  ],
+  "cached_at": "2026-05-05T09:41:02.629894+00:00",
+  "sources_used": [
+    "amap"
+  ]
+}

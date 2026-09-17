@@ -1,10 +1,19 @@
-"""Plan CRUD: save, load, list, delete trip plans as JSON files."""
+"""Plan CRUD: save, load, list, delete trip plans as JSON files.
+
+All plans converge on the unified schema (plan_schema.PLAN_SCHEMA_VERSION).
+load_plan migrates legacy formats in-memory; disk files are only rewritten
+when the user saves again.
+"""
 from __future__ import annotations
 
 import json
 import os
 import hashlib
 from datetime import datetime, timezone
+
+from src.trip_planner.plan_schema import (
+    PLAN_SCHEMA_VERSION, migrate_plan, plan_summary,
+)
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PLAN_DIR = os.path.join(PROJECT_ROOT, "data", "trip_plans")
@@ -21,10 +30,17 @@ def generate_plan_id() -> str:
 
 
 def save_plan(plan: dict) -> str:
-    """Save plan to data/trip_plans/<id>.json. Returns plan ID."""
+    """Save plan to data/trip_plans/<id>.json. Returns plan ID.
+
+    Plans carrying a unified `source` are stamped with the current
+    schema_version; legacy-shaped payloads (still emitted by a few old
+    call sites) are persisted as-is and migrated on next load.
+    """
     _ensure_dir()
     plan_id = plan.get("id") or generate_plan_id()
     plan["id"] = plan_id
+    if plan.get("source") and not plan.get("schema_version"):
+        plan["schema_version"] = PLAN_SCHEMA_VERSION
     plan["updated_at"] = datetime.now(timezone.utc).isoformat()
     if "created_at" not in plan:
         plan["created_at"] = plan["updated_at"]
@@ -36,12 +52,15 @@ def save_plan(plan: dict) -> str:
 
 
 def load_plan(plan_id: str) -> dict | None:
-    """Load a plan by ID. Returns None if not found."""
+    """Load a plan by ID (legacy formats auto-migrated to unified v2).
+
+    Returns None if not found.
+    """
     fpath = os.path.join(PLAN_DIR, f"{plan_id}.json")
     if not os.path.exists(fpath):
         return None
     with open(fpath, "r", encoding="utf-8") as f:
-        return json.load(f)
+        return migrate_plan(json.load(f))
 
 
 def list_plans() -> list[dict]:
@@ -55,22 +74,10 @@ def list_plans() -> list[dict]:
         try:
             with open(fpath, "r", encoding="utf-8") as f:
                 p = json.load(f)
-            num_spots = p.get("num_spots")
-            if num_spots is not None:
-                total_spots = num_spots
-            else:
-                total_spots = sum(len(d.get("spots", [])) for d in p.get("days", []))
-            plans.append({
-                "id": p.get("id", fname.replace(".json", "")),
-                "name": p.get("name", "未命名"),
-                "created_at": p.get("created_at", ""),
-                "updated_at": p.get("updated_at", ""),
-                "num_days": p.get("num_days", 0),
-                "departure_date": p.get("departure_date", ""),
-                "total_spots": total_spots,
-                "trip_type": p.get("trip_type", ""),
-            })
-        except (json.JSONDecodeError, OSError, KeyError):
+            sm = plan_summary(migrate_plan(p))
+            sm["id"] = sm["id"] or fname.replace(".json", "")
+            plans.append(sm)
+        except (json.JSONDecodeError, OSError, KeyError, TypeError):
             continue
     return plans
 

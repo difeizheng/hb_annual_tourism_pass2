@@ -1,0 +1,180 @@
+2026-09-11 23:47:20.114 Uvicorn server started on 0.0.0.0:8561
+2026-09-12 23:01:28.434 Please replace `st.components.v1.iframe` with `st.iframe`.
+
+`st.components.v1.iframe` will be removed after 2026-06-01.
+2026-09-12 23:01:28.832 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-12 23:01:28.872 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-12 23:01:28.925 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-12 23:01:28.970 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-12 23:01:32.711 Please replace `st.components.v1.iframe` with `st.iframe`.
+
+`st.components.v1.iframe` will be removed after 2026-06-01.
+2026-09-12 23:01:32.731 Please replace `st.components.v1.iframe` with `st.iframe`.
+
+`st.components.v1.iframe` will be removed after 2026-06-01.
+2026-09-13 01:37:00.295 Please replace `st.components.v1.iframe` with `st.iframe`.
+
+`st.components.v1.iframe` will be removed after 2026-06-01.
+2026-09-13 01:37:00.398 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 01:37:00.444 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 01:37:00.483 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 01:37:00.528 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 01:37:03.478 Please replace `st.components.v1.iframe` with `st.iframe`.
+
+`st.components.v1.iframe` will be removed after 2026-06-01.
+2026-09-13 01:37:03.490 Please replace `st.components.v1.iframe` with `st.iframe`.
+
+`st.components.v1.iframe` will be removed after 2026-06-01.
+2026-09-13 01:39:19.423 Please replace `st.components.v1.iframe` with `st.iframe`.
+
+`st.components.v1.iframe` will be removed after 2026-06-01.
+2026-09-13 01:39:19.474 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 01:39:19.507 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 01:39:19.541 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 01:39:19.587 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 01:39:31.345 Please replace `st.components.v1.iframe` with `st.iframe`.
+
+`st.components.v1.iframe` will be removed after 2026-06-01.
+2026-09-13 01:39:31.365 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 01:39:31.391 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 01:39:31.434 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 01:39:31.474 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 01:39:37.818 Please replace `st.components.v1.iframe` with `st.iframe`.
+
+`st.components.v1.iframe` will be removed after 2026-06-01.
+2026-09-13 01:39:37.839 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 01:39:37.853 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 01:39:37.866 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 01:39:37.894 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 09:09:30.833 Please replace `st.components.v1.iframe` with `st.iframe`.
+
+`st.components.v1.iframe` will be removed after 2026-06-01.
+2026-09-13 09:09:30.856 Please replace `st.components.v1.iframe` with `st.iframe`.
+
+`st.components.v1.iframe` will be removed after 2026-06-01.
+2026-09-13 11:35:11.106 Please replace `st.components.v1.iframe` with `st.iframe`.
+
+`st.components.v1.iframe` will be removed after 2026-06-01.
+2026-09-13 11:35:11.132 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 11:35:11.170 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 11:35:11.210 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 11:35:11.268 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 11:35:22.282 Please replace `st.components.v1.iframe` with `st.iframe`.
+
+`st.components.v1.iframe` will be removed after 2026-06-01.
+2026-09-13 11:35:22.318 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 11:35:22.358 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 11:35:22.412 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-09-13 11:35:22.453 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
