@@ -107,7 +107,7 @@ planning_hub.render_planning_hub({"spots_with_coords": [], "graph_data": {},
 print("hub editor mode OK (plan: {})".format(full.get("name")))
 
 # ------------------------------------------------------- my trips page
-import app.pages.my_trips_page as mt  # noqa: E402
+import app.page_modules.my_trips_page as mt  # noqa: E402
 
 mt._build_trip_map_html = lambda *a, **k: "<html></html>"
 mt._save_map_html = lambda *a, **k: "http://127.0.0.1/x.html"

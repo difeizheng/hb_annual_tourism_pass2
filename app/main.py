@@ -942,19 +942,19 @@ def _build_weekend_timeline(
 # Page 1: Map Exploration (default)
 # ============================================================
 if page == "🗺️ 地图探索":
-    from app.pages.map_explore_page import render_map_explore_page
+    from app.page_modules.map_explore_page import render_map_explore_page
     render_map_explore_page(dict(globals()))
 
 elif page == "🎫 年卡对比":
-    from app.pages.pass_compare_page import render_pass_compare_page
+    from app.page_modules.pass_compare_page import render_pass_compare_page
     render_pass_compare_page(dict(globals()))
 
 elif page == "💡 选卡助手":
-    from app.pages.pass_assistant_page import render_pass_assistant_page
+    from app.page_modules.pass_assistant_page import render_pass_assistant_page
     render_pass_assistant_page(dict(globals()))
 
 elif page == "🌿 季节指南":
-    from app.pages.season_guide_page import render_season_guide_page
+    from app.page_modules.season_guide_page import render_season_guide_page
     render_season_guide_page(dict(globals()))
 
 elif page == "🗓️ 规划中心":
@@ -965,5 +965,5 @@ elif page == "🗓️ 规划中心":
 # My Trips (🧳 我的行程): draft + unified plan repository
 # ============================================================
 elif page == "🧳 我的行程":
-    from app.pages.my_trips_page import render_my_trips_page
+    from app.page_modules.my_trips_page import render_my_trips_page
     render_my_trips_page(dict(globals()))

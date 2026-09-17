@@ -3,12 +3,12 @@
 Streamlit 应用：年卡对比选卡 + 景点知识图谱 + 行程规划。
 数据管道在 `src/`（解析/清洗/对齐/图谱），行程规划子模块在 `src/trip_planner/`。
 
-**UI 架构（2026-09 重构后）**：`app/main.py`（~970 行）只是骨架——imports/数据加载/地图构建 helper/侧边栏/页面 dispatch。所有页面在 `app/pages/*.py`：
+**UI 架构（2026-09 重构后）**：`app/main.py`（~970 行）只是骨架——imports/数据加载/地图构建 helper/侧边栏/页面 dispatch。所有页面在 `app/page_modules/*.py`（**不能叫 `app/pages/`**——Streamlit 会把 entry 旁的 `pages/` 目录当多页应用，在侧边栏自动生成英文导航）：
 
 - 页面函数模式：`def render_xxx_page(ctx)`，首行 `globals().update(ctx)` 注入 main 命名空间，**页面模块不写任何业务 import、禁止 `from app.main import …`**（二次 import 会整页重执行）；main.py 侧 `render_xxx_page(dict(globals()))` 调用
 - 导航 6 项：🗺️ 地图探索（含「📈 数据洞察」view=原数据总览页）/ 🎫 年卡对比 / 💡 选卡助手 / 🌿 季节指南 / 🗓️ 规划中心 / 🧳 我的行程
 - **规划中心**（`app/planning_hub.py`）是唯一的行程生成入口：radio 切换 表单规划/对话规划/周末出发/单日路线/粘贴导入/✏️编辑器 六模式（不用 st.tabs，避免后台 tab 白算）
-- **我的行程**（`app/pages/my_trips_page.py`）= 草稿区（session selected_trip_spots）+ 行程仓库（全部已保存 plan：详情/地图/✏️跳编辑器/删除）
+- **我的行程**（`app/page_modules/my_trips_page.py`）= 草稿区（session selected_trip_spots）+ 行程仓库（全部已保存 plan：详情/地图/✏️跳编辑器/删除）
 - **统一行程 schema v2**（`src/trip_planner/plan_schema.py`）：所有来源（manual/chat/import/day_route/weekend）落同一结构，`plan_manager.load_plan` 自动迁移旧格式；day 级额外信息（酒店/交通/时间线）存 `meta.day_extras`；保存统一走 `plan_manager.save_days_plan`；编辑器是共享组件 `app/plan_editor.py`（`render_plan_editor`，state_prefix/widget_prefix 区分多实例）
 
 ## 命令

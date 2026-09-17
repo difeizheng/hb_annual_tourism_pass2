@@ -316,5 +316,5 @@ def render_map_explore_page(ctx):
 # Page 2: Pass Comparison (map-based)
 # ============================================================
         elif view_mode == "📈 数据洞察":
-            from app.pages.data_overview_page import render_data_overview_page
+            from app.page_modules.data_overview_page import render_data_overview_page
             render_data_overview_page(dict(globals()))

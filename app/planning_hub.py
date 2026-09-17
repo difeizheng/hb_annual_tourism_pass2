@@ -26,7 +26,7 @@ def render_planning_hub(ctx):
     st.divider()
 
     if mode == "📝 表单规划":
-        from app.pages.trip_planner_page import render_trip_planner_page
+        from app.page_modules.trip_planner_page import render_trip_planner_page
         render_trip_planner_page(ctx)
     elif mode == "💬 对话规划":
         from app.chat_planner import render_chat_planner_page
@@ -37,7 +37,7 @@ def render_planning_hub(ctx):
         render_chat_planner_page(ctx["spots_with_coords"], ctx["graph_data"],
                                  ctx["cleaned"], dep_coords)
     elif mode == "🚗 周末出发":
-        from app.pages.weekend_page import render_weekend_page
+        from app.page_modules.weekend_page import render_weekend_page
         render_weekend_page(ctx)
     elif mode == "🧭 单日路线":
         from app.day_route import render_day_route_page
