@@ -14,7 +14,7 @@ import pandas as pd
 import streamlit as st
 
 from src.trip_planner.plan_manager import (list_plans, load_plan, delete_plan,
-                                           save_days_plan)
+                                           save_plan, save_days_plan)
 from src.trip_planner.plan_schema import plan_to_editor_days
 from app.map_html import CITY_COORDS, _build_trip_map_html, _save_map_html
 
@@ -250,6 +250,14 @@ def render_my_trips_page(ctx):
                  f"{full.get('num_days', 0)}天 · {full.get('total_spots', 0)}站 · {date_str}")
         with st.expander(title):
             _render_plan_detail(full)
+            missing = _days_missing_route(full)
+            if missing and st.button(
+                    f"🔁 重新生成路线（{len(missing)} 天缺驾车路线，调高德）",
+                    key=f"mt_regen_{p['id']}"):
+                n = _regen_routes(full)
+                if n:
+                    st.success(f"已补齐 {n} 天路线并覆盖保存")
+                    st.rerun()
             bc1, bc2 = st.columns(2)
             if bc1.button("✏️ 编辑", key=f"mt_edit_{p['id']}"):
                 _open_in_editor(full)
@@ -297,6 +305,62 @@ def _open_in_editor(plan):
     ss.ph_mode = "✏️ 编辑器"
     ss._nav_pending = "🗓️ 规划中心"
     st.rerun()
+
+
+def _days_missing_route(plan):
+    """Indices of days that have coord stops but no driving polyline."""
+    out = []
+    for i, d in enumerate(plan.get("days", [])):
+        if (d.get("route") or {}).get("polyline"):
+            continue
+        if any(s.get("lng") is not None and s.get("lat") is not None
+               for s in d.get("stops", [])):
+            out.append(i)
+    return out
+
+
+def _regen_routes(plan):
+    """Recompute driving polylines for days missing them, overwrite same plan id."""
+    from src.trip_planner.route_optimizer import compute_route
+
+    web_key = st.secrets.get("amap_web_key", "")
+    if not web_key:
+        st.error("未配置 amap_web_key，无法生成驾车路线")
+        return 0
+    days = plan.get("days", [])
+    origin = plan.get("origin") or {}
+
+    def _day_origin(i):
+        if origin.get("lng") is not None and origin.get("lat") is not None:
+            return {"name": origin.get("city") or origin.get("address") or "出发地",
+                    "lng": origin["lng"], "lat": origin["lat"]}
+        cc = CITY_COORDS.get(origin.get("city") or "")
+        if cc:
+            return {"name": origin["city"], "lng": cc[0], "lat": cc[1]}
+        prev = [s for dd in days[:i] for s in dd.get("stops", [])
+                if s.get("lng") is not None and s.get("lat") is not None]
+        if prev:
+            return {"name": prev[-1]["name"], "lng": prev[-1]["lng"], "lat": prev[-1]["lat"]}
+        return None
+
+    fixed = 0
+    for i in _days_missing_route(plan):
+        d = days[i]
+        stops = [s for s in d.get("stops", [])
+                 if s.get("lng") is not None and s.get("lat") is not None]
+        o = _day_origin(i)
+        if o is None:
+            o = {"name": stops[0]["name"], "lng": stops[0]["lng"], "lat": stops[0]["lat"]}
+        route = compute_route(o, stops, web_key)
+        d["route"] = {"polyline": route.ordered_polyline,
+                      "km": round(route.total_distance_km, 1),
+                      "min": int(route.total_duration_min),
+                      "from": o["name"]}
+        d["travel_km"] = round(route.total_distance_km, 1)
+        fixed += 1
+    if fixed:
+        save_plan(plan)  # plan['id'] preserved -> overwrite in place
+    return fixed
 
 
 def _render_plan_detail(plan):

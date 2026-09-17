@@ -119,7 +119,9 @@ def compute_route(origin: dict, ordered_spots: list[dict], api_key: str) -> DayR
 
     total_dist_m = int(path.get("distance", 0))
     total_dur_s = int(path.get("duration", 0))
-    ordered_polyline = path.get("polyline", "")
+    # AMap v3 driving returns NO top-level path.polyline — concatenate step polylines
+    ordered_polyline = path.get("polyline") or ";".join(
+        s.get("polyline", "") for s in steps if s.get("polyline"))
 
     return DayRoute(
         origin=origin,
