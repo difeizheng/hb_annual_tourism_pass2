@@ -240,6 +240,24 @@ def render_my_trips_page(ctx):
     if not plans:
         st.caption("暂无保存的行程。在「🗓️ 规划中心」用任意方式生成后保存，都会出现在这里。")
         return
+
+    # Repository filters (source + name keyword)
+    fc1, fc2 = st.columns([1, 2])
+    _sources = sorted({p.get("source") or "unknown" for p in plans})
+    sel_src = fc1.selectbox(
+        "来源筛选", ["全部"] + _sources,
+        format_func=lambda x: "全部" if x == "全部" else _SOURCE_LABEL.get(x, x),
+        key="mt_repo_src")
+    kw = fc2.text_input("按名称搜索", "", key="mt_repo_kw",
+                        placeholder="输入行程名关键字")
+    if sel_src != "全部":
+        plans = [p for p in plans if (p.get("source") or "unknown") == sel_src]
+    if kw.strip():
+        plans = [p for p in plans if kw.strip() in p.get("name", "")]
+    if not plans:
+        st.caption("没有匹配的行程")
+        return
+
     for p in plans:
         full = load_plan(p["id"])  # auto-migrates legacy formats
         if not full:
@@ -261,9 +279,49 @@ def render_my_trips_page(ctx):
             bc1, bc2 = st.columns(2)
             if bc1.button("✏️ 编辑", key=f"mt_edit_{p['id']}"):
                 _open_in_editor(full)
-            if bc2.button("🗑 删除", key=f"mt_del_{p['id']}"):
-                delete_plan(p["id"])
+            _del_flag = f"mt_delconfirm_{p['id']}"
+            if st.session_state.get(_del_flag):
+                bc2.warning("确认删除？此操作不可恢复")
+                cc1, cc2 = st.columns(2)
+                if cc1.button("✅ 确认删除", key=f"mt_delok_{p['id']}"):
+                    delete_plan(p["id"])
+                    st.session_state.pop(_del_flag, None)
+                    st.rerun()
+                if cc2.button("❎ 取消", key=f"mt_delno_{p['id']}"):
+                    st.session_state.pop(_del_flag, None)
+                    st.rerun()
+            elif bc2.button("🗑 删除", key=f"mt_del_{p['id']}"):
+                st.session_state[_del_flag] = True
                 st.rerun()
+
+
+def _render_day(d, extras):
+    """Render one day block (header + stops + hotel) of a plan detail."""
+    rt = d.get("route") or {}
+    if rt.get("km") or rt.get("min"):
+        mins = int(rt.get("min", 0))
+        rt_txt = "🚗 {:.0f}km / {}h{:02d}m".format(rt.get("km", 0),
+                                                   mins // 60, mins % 60)
+        if rt.get("from"):
+            rt_txt += " 自 " + rt["from"]
+    else:
+        rt_txt = ""
+    ex = extras.get(str(d.get("day_num"))) or {}
+    label = d.get("city") or ex.get("label") or ""
+    tag = " 🚗转场" if d.get("is_transfer_day") else ""
+    head = "**D{} · {}**{}　{}".format(d.get("day_num", ""), label, tag, rt_txt)
+    st.markdown(head)
+    for s in d.get("stops", []):
+        line = "• " + s.get("name", "")
+        if s.get("arrive"):
+            line += "　" + s["arrive"]
+        if s.get("hours"):
+            line += "（{:g}h）".format(s["hours"])
+        if s.get("note"):
+            line += "　备注：" + s["note"]
+        st.markdown("　" + line)
+    if ex.get("hotel"):
+        st.caption("　🏨 " + ex["hotel"])
 
 
 def _save_draft_as_plan(plan_name, trip_origin):
@@ -364,34 +422,19 @@ def _regen_routes(plan):
 
 
 def _render_plan_detail(plan):
-    """Day-by-day markdown + map rebuilt from stored coords (zero API calls)."""
+    """Day-by-day markdown + map rebuilt from stored coords (zero API calls).
+    Long plans show only the first 3 days until expanded (expander-in-expander
+    is illegal in Streamlit, so a toggle gates the rest)."""
     extras = (plan.get("meta") or {}).get("day_extras", {})
-    for d in plan.get("days", []):
-        rt = d.get("route") or {}
-        if rt.get("km") or rt.get("min"):
-            mins = int(rt.get("min", 0))
-            rt_txt = "🚗 {:.0f}km / {}h{:02d}m".format(rt.get("km", 0),
-                                                       mins // 60, mins % 60)
-            if rt.get("from"):
-                rt_txt += " 自 " + rt["from"]
-        else:
-            rt_txt = ""
-        ex = extras.get(str(d.get("day_num"))) or {}
-        label = d.get("city") or ex.get("label") or ""
-        tag = " 🚗转场" if d.get("is_transfer_day") else ""
-        head = "**D{} · {}**{}　{}".format(d.get("day_num", ""), label, tag, rt_txt)
-        st.markdown(head)
-        for s in d.get("stops", []):
-            line = "• " + s.get("name", "")
-            if s.get("arrive"):
-                line += "　" + s["arrive"]
-            if s.get("hours"):
-                line += "（{:g}h）".format(s["hours"])
-            if s.get("note"):
-                line += "　备注：" + s["note"]
-            st.markdown("　" + line)
-        if ex.get("hotel"):
-            st.caption("　🏨 " + ex["hotel"])
+    days = plan.get("days", [])
+    head_days = days if len(days) <= 4 else days[:3]
+    for d in head_days:
+        _render_day(d, extras)
+    if len(days) > 4:
+        if st.toggle(f"展开剩余 {len(days) - 3} 天",
+                     key=f"mt_days_{plan.get('id', 'x')}"):
+            for d in days[3:]:
+                _render_day(d, extras)
 
     # map
     map_spots, day_routes, dp_days = [], {}, []

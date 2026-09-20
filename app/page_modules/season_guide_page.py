@@ -181,6 +181,26 @@ def render_season_guide_page(ctx):
                     else:
                         st.toast(f"{spot['name']} 已在行程中", icon="ℹ️")
 
+        def _render_tier(title, items, key_prefix, initial=15):
+            """Render up to `initial` cards; the rest only enter the DOM on demand
+            (st.expander children are rendered server-side anyway, which made this
+            page create 860+ widgets per rerun)."""
+            if not items:
+                return
+            st.subheader(f"{title} ({len(items)}个)")
+            show_key = f"season_showall_{key_prefix}_{month}"
+            show_all = st.session_state.get(show_key, False)
+            display = items if show_all else items[:initial]
+            cols = st.columns(3)
+            for i, (spot, reason, score) in enumerate(display):
+                with cols[i % 3]:
+                    _spot_card(spot, reason, score, f"{key_prefix}_{i}")
+            if len(items) > initial and not show_all:
+                if st.button(f"⬇️ 展开剩余 {len(items) - initial} 个",
+                             key=f"season_more_{key_prefix}_{month}"):
+                    st.session_state[show_key] = True
+                    st.rerun()
+
         # Tier 1
         mv = recs["must_visit"]
         if mv:
@@ -190,37 +210,9 @@ def render_season_guide_page(ctx):
                 with cols[i % 3]:
                     _spot_card(spot, reason, score, f"mv_{i}")
 
-        # Tier 2
-        rec = recs["recommended"]
-        if rec:
-            st.subheader(f"👍 值得一去 ({len(rec)}个)")
-            display_rec = rec[:15]
-            cols = st.columns(3)
-            for i, (spot, reason, score) in enumerate(display_rec):
-                with cols[i % 3]:
-                    _spot_card(spot, reason, score, f"rec_{i}")
-            if len(rec) > 15:
-                with st.expander(f"查看更多推荐 ({len(rec) - 15}个)"):
-                    cols2 = st.columns(3)
-                    for i, (spot, reason, score) in enumerate(rec[15:]):
-                        with cols2[i % 3]:
-                            _spot_card(spot, reason, score, f"rec2_{i}")
-
-        # Tier 3
-        opt = recs["optional"]
-        if opt:
-            st.subheader(f"📍 也不错 ({len(opt)}个)")
-            display_opt = opt[:15]
-            cols = st.columns(3)
-            for i, (spot, reason, score) in enumerate(display_opt):
-                with cols[i % 3]:
-                    _spot_card(spot, reason, score, f"opt_{i}")
-            if len(opt) > 15:
-                with st.expander(f"查看更多 ({len(opt) - 15}个)"):
-                    cols2 = st.columns(3)
-                    for i, (spot, reason, score) in enumerate(opt[15:]):
-                        with cols2[i % 3]:
-                            _spot_card(spot, reason, score, f"opt2_{i}")
+        # Tier 2 / Tier 3: lazy
+        _render_tier("👍 值得一去", recs["recommended"], "rec")
+        _render_tier("📍 也不错", recs["optional"], "opt")
 
     # ================================================================
     # Tab 3: 季节专属

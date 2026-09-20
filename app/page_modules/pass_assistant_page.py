@@ -6,6 +6,11 @@ import app.main here (Streamlit re-execution trap).
 """
 
 
+import datetime
+
+from src.seasonal_recommender import MONTH_TO_SEASON, calculate_seasonal_score
+
+
 def render_pass_assistant_page(ctx):
     globals().update(ctx)
     st.title("选卡助手")
@@ -73,6 +78,23 @@ def render_pass_assistant_page(ctx):
         max_pass_price = max(pi["price"] for pi in pass_info.values())
         wiz_budget = st.slider("年卡预算", 100, max_pass_price, max_pass_price, step=50)
 
+        st.subheader("Step 5: 计划几月出行？")
+        _cur_m = datetime.datetime.now().month
+        wiz_month = st.selectbox(
+            "出行月份（影响当季景点权重）",
+            ["不限"] + [f"{m}月" for m in range(1, 13)],
+            index=_cur_m,
+            label_visibility="collapsed",
+        )
+
+        # Precompute per-spot seasonal scores once (shared across passes)
+        _season_key = None
+        _spot_season_score = {}
+        if wiz_month != "不限":
+            _season_key = MONTH_TO_SEASON[int(wiz_month[:-1])]
+            for _s in spots_with_coords:
+                _spot_season_score[_s["name"]] = calculate_seasonal_score(_s, _season_key)[0]
+
         # Scoring
         wizard_results = []
         for pn, pi in pass_info.items():
@@ -111,6 +133,17 @@ def render_pass_assistant_page(ctx):
 
             # Value ratio bonus
             score += pi["value_ratio"] * 2
+
+            # Seasonal bonus: spots of this pass that are must-visit (>=4) in the chosen month
+            if _season_key:
+                season_hits = sum(
+                    1 for _s in spots_with_coords
+                    if pi["name_key"] in _s.get("passes", [])
+                    and _spot_season_score.get(_s["name"], 0) >= 4
+                )
+                if season_hits:
+                    score += min(season_hits * 1.5, 15)
+                    reasons.append(f"{wiz_month}当季必去{season_hits}个")
 
             if not reasons:
                 reasons.append("性价比不错")

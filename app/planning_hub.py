@@ -29,6 +29,7 @@ def render_planning_hub(ctx):
         from app.page_modules.trip_planner_page import render_trip_planner_page
         render_trip_planner_page(ctx)
     elif mode == "💬 对话规划":
+        _warn_if_no_llm()
         from app.chat_planner import render_chat_planner_page
         dep_coords = {
             name: {"name": name, "lng": ll[0], "lat": ll[1]}
@@ -44,11 +45,26 @@ def render_planning_hub(ctx):
         render_day_route_page(ctx["spots_with_coords"], ctx["graph_data"],
                               ctx["cleaned"])
     elif mode == "📥 粘贴导入":
+        _warn_if_no_llm()
         from app.itinerary_import import render_itinerary_import_page
         render_itinerary_import_page(ctx["spots_with_coords"],
                                      ctx["graph_data"], ctx["cleaned"])
     elif mode == "✏️ 编辑器":
         _render_editor_mode(ctx, ss)
+
+
+def _warn_if_no_llm():
+    """Upfront banner when the LLM is not configured (the mode itself still
+    renders its own fallback messages, but users should know before typing)."""
+    try:
+        from src.trip_planner.llm_client import _get_llm_config
+        secrets = dict(st.secrets) if hasattr(st, "secrets") else {}
+        if not _get_llm_config(secrets):
+            st.warning("⚠️ 未配置 LLM：请在 `app/.streamlit/secrets.toml` 中设置 "
+                       "`llm_api_base` / `llm_api_key` / `llm_model`。此模式依赖 LLM 解析，"
+                       "暂不可用；可改用 📝 表单规划 / 🚗 周末出发 / 🧭 单日路线 等免 LLM 模式。")
+    except Exception:
+        pass
 
 
 def _render_editor_mode(ctx, ss):

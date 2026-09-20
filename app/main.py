@@ -806,6 +806,19 @@ if "trip_origin" not in st.session_state:
 if "trip_nearby" not in st.session_state:
     st.session_state.trip_nearby = {"hotels": [], "restaurants": []}
 
+# Draft persistence: reload from disk when session is fresh (survives browser restart)
+_DRAFT_FILE = os.path.join(DATA_DIR, "trip_draft.json")
+if not st.session_state.selected_trip_spots and os.path.exists(_DRAFT_FILE):
+    try:
+        with open(_DRAFT_FILE, "r", encoding="utf-8") as _f:
+            _draft = json.load(_f)
+        if isinstance(_draft, list):
+            # tolerate malformed entries — items must be spot dicts with a name
+            st.session_state.selected_trip_spots = [
+                s for s in _draft if isinstance(s, dict) and s.get("name")]
+    except (json.JSONDecodeError, OSError):
+        pass
+
 # Sync from map server bridge file
 _QUICK_TRIP_FILE = os.path.join(DATA_DIR, "quick_trip_spots.json")
 if os.path.exists(_QUICK_TRIP_FILE):
@@ -939,31 +952,38 @@ def _build_weekend_timeline(
 
 
 # ============================================================
-# Page 1: Map Exploration (default)
+# Page dispatch (wrapped so the trip draft is persisted even when a
+# page calls st.stop())
 # ============================================================
-if page == "🗺️ 地图探索":
-    from app.page_modules.map_explore_page import render_map_explore_page
-    render_map_explore_page(dict(globals()))
+try:
+    if page == "🗺️ 地图探索":
+        from app.page_modules.map_explore_page import render_map_explore_page
+        render_map_explore_page(dict(globals()))
 
-elif page == "🎫 年卡对比":
-    from app.page_modules.pass_compare_page import render_pass_compare_page
-    render_pass_compare_page(dict(globals()))
+    elif page == "🎫 年卡对比":
+        from app.page_modules.pass_compare_page import render_pass_compare_page
+        render_pass_compare_page(dict(globals()))
 
-elif page == "💡 选卡助手":
-    from app.page_modules.pass_assistant_page import render_pass_assistant_page
-    render_pass_assistant_page(dict(globals()))
+    elif page == "💡 选卡助手":
+        from app.page_modules.pass_assistant_page import render_pass_assistant_page
+        render_pass_assistant_page(dict(globals()))
 
-elif page == "🌿 季节指南":
-    from app.page_modules.season_guide_page import render_season_guide_page
-    render_season_guide_page(dict(globals()))
+    elif page == "🌿 季节指南":
+        from app.page_modules.season_guide_page import render_season_guide_page
+        render_season_guide_page(dict(globals()))
 
-elif page == "🗓️ 规划中心":
-    from app.planning_hub import render_planning_hub
-    render_planning_hub(dict(globals()))
+    elif page == "🗓️ 规划中心":
+        from app.planning_hub import render_planning_hub
+        render_planning_hub(dict(globals()))
 
-# ============================================================
-# My Trips (🧳 我的行程): draft + unified plan repository
-# ============================================================
-elif page == "🧳 我的行程":
-    from app.page_modules.my_trips_page import render_my_trips_page
-    render_my_trips_page(dict(globals()))
+    elif page == "🧳 我的行程":
+        from app.page_modules.my_trips_page import render_my_trips_page
+        render_my_trips_page(dict(globals()))
+finally:
+    # Persist trip draft every run (small JSON; survives restarts)
+    try:
+        with open(_DRAFT_FILE, "w", encoding="utf-8") as _f:
+            json.dump(st.session_state.get("selected_trip_spots", []), _f,
+                      ensure_ascii=False, indent=1)
+    except OSError:
+        pass
