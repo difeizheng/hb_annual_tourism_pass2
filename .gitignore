@@ -13,3 +13,4 @@ static/
 data/map_server.port
 data/map_server.log
 graphify-out/
+data/trip_draft.json
