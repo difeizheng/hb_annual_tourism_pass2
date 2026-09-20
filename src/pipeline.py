@@ -13,6 +13,7 @@ from src.parser import parse_spot_rules
 from src.classifier import classify_spot
 from src.aligner import align_spots
 from src.graph_builder import build_graph, save_graph
+from src.canonicalizer import canonicalize_spots
 
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -35,6 +36,26 @@ def run_pipeline(data_dir: str = None, output_dir: str = None):
     print("Step 2: Cleaning data...")
     cleaned = clean_all_spots(raw_records)
     print(f"  Cleaned {len(cleaned)} records")
+
+    # Step 2.5: Canonicalize near-duplicate names (张公山寨 vs 张公山寨(青山区))
+    # and remap spot_coordinates.json to canonical names. Without this, ~85 name
+    # variants double-count in every stat and double-render on the map.
+    print("Step 2.5: Canonicalizing spot names...")
+    coords_path = os.path.join(_output_dir, "spot_coordinates.json")
+    coordinates = {}
+    if os.path.exists(coords_path):
+        with open(coords_path, encoding="utf-8") as f:
+            coordinates = json.load(f)
+    cleaned, coordinates, name_aliases, canon_report = canonicalize_spots(cleaned, coordinates)
+    print(f"  Aliases merged: {len(name_aliases)}, "
+          f"unique names {canon_report['stats']['unique_names_before']} -> {canon_report['stats']['unique_names_after']}")
+    if coordinates:
+        with open(coords_path, "w", encoding="utf-8") as f:
+            json.dump(coordinates, f, ensure_ascii=False, indent=2)
+    with open(os.path.join(_output_dir, "name_aliases.json"), "w", encoding="utf-8") as f:
+        json.dump(name_aliases, f, ensure_ascii=False, indent=2)
+    with open(os.path.join(_output_dir, "canonicalize_report.json"), "w", encoding="utf-8") as f:
+        json.dump(canon_report, f, ensure_ascii=False, indent=2)
 
     # Step 3: Classify
     print("Step 3: Classifying spots...")

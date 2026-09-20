@@ -12,9 +12,9 @@ def render_pass_compare_page(ctx):
 
     passes_list = sorted(set(s["pass_name"] for s in cleaned))
     selected = st.multiselect(
-        "选择 2-5 张年卡对比",
+        "选择年卡对比（默认全部，可删减）",
         passes_list,
-        default=passes_list[:2] if len(passes_list) >= 2 else passes_list,
+        default=passes_list,
     )
 
     if len(selected) >= 2:

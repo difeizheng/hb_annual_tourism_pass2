@@ -21,7 +21,7 @@
       }
     },
     "_classification": {
-      "category": "其他",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -46,7 +46,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -154,7 +154,7 @@
       }
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "城市娱乐",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -214,7 +214,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -274,7 +274,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -301,7 +301,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -330,7 +330,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "动物园",
       "tags": []
     }
@@ -383,7 +383,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -410,7 +410,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "动物园",
       "tags": [
         "夜场"
@@ -436,7 +436,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -502,7 +502,7 @@
     }
   },
   {
-    "spot_name": "武汉园博园",
+    "spot_name": "园博园",
     "raw_name": "武汉园博园（武汉自然博物馆）",
     "area": "汉口",
     "city": "武汉",
@@ -551,7 +551,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -575,7 +575,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "自然景观",
       "sub_category": null,
       "tags": [
         "5A"
@@ -632,7 +632,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": [
         "5A"
@@ -658,7 +658,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": [
         "5A"
@@ -708,7 +708,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -732,7 +732,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -780,7 +780,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -884,7 +884,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": [
         "夜场"
@@ -934,7 +934,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -989,7 +989,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "滑雪",
       "tags": []
     }
@@ -1013,7 +1013,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -1066,7 +1066,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -1095,7 +1095,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": [
         "需补差"
@@ -1145,7 +1145,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -1174,7 +1174,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": [
         "需补差"
@@ -1205,7 +1205,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": [
         "需补差"
@@ -1234,7 +1234,7 @@
       }
     },
     "_classification": {
-      "category": "其他",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": [
         "夜场"
@@ -1242,7 +1242,7 @@
     }
   },
   {
-    "spot_name": "孝感凤凰天仙城",
+    "spot_name": "凤凰天仙城",
     "raw_name": "孝感凤凰天仙城",
     "area": "孝南",
     "city": "孝感",
@@ -1289,7 +1289,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -1393,7 +1393,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -1517,7 +1517,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -2096,7 +2096,7 @@
       }
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "主题乐园",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -2122,7 +2122,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -2181,7 +2181,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "动物园",
       "tags": [
         "夜场"
@@ -2207,7 +2207,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -2233,7 +2233,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -2259,7 +2259,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "动物园",
       "tags": []
     }
@@ -2342,7 +2342,7 @@
         "supplement_amounts": [
           40.0
         ],
-        "has_night_session": true
+        "night_entry_hour": 4
       }
     },
     "_classification": {
@@ -2375,7 +2375,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -2401,7 +2401,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -2425,7 +2425,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -2477,13 +2477,13 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "锦鲤土司城（黄陂）",
+    "spot_name": "锦鲤土司城",
     "raw_name": "锦鲤土司城（锦里沟）（黄陂）",
     "area": "武汉",
     "city": "武汉",
@@ -2556,7 +2556,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -2588,7 +2588,7 @@
     }
   },
   {
-    "spot_name": "木兰水镇（黄陂）",
+    "spot_name": "木兰水镇",
     "raw_name": "木兰水镇（含夜场）（黄陂）",
     "area": "武汉",
     "city": "武汉",
@@ -2657,7 +2657,7 @@
       },
       "notes": {
         "raw": "玩夜场需要16:00之前入园，1.2米以下儿童、70岁以上老人免费",
-        "has_night_session": true
+        "night_entry_hour": 16
       }
     },
     "_classification": {
@@ -2686,11 +2686,11 @@
       },
       "notes": {
         "raw": "玩夜场需要16:00之前入园，1.2米以下儿童、70岁以上老人免费",
-        "has_night_session": true
+        "night_entry_hour": 16
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": [
         "夜场"
@@ -2799,7 +2799,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "滑雪",
       "tags": [
         "需补差"
@@ -2807,7 +2807,7 @@
     }
   },
   {
-    "spot_name": "武汉花博汇",
+    "spot_name": "花博汇",
     "raw_name": "武汉花博汇（蔡甸）",
     "area": "武汉",
     "city": "武汉",
@@ -2886,7 +2886,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -2991,7 +2991,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -3038,7 +3038,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -3182,7 +3182,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -3339,7 +3339,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -3363,7 +3363,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -3440,7 +3440,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -3556,7 +3556,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": [
         "需补差"
@@ -3582,7 +3582,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -3635,7 +3635,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -3683,7 +3683,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -3783,7 +3783,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": [
         "夜场"
@@ -3857,7 +3857,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -3881,7 +3881,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -3929,7 +3929,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -3977,7 +3977,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "自然景观",
       "sub_category": null,
       "tags": []
     }
@@ -4004,7 +4004,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": [
         "夜场"
@@ -4034,7 +4034,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": [
         "夜场"
@@ -4146,7 +4146,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -4175,7 +4175,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "水上乐园",
       "tags": [
         "夜场"
@@ -4237,7 +4237,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": [
         "夜场"
@@ -4266,7 +4266,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "动物园",
       "tags": []
     }
@@ -4294,7 +4294,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": [
         "夜场"
@@ -4323,7 +4323,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -4350,7 +4350,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": null,
       "tags": []
     }
@@ -4404,7 +4404,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -4489,7 +4489,7 @@
       }
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "主题乐园",
       "sub_category": "植物园",
       "tags": [
         "夜场"
@@ -4519,7 +4519,7 @@
       }
     },
     "_classification": {
-      "category": "其他",
+      "category": "人文历史",
       "sub_category": null,
       "tags": [
         "夜场"
@@ -4548,7 +4548,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -4576,7 +4576,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -4603,7 +4603,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -4632,7 +4632,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": [
         "夜场"
@@ -4859,8 +4859,8 @@
       "usage_limit": {
         "raw": "40元/次限6次",
         "requires_appointment": false,
-        "type": "free",
-        "count": 6
+        "type": "supplement",
+        "supplement_amount": 40.0
       },
       "notes": {
         "raw": "6岁以下谢绝游玩,需补差40",
@@ -5046,7 +5046,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -5150,7 +5150,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -5202,7 +5202,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -5228,7 +5228,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -5254,7 +5254,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -5273,14 +5273,15 @@
       "usage_limit": {
         "raw": "67元/次",
         "requires_appointment": false,
-        "type": "unknown"
+        "type": "supplement",
+        "supplement_amount": 67.0
       },
       "notes": {
         "raw": "可免费带一名1.2米以下儿童"
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -5310,7 +5311,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "滑雪",
       "tags": [
         "需补差"
@@ -5318,7 +5319,7 @@
     }
   },
   {
-    "spot_name": "武汉花博汇",
+    "spot_name": "花博汇",
     "raw_name": "武汉花博汇（蔡甸）",
     "area": "蔡甸",
     "city": "武汉",
@@ -5366,7 +5367,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -5496,7 +5497,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -5598,7 +5599,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -5625,13 +5626,13 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "吉象勇敢者乐园(江夏永旺)",
+    "spot_name": "吉象勇敢者乐园",
     "raw_name": "吉象勇敢者乐园(江夏永旺)",
     "area": "江夏",
     "city": "武汉",
@@ -5683,7 +5684,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -5709,7 +5710,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "动物园",
       "tags": []
     }
@@ -5735,7 +5736,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -5762,7 +5763,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -5896,7 +5897,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "漂流",
       "tags": [
         "季节性",
@@ -6106,7 +6107,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -6199,7 +6200,7 @@
     }
   },
   {
-    "spot_name": "松鼠部落水上乐园(咸宁)",
+    "spot_name": "松鼠部落水上乐园",
     "raw_name": "松鼠部落水上乐园(咸宁)",
     "area": "咸宁",
     "city": "咸宁",
@@ -6307,7 +6308,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -6404,7 +6405,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": [
         "需补差"
@@ -6459,7 +6460,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -6487,7 +6488,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -6511,7 +6512,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -6535,7 +6536,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "动物园",
       "tags": []
     }
@@ -6609,7 +6610,8 @@
       "usage_limit": {
         "raw": "25元/次",
         "requires_appointment": false,
-        "type": "unknown"
+        "type": "supplement",
+        "supplement_amount": 25.0
       },
       "notes": {
         "raw": "补25元/次，1米以下儿童免费",
@@ -6707,7 +6709,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "动物园",
       "tags": [
         "夜场"
@@ -6992,7 +6994,7 @@
       }
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "城市娱乐",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -7054,7 +7056,7 @@
       }
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "城市娱乐",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -7088,7 +7090,7 @@
     }
   },
   {
-    "spot_name": "武汉中润趣谷滑雪场",
+    "spot_name": "中润趣谷滑雪场",
     "raw_name": "武汉中润趣谷滑雪场（蔡甸）",
     "area": "武汉",
     "city": "武汉",
@@ -7111,7 +7113,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "滑雪",
       "tags": [
         "需补差"
@@ -7137,7 +7139,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -7185,7 +7187,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -7257,7 +7259,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -7281,7 +7283,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -7311,7 +7313,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "漂流",
       "tags": [
         "需补差"
@@ -7385,13 +7387,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "紫薇都市田园（新洲）",
+    "spot_name": "紫薇都市田园",
     "raw_name": "紫薇都市田园（不含夜场）（新洲）",
     "area": "武汉",
     "city": "武汉",
@@ -7433,7 +7435,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -7457,7 +7459,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -7481,7 +7483,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -7561,7 +7563,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -7585,7 +7587,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -7662,7 +7664,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": [
         "需补差"
@@ -7741,7 +7743,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": [
         "需补差"
@@ -7839,7 +7841,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -7863,7 +7865,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -7887,7 +7889,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -7935,7 +7937,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -7983,7 +7985,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -8007,7 +8009,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -8079,7 +8081,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -8151,7 +8153,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -8175,7 +8177,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -8204,7 +8206,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "滑雪",
       "tags": [
         "需补差"
@@ -8302,7 +8304,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -8326,7 +8328,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -8662,7 +8664,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "游乐园",
       "tags": []
     }
@@ -8691,7 +8693,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": [
         "需补差"
@@ -8765,7 +8767,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -8837,7 +8839,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": null,
       "tags": []
     }
@@ -8885,7 +8887,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -8933,7 +8935,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -8959,7 +8961,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -9007,7 +9009,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -9031,7 +9033,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -9103,7 +9105,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -9175,7 +9177,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -9223,7 +9225,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -9340,7 +9342,8 @@
       "usage_limit": {
         "raw": "5元/次",
         "requires_appointment": false,
-        "type": "unknown"
+        "type": "supplement",
+        "supplement_amount": 5.0
       },
       "notes": {
         "raw": "5元/次，需至少提前1天预约",
@@ -9424,7 +9427,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -9448,7 +9451,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -9551,7 +9554,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -9575,7 +9578,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -9602,7 +9605,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "漂流",
       "tags": [
         "需补差"
@@ -9801,7 +9804,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -9849,7 +9852,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -9873,7 +9876,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -9897,7 +9900,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -9951,7 +9954,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "漂流",
       "tags": [
         "需补差"
@@ -9977,7 +9980,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -10036,7 +10039,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "漂流",
       "tags": [
         "需补差"
@@ -10141,7 +10144,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -10168,7 +10171,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "漂流",
       "tags": [
         "需补差"
@@ -10197,7 +10200,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "漂流",
       "tags": [
         "需补差"
@@ -10223,7 +10226,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -10247,7 +10250,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -10277,7 +10280,7 @@
     }
   },
   {
-    "spot_name": "孝感爱琴海水上乐园",
+    "spot_name": "爱琴海水上乐园",
     "raw_name": "孝感爱琴海水上乐园（孝南）",
     "area": "孝感",
     "city": "孝感",
@@ -10330,7 +10333,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -10384,7 +10387,7 @@
     }
   },
   {
-    "spot_name": "随州西游记公园",
+    "spot_name": "西游记公园",
     "raw_name": "随州西游记公园（随县）",
     "area": "随州",
     "city": "随州",
@@ -10426,7 +10429,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -10497,7 +10500,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -10521,7 +10524,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -10567,7 +10570,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -10590,7 +10593,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "自然景观",
       "sub_category": null,
       "tags": []
     }
@@ -10636,7 +10639,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -10659,7 +10662,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -10807,7 +10810,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -10832,7 +10835,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -10882,7 +10885,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": null,
       "tags": []
     }
@@ -10905,7 +10908,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "动物园",
       "tags": []
     }
@@ -10951,7 +10954,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -10975,7 +10978,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "城市娱乐",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -10998,13 +11001,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "动物园",
       "tags": []
     }
   },
   {
-    "spot_name": "多乐台球（限1次）",
+    "spot_name": "多乐台球",
     "raw_name": "多乐台球（武汉8店通用）（限1次）",
     "area": "武汉",
     "city": "武汉",
@@ -11098,7 +11101,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -11121,7 +11124,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -11167,7 +11170,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -11190,7 +11193,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -11305,7 +11308,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -11328,7 +11331,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -11374,7 +11377,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -11444,7 +11447,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -11467,7 +11470,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -11614,7 +11617,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -11662,7 +11665,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "滑雪",
       "tags": []
     }
@@ -11760,7 +11763,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -11786,7 +11789,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -11809,7 +11812,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -11838,7 +11841,7 @@
     }
   },
   {
-    "spot_name": "黄石矿博园",
+    "spot_name": "矿博园",
     "raw_name": "黄石矿博园",
     "area": "黄石",
     "city": "黄石",
@@ -11857,7 +11860,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -11880,7 +11883,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -11903,7 +11906,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -11972,7 +11975,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -12018,7 +12021,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -12041,7 +12044,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -12064,7 +12067,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -12087,7 +12090,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -12134,7 +12137,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -12180,7 +12183,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -12203,7 +12206,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -12226,7 +12229,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -12249,7 +12252,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -12274,7 +12277,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": []
     }
@@ -12343,7 +12346,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -12412,7 +12415,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -12458,7 +12461,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -12481,7 +12484,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -12504,7 +12507,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -12527,7 +12530,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -12550,7 +12553,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -12762,7 +12765,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": []
     }
@@ -12786,7 +12789,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": []
     }
@@ -12811,7 +12814,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -12834,7 +12837,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -12949,7 +12952,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -13067,7 +13070,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -13090,7 +13093,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -13113,7 +13116,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": null,
       "tags": []
     }
@@ -13159,7 +13162,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -13251,7 +13254,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -13297,7 +13300,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -13346,7 +13349,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -13372,7 +13375,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -13395,7 +13398,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -13418,7 +13421,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -13487,7 +13490,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -13533,7 +13536,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -13602,7 +13605,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -13648,7 +13651,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -13671,7 +13674,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -13740,7 +13743,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": []
     }
@@ -13763,7 +13766,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -13809,7 +13812,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -13832,7 +13835,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -13878,7 +13881,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -13924,7 +13927,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -13947,7 +13950,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -13970,7 +13973,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -14039,7 +14042,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -14062,7 +14065,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -14085,7 +14088,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -14131,7 +14134,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -14154,7 +14157,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -14177,7 +14180,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -14200,7 +14203,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -14317,7 +14320,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -14365,7 +14368,7 @@
       }
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "城市娱乐",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -14488,7 +14491,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -14511,7 +14514,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -14580,7 +14583,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "博物馆",
       "tags": []
     }
@@ -14603,7 +14606,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -14626,7 +14629,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -14649,7 +14652,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -14695,7 +14698,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -14718,7 +14721,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -14741,7 +14744,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -14768,7 +14771,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "城市娱乐",
       "sub_category": null,
       "tags": []
     }
@@ -14872,7 +14875,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "自然景观",
       "sub_category": null,
       "tags": []
     }
@@ -14895,7 +14898,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -15043,7 +15046,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -15068,7 +15071,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -15118,7 +15121,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": null,
       "tags": []
     }
@@ -15142,7 +15145,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "城市娱乐",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -15165,7 +15168,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "动物园",
       "tags": []
     }
@@ -15194,7 +15197,7 @@
     }
   },
   {
-    "spot_name": "多乐台球（限1次）",
+    "spot_name": "多乐台球",
     "raw_name": "多乐台球（武汉8店通用）（限1次）",
     "area": "武汉",
     "city": "武汉",
@@ -15289,7 +15292,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -15312,7 +15315,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -15389,7 +15392,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -15458,7 +15461,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -15481,7 +15484,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -15550,7 +15553,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -15573,7 +15576,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -15619,7 +15622,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -15688,7 +15691,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -15734,7 +15737,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -15757,7 +15760,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "动物园",
       "tags": []
     }
@@ -15780,7 +15783,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -15896,7 +15899,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "滑雪",
       "tags": []
     }
@@ -15991,7 +15994,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16014,7 +16017,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16043,7 +16046,7 @@
     }
   },
   {
-    "spot_name": "黄石矿博园",
+    "spot_name": "矿博园",
     "raw_name": "黄石矿博园",
     "area": "黄石",
     "city": "黄石",
@@ -16062,7 +16065,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16085,7 +16088,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16177,7 +16180,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16200,7 +16203,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16223,7 +16226,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16246,7 +16249,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -16296,7 +16299,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "漂流",
       "tags": []
     }
@@ -16321,7 +16324,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": []
     }
@@ -16344,7 +16347,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16367,7 +16370,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16390,7 +16393,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16436,7 +16439,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16459,7 +16462,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16528,7 +16531,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16574,7 +16577,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16643,7 +16646,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16666,7 +16669,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16689,7 +16692,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -16712,7 +16715,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16735,7 +16738,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -16947,7 +16950,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": []
     }
@@ -16972,7 +16975,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -17018,7 +17021,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -17110,7 +17113,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -17156,7 +17159,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -17225,7 +17228,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -17294,7 +17297,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -17317,7 +17320,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -17389,7 +17392,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -17412,7 +17415,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -17435,7 +17438,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -17464,7 +17467,7 @@
     }
   },
   {
-    "spot_name": "随州炎帝故里",
+    "spot_name": "炎帝故里",
     "raw_name": "随州炎帝故里",
     "area": "随州",
     "city": "随州",
@@ -17527,7 +17530,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -17550,7 +17553,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -17573,7 +17576,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -17619,7 +17622,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -17642,7 +17645,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -17665,7 +17668,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -17757,7 +17760,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -17803,7 +17806,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -17872,7 +17875,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -17918,7 +17921,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -17987,7 +17990,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": []
     }
@@ -18010,7 +18013,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -18056,7 +18059,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -18079,7 +18082,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -18150,7 +18153,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -18242,7 +18245,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -18288,7 +18291,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -18311,7 +18314,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -18334,7 +18337,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -18357,7 +18360,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -18403,7 +18406,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -18426,7 +18429,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -18449,7 +18452,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -18633,7 +18636,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -18679,7 +18682,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -18748,7 +18751,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -18771,7 +18774,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -18817,7 +18820,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -18840,7 +18843,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -18863,7 +18866,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -18886,7 +18889,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -18909,7 +18912,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -18936,7 +18939,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "城市娱乐",
       "sub_category": null,
       "tags": []
     }
@@ -19045,7 +19048,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -19072,7 +19075,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "动物园",
       "tags": [
         "夜场"
@@ -19229,7 +19232,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -19262,7 +19265,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -19288,7 +19291,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "动物园",
       "tags": []
     }
@@ -19395,7 +19398,7 @@
       }
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "城市娱乐",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -19717,7 +19720,7 @@
       }
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "城市娱乐",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -19741,7 +19744,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -19765,7 +19768,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "自然景观",
       "sub_category": null,
       "tags": []
     }
@@ -19813,7 +19816,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "漂流",
       "tags": []
     }
@@ -19885,7 +19888,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -19957,7 +19960,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -19981,7 +19984,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -20011,7 +20014,7 @@
     }
   },
   {
-    "spot_name": "花朝河湾(新洲)",
+    "spot_name": "花朝河湾",
     "raw_name": "花朝河湾(新洲)",
     "area": "新洲",
     "city": "武汉",
@@ -20032,7 +20035,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": [
         "夜场"
@@ -20061,7 +20064,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": [
         "夜场"
@@ -20122,7 +20125,7 @@
     }
   },
   {
-    "spot_name": "张公山寨(青山区)",
+    "spot_name": "张公山寨",
     "raw_name": "张公山寨(青山区)",
     "area": "青山区",
     "city": "武汉",
@@ -20140,7 +20143,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -20164,7 +20167,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -20212,7 +20215,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -20273,7 +20276,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "滑雪",
       "tags": [
         "需补差"
@@ -20327,7 +20330,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -20357,7 +20360,7 @@
     }
   },
   {
-    "spot_name": "香草花田(蔡甸)",
+    "spot_name": "香草花田",
     "raw_name": "香草花田(蔡甸)",
     "area": "蔡甸",
     "city": "武汉",
@@ -20403,7 +20406,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": [
         "需补差"
@@ -20429,7 +20432,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -20483,7 +20486,7 @@
     }
   },
   {
-    "spot_name": "大泉沟(大冶)",
+    "spot_name": "大泉沟",
     "raw_name": "大泉沟(大冶)",
     "area": "大冶",
     "city": "黄石",
@@ -20506,7 +20509,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": [
         "需补差"
@@ -20514,7 +20517,7 @@
     }
   },
   {
-    "spot_name": "大泉沟(大冶)",
+    "spot_name": "大泉沟",
     "raw_name": "大泉沟(大冶)",
     "area": "大冶",
     "city": "黄石",
@@ -20532,7 +20535,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -20556,7 +20559,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -20607,7 +20610,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": [
         "夜场"
@@ -20633,13 +20636,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "黄石矿博园",
+    "spot_name": "矿博园",
     "raw_name": "黄石矿博园（大冶）",
     "area": "大冶",
     "city": "黄石",
@@ -20657,7 +20660,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -20711,7 +20714,7 @@
     }
   },
   {
-    "spot_name": "袁夫稻田(黄梅)",
+    "spot_name": "袁夫稻田",
     "raw_name": "袁夫稻田(黄梅)",
     "area": "黄梅",
     "city": "黄冈",
@@ -20753,7 +20756,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -20777,13 +20780,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "进士河漂流漂流(罗田)(补100)",
+    "spot_name": "进士河漂流漂流",
     "raw_name": "进士河漂流漂流(罗田)(补100)",
     "area": "罗田",
     "city": "黄冈",
@@ -20809,7 +20812,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "漂流",
       "tags": [
         "需补差"
@@ -20835,7 +20838,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "漂流",
       "tags": [
         "需补差"
@@ -20843,7 +20846,7 @@
     }
   },
   {
-    "spot_name": "红花尖滑雪度假村(罗田)(需补差)",
+    "spot_name": "红花尖滑雪度假村",
     "raw_name": "红花尖滑雪度假村(罗田)(需补差)",
     "area": "罗田",
     "city": "黄冈",
@@ -20875,7 +20878,7 @@
     }
   },
   {
-    "spot_name": "燕儿谷(罗田)",
+    "spot_name": "燕儿谷",
     "raw_name": "燕儿谷(罗田)",
     "area": "罗田",
     "city": "黄冈",
@@ -20893,13 +20896,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "大别山峡谷漂流(罗田)(需补45)",
+    "spot_name": "大别山峡谷漂流",
     "raw_name": "大别山峡谷漂流(罗田)(需补45)",
     "area": "罗田",
     "city": "黄冈",
@@ -20933,7 +20936,7 @@
     }
   },
   {
-    "spot_name": "黄石河峡谷隧道漂流(罗田)",
+    "spot_name": "黄石河峡谷隧道漂流",
     "raw_name": "黄石河峡谷隧道漂流(罗田)",
     "area": "罗田",
     "city": "黄冈",
@@ -20969,7 +20972,7 @@
     }
   },
   {
-    "spot_name": "桃花冲漂流(英山)",
+    "spot_name": "桃花冲漂流",
     "raw_name": "桃花冲漂流(英山)",
     "area": "英山",
     "city": "黄冈",
@@ -20996,7 +20999,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "漂流",
       "tags": [
         "季节性",
@@ -21005,7 +21008,7 @@
     }
   },
   {
-    "spot_name": "南武当滑雪场(英山)",
+    "spot_name": "南武当滑雪场",
     "raw_name": "南武当滑雪场(英山)",
     "area": "英山",
     "city": "黄冈",
@@ -21032,7 +21035,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "滑雪",
       "tags": [
         "需补差"
@@ -21040,7 +21043,7 @@
     }
   },
   {
-    "spot_name": "四季花海花乐汤温泉(英山)",
+    "spot_name": "四季花海花乐汤温泉",
     "raw_name": "四季花海花乐汤温泉(英山)",
     "area": "英山",
     "city": "黄冈",
@@ -21063,7 +21066,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": [
         "需补差"
@@ -21071,7 +21074,7 @@
     }
   },
   {
-    "spot_name": "花乐汤温泉(英山)",
+    "spot_name": "花乐汤温泉",
     "raw_name": "花乐汤温泉(英山)",
     "area": "英山",
     "city": "黄冈",
@@ -21089,13 +21092,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": []
     }
   },
   {
-    "spot_name": "天马寨(英山)",
+    "spot_name": "天马寨",
     "raw_name": "天马寨(英山)",
     "area": "英山",
     "city": "黄冈",
@@ -21113,13 +21116,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "南武当(英山)",
+    "spot_name": "南武当",
     "raw_name": "南武当(英山)",
     "area": "英山",
     "city": "黄冈",
@@ -21137,7 +21140,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -21161,13 +21164,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "东坡赤壁(黄州)",
+    "spot_name": "东坡赤壁",
     "raw_name": "东坡赤壁(黄州)",
     "area": "黄州",
     "city": "黄冈",
@@ -21233,7 +21236,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -21275,7 +21278,7 @@
     }
   },
   {
-    "spot_name": "龙门花海(武穴)",
+    "spot_name": "龙门花海",
     "raw_name": "龙门花海(武穴)",
     "area": "武穴",
     "city": "黄冈",
@@ -21317,13 +21320,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "古孝感乡都(麻城)",
+    "spot_name": "古孝感乡都",
     "raw_name": "古孝感乡都(麻城)",
     "area": "麻城",
     "city": "黄冈",
@@ -21347,7 +21350,7 @@
     }
   },
   {
-    "spot_name": "五脑山森林公园(麻城)",
+    "spot_name": "五脑山森林公园",
     "raw_name": "五脑山森林公园(麻城)",
     "area": "麻城",
     "city": "黄冈",
@@ -21365,13 +21368,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "帝王湖(红安)",
+    "spot_name": "帝王湖",
     "raw_name": "帝王湖(红安)",
     "area": "红安",
     "city": "黄冈",
@@ -21389,7 +21392,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -21419,7 +21422,7 @@
     }
   },
   {
-    "spot_name": "田园童话(团风)",
+    "spot_name": "田园童话",
     "raw_name": "田园童话(团风)",
     "area": "团风",
     "city": "黄冈",
@@ -21485,7 +21488,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -21557,7 +21560,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": []
     }
@@ -21583,7 +21586,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "滑雪",
       "tags": [
         "需补差"
@@ -21591,7 +21594,7 @@
     }
   },
   {
-    "spot_name": "闯王陵景区(通山)",
+    "spot_name": "闯王陵景区",
     "raw_name": "闯王陵景区(通山)",
     "area": "通山",
     "city": "咸宁",
@@ -21609,7 +21612,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -21638,7 +21641,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": [
         "需补差"
@@ -21646,7 +21649,7 @@
     }
   },
   {
-    "spot_name": "131地下工程(咸安)",
+    "spot_name": "131地下工程",
     "raw_name": "131地下工程(咸安)",
     "area": "咸安",
     "city": "咸宁",
@@ -21689,7 +21692,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -21827,7 +21830,7 @@
       }
     },
     "_classification": {
-      "category": "其他",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": [
         "夜场"
@@ -21925,7 +21928,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -21979,7 +21982,7 @@
     }
   },
   {
-    "spot_name": "随州西游记公园",
+    "spot_name": "西游记公园",
     "raw_name": "随州西游记公园",
     "area": "随州",
     "city": "随州",
@@ -22021,7 +22024,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -22098,7 +22101,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -22194,7 +22197,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -22269,7 +22272,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -22299,7 +22302,7 @@
     }
   },
   {
-    "spot_name": "武当大明峰景区(丹江口)",
+    "spot_name": "武当大明峰景区",
     "raw_name": "武当大明峰景区(丹江口)",
     "area": "丹江口",
     "city": "十堰",
@@ -22365,7 +22368,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -22413,7 +22416,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -22437,7 +22440,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -22509,7 +22512,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -22533,13 +22536,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "虎啸滩(郧阳区)",
+    "spot_name": "虎啸滩",
     "raw_name": "虎啸滩(郧阳区)",
     "area": "郧阳区",
     "city": "十堰",
@@ -22563,7 +22566,7 @@
     }
   },
   {
-    "spot_name": "太和梅花谷(竹山县)",
+    "spot_name": "太和梅花谷",
     "raw_name": "太和梅花谷(竹山县)",
     "area": "竹山县",
     "city": "十堰",
@@ -22581,7 +22584,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -22611,7 +22614,7 @@
     }
   },
   {
-    "spot_name": "上庸文化旅游区(竹山县)",
+    "spot_name": "上庸文化旅游区",
     "raw_name": "上庸文化旅游区(竹山县)",
     "area": "竹山县",
     "city": "十堰",
@@ -22629,7 +22632,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -22653,7 +22656,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -22703,7 +22706,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -22729,7 +22732,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -22884,7 +22887,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -22908,7 +22911,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -22932,13 +22935,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "鱼泉河漂流(南漳)(需补50)",
+    "spot_name": "鱼泉河漂流",
     "raw_name": "鱼泉河漂流(南漳)(需补50)",
     "area": "南漳",
     "city": "襄阳",
@@ -22958,15 +22961,13 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "漂流",
-      "tags": [
-        "需补差"
-      ]
+      "tags": []
     }
   },
   {
-    "spot_name": "龙王峡漂流(南漳)(需补50)",
+    "spot_name": "龙王峡漂流",
     "raw_name": "龙王峡漂流(南漳)(需补50)",
     "area": "南漳",
     "city": "襄阳",
@@ -23069,13 +23070,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "寺庙",
       "tags": []
     }
   },
   {
-    "spot_name": "唐梓山风景区(枣阳)",
+    "spot_name": "唐梓山风景区",
     "raw_name": "唐梓山风景区(枣阳)",
     "area": "枣阳",
     "city": "襄阳",
@@ -23123,7 +23124,7 @@
     }
   },
   {
-    "spot_name": "鹿门山风景区(襄州)",
+    "spot_name": "鹿门山风景区",
     "raw_name": "鹿门山风景区(襄州)",
     "area": "襄州",
     "city": "襄阳",
@@ -23160,7 +23161,8 @@
       "usage_limit": {
         "raw": "5元/次",
         "requires_appointment": false,
-        "type": "unknown"
+        "type": "supplement",
+        "supplement_amount": 5.0
       },
       "notes": {
         "raw": "需至少提前1天预约",
@@ -23174,7 +23176,7 @@
     }
   },
   {
-    "spot_name": "黄家湾(襄城)",
+    "spot_name": "黄家湾",
     "raw_name": "黄家湾(襄城)",
     "area": "襄城",
     "city": "襄阳",
@@ -23198,7 +23200,7 @@
     }
   },
   {
-    "spot_name": "襄阳九天玄女风景区(襄城)",
+    "spot_name": "襄阳九天玄女风景区",
     "raw_name": "襄阳九天玄女风景区(襄城)",
     "area": "襄城",
     "city": "襄阳",
@@ -23222,7 +23224,7 @@
     }
   },
   {
-    "spot_name": "普罗旺斯薰衣草庄园(鱼梁洲)",
+    "spot_name": "普罗旺斯薰衣草庄园",
     "raw_name": "普罗旺斯薰衣草庄园(鱼梁洲)",
     "area": "鱼梁洲",
     "city": "襄阳",
@@ -23240,7 +23242,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -23264,7 +23266,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -23312,7 +23314,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -23436,13 +23438,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "屈原故里(秭归)",
+    "spot_name": "屈原故里",
     "raw_name": "屈原故里(秭归)",
     "area": "秭归",
     "city": "宜昌",
@@ -23466,7 +23468,7 @@
     }
   },
   {
-    "spot_name": "三峡大瀑布(夷陵)",
+    "spot_name": "三峡大瀑布",
     "raw_name": "三峡大瀑布(夷陵)",
     "area": "夷陵",
     "city": "宜昌",
@@ -23508,7 +23510,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -23556,13 +23558,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "溶洞",
       "tags": []
     }
   },
   {
-    "spot_name": "三峡湿地·杨守敬书院旅游区(宜都)",
+    "spot_name": "三峡湿地·杨守敬书院旅游区",
     "raw_name": "三峡湿地·杨守敬书院旅游区(宜都)",
     "area": "宜都",
     "city": "宜昌",
@@ -23604,7 +23606,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -23682,7 +23684,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -23730,7 +23732,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -23754,7 +23756,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -23804,7 +23806,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -23858,7 +23860,7 @@
     }
   },
   {
-    "spot_name": "恩施地心谷景区",
+    "spot_name": "地心谷景区",
     "raw_name": "恩施地心谷景区（建始）",
     "area": "建始",
     "city": "恩施",
@@ -23881,7 +23883,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": [
         "需补差"
@@ -23931,7 +23933,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -23979,7 +23981,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -24027,7 +24029,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -24053,7 +24055,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -24101,7 +24103,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -24125,7 +24127,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -24221,7 +24223,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -24245,7 +24247,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -24293,7 +24295,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -24485,7 +24487,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "游乐园",
       "tags": []
     }
@@ -24562,7 +24564,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": [
         "需补差"
@@ -24588,7 +24590,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -24618,7 +24620,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": [
         "需补差"
@@ -24668,7 +24670,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -24692,13 +24694,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "杨梅古寨(来凤)",
+    "spot_name": "杨梅古寨",
     "raw_name": "杨梅古寨(来凤)",
     "area": "来凤",
     "city": "恩施",
@@ -24716,13 +24718,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "仙佛寺(来凤)",
+    "spot_name": "仙佛寺",
     "raw_name": "仙佛寺(来凤)",
     "area": "来凤",
     "city": "恩施",
@@ -24746,7 +24748,7 @@
     }
   },
   {
-    "spot_name": "卯洞景区(来凤)",
+    "spot_name": "卯洞景区",
     "raw_name": "卯洞景区(来凤)",
     "area": "来凤",
     "city": "恩施",
@@ -24764,13 +24766,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
   },
   {
-    "spot_name": "坪坝营景区(咸丰)",
+    "spot_name": "坪坝营景区",
     "raw_name": "坪坝营景区(咸丰)",
     "area": "咸丰",
     "city": "恩施",
@@ -24812,13 +24814,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
   },
   {
-    "spot_name": "唐崖河黄金洞景区(咸丰)",
+    "spot_name": "唐崖河黄金洞景区",
     "raw_name": "唐崖河黄金洞景区(咸丰)",
     "area": "咸丰",
     "city": "恩施",
@@ -24836,7 +24838,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -24860,7 +24862,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -24884,7 +24886,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -24908,7 +24910,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -24932,7 +24934,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -24956,7 +24958,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -25006,7 +25008,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -25054,7 +25056,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -25108,7 +25110,7 @@
     }
   },
   {
-    "spot_name": "绿林寨景区(京山)",
+    "spot_name": "绿林寨景区",
     "raw_name": "绿林寨景区(京山)",
     "area": "京山",
     "city": "荆门",
@@ -25126,7 +25128,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -25150,13 +25152,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
   },
   {
-    "spot_name": "太子山生态旅游区(京山)",
+    "spot_name": "太子山生态旅游区",
     "raw_name": "太子山生态旅游区(京山)",
     "area": "京山",
     "city": "荆门",
@@ -25198,7 +25200,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -25222,7 +25224,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -25246,7 +25248,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -25276,7 +25278,7 @@
     }
   },
   {
-    "spot_name": "荆州古城(荆州区)",
+    "spot_name": "荆州古城",
     "raw_name": "荆州古城(荆州区)",
     "area": "荆州",
     "city": "荆州",
@@ -25300,7 +25302,7 @@
     }
   },
   {
-    "spot_name": "楚王车马阵(荆州区)",
+    "spot_name": "楚王车马阵",
     "raw_name": "楚王车马阵(荆州区)",
     "area": "荆州",
     "city": "荆州",
@@ -25324,7 +25326,7 @@
     }
   },
   {
-    "spot_name": "张居正故居(荆州区)",
+    "spot_name": "张居正故居",
     "raw_name": "张居正故居(荆州区)",
     "area": "荆州",
     "city": "荆州",
@@ -25348,7 +25350,7 @@
     }
   },
   {
-    "spot_name": "关帝庙(荆州区)",
+    "spot_name": "关帝庙",
     "raw_name": "关帝庙(荆州区)",
     "area": "荆州",
     "city": "荆州",
@@ -25372,7 +25374,7 @@
     }
   },
   {
-    "spot_name": "关羽祠(荆州区)",
+    "spot_name": "关羽祠",
     "raw_name": "关羽祠(荆州区)",
     "area": "荆州",
     "city": "荆州",
@@ -25396,7 +25398,7 @@
     }
   },
   {
-    "spot_name": "荆州九老仙都景区(荆州区)",
+    "spot_name": "荆州九老仙都景区",
     "raw_name": "荆州九老仙都景区(荆州区)",
     "area": "荆州",
     "city": "荆州",
@@ -25420,7 +25422,7 @@
     }
   },
   {
-    "spot_name": "洪湖湿地生态园(洪湖)",
+    "spot_name": "洪湖湿地生态园",
     "raw_name": "洪湖湿地生态园(洪湖)",
     "area": "洪湖",
     "city": "荆州",
@@ -25462,13 +25464,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "游乐园",
       "tags": []
     }
   },
   {
-    "spot_name": "松滋洈水旅游区-百岛画廊(松滋)",
+    "spot_name": "松滋洈水旅游区-百岛画廊",
     "raw_name": "松滋洈水旅游区-百岛画廊(松滋)",
     "area": "松滋",
     "city": "荆州",
@@ -25486,7 +25488,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -25516,7 +25518,7 @@
     }
   },
   {
-    "spot_name": "曲尺河温泉(需补60)(松滋)",
+    "spot_name": "曲尺河温泉",
     "raw_name": "曲尺河温泉(需补60)(松滋)",
     "area": "松滋",
     "city": "荆州",
@@ -25534,15 +25536,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
-      "tags": [
-        "需补差"
-      ]
+      "tags": []
     }
   },
   {
-    "spot_name": "桃源小镇(石首)",
+    "spot_name": "桃源小镇",
     "raw_name": "桃源小镇(石首)",
     "area": "石首",
     "city": "荆州",
@@ -25560,7 +25560,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -25594,7 +25594,7 @@
     }
   },
   {
-    "spot_name": "两江游览苗家码头（汉口）",
+    "spot_name": "两江游览苗家码头",
     "raw_name": "两江游览苗家码头（武汉关2号码头）（汉口）",
     "area": "武汉",
     "city": "武汉",
@@ -25622,7 +25622,7 @@
     }
   },
   {
-    "spot_name": "两江游览中华路3号码头（武昌）",
+    "spot_name": "两江游览中华路3号码头",
     "raw_name": "两江游览中华路3号码头（汉阳门码头）（武昌）",
     "area": "武汉",
     "city": "武汉",
@@ -25678,7 +25678,7 @@
     }
   },
   {
-    "spot_name": "江滩观光航线汉阳晴川码头（汉阳）",
+    "spot_name": "江滩观光航线汉阳晴川码头",
     "raw_name": "江滩观光航线（白天线）汉阳晴川码头（汉阳）",
     "area": "武汉",
     "city": "武汉",
@@ -25700,13 +25700,13 @@
       }
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "城市娱乐",
       "sub_category": "寺庙",
       "tags": []
     }
   },
   {
-    "spot_name": "多乐台球（限1次）",
+    "spot_name": "多乐台球",
     "raw_name": "多乐台球（武汉8店通用）（限1次）",
     "area": "武汉",
     "city": "武汉",
@@ -25777,7 +25777,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -25831,7 +25831,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": null,
       "tags": []
     }
@@ -25856,7 +25856,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "动物园",
       "tags": []
     }
@@ -25885,7 +25885,7 @@
     }
   },
   {
-    "spot_name": "东湖龙谷（东湖）",
+    "spot_name": "东湖龙谷",
     "raw_name": "东湖龙谷（周一闭园）（东湖）",
     "area": "武汉",
     "city": "武汉",
@@ -25904,13 +25904,13 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "武汉九峰森林动物园",
+    "spot_name": "九峰森林动物园",
     "raw_name": "武汉九峰森林动物园（光谷）",
     "area": "武汉",
     "city": "武汉",
@@ -25930,7 +25930,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "动物园",
       "tags": [
         "夜场"
@@ -25955,7 +25955,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -25988,7 +25988,7 @@
     }
   },
   {
-    "spot_name": "鲸杉营地（江夏）",
+    "spot_name": "鲸杉营地",
     "raw_name": "鲸杉营地（需电话预约）（江夏）",
     "area": "武汉",
     "city": "武汉",
@@ -26068,7 +26068,7 @@
     }
   },
   {
-    "spot_name": "中润趣谷四季滑雪场（蔡甸）",
+    "spot_name": "中润趣谷四季滑雪场",
     "raw_name": "中润趣谷四季滑雪场（限1次）（蔡甸）",
     "area": "武汉",
     "city": "武汉",
@@ -26092,7 +26092,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "滑雪",
       "tags": [
         "需补差"
@@ -26117,7 +26117,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -26168,7 +26168,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -26214,7 +26214,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -26237,7 +26237,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "自然景观",
       "sub_category": null,
       "tags": []
     }
@@ -26260,7 +26260,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -26306,7 +26306,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -26329,7 +26329,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -26472,7 +26472,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -26518,7 +26518,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -26541,7 +26541,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -26587,7 +26587,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -26658,7 +26658,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": []
     }
@@ -26709,7 +26709,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -26801,7 +26801,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -26848,7 +26848,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -26871,7 +26871,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -26917,7 +26917,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -27009,7 +27009,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -27032,7 +27032,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -27083,7 +27083,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -27106,7 +27106,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -27129,7 +27129,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -27156,7 +27156,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "漂流",
       "tags": []
     }
@@ -27183,7 +27183,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "漂流",
       "tags": []
     }
@@ -27206,7 +27206,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -27229,7 +27229,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -27252,7 +27252,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": []
     }
@@ -27275,7 +27275,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -27344,7 +27344,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -27367,7 +27367,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -27441,7 +27441,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -27464,7 +27464,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -27510,7 +27510,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -27579,7 +27579,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -27602,7 +27602,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -27625,7 +27625,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -27648,7 +27648,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -27677,7 +27677,7 @@
     }
   },
   {
-    "spot_name": "槐荫船说（限1次）",
+    "spot_name": "槐荫船说",
     "raw_name": "槐荫船说（游船沉浸式演出）（限1次）",
     "area": "游船沉浸式演出",
     "city": "孝感",
@@ -27704,7 +27704,7 @@
     }
   },
   {
-    "spot_name": "孝感爱琴海水上乐园",
+    "spot_name": "爱琴海水上乐园",
     "raw_name": "孝感爱琴海水上乐园（限1次）",
     "area": "限1次",
     "city": "孝感",
@@ -27870,7 +27870,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -27916,7 +27916,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -27962,7 +27962,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -27985,7 +27985,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -28106,7 +28106,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "水上乐园",
       "tags": [
         "季节性",
@@ -28140,7 +28140,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -28171,7 +28171,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -28265,7 +28265,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "动物园",
       "tags": []
     }
@@ -28291,7 +28291,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -28385,7 +28385,7 @@
       }
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": [
         "需补差"
@@ -28569,13 +28569,13 @@
       }
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "城市娱乐",
       "sub_category": "寺庙",
       "tags": []
     }
   },
   {
-    "spot_name": "武汉园博园",
+    "spot_name": "园博园",
     "raw_name": "武汉园博园（汉口）",
     "area": "汉口",
     "city": "武汉",
@@ -28629,7 +28629,7 @@
     }
   },
   {
-    "spot_name": "武汉青少年宫水上乐园(汉口)",
+    "spot_name": "武汉青少年宫水上乐园",
     "raw_name": "武汉青少年宫水上乐园(汉口)",
     "area": "汉口",
     "city": "武汉",
@@ -28768,7 +28768,7 @@
     }
   },
   {
-    "spot_name": "汉阳江滩水上乐园(汉阳)",
+    "spot_name": "汉阳江滩水上乐园",
     "raw_name": "汉阳江滩水上乐园(汉阳)",
     "area": "汉阳",
     "city": "武汉",
@@ -28843,7 +28843,7 @@
     }
   },
   {
-    "spot_name": "武昌江滩游泳池(武昌)",
+    "spot_name": "武昌江滩游泳池",
     "raw_name": "武昌江滩游泳池(武昌)",
     "area": "武昌",
     "city": "武汉",
@@ -28930,7 +28930,7 @@
       }
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "主题乐园",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -28957,7 +28957,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "动物园",
       "tags": [
         "夜场"
@@ -28985,13 +28985,13 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "吉象勇敢者乐园(江夏永旺)",
+    "spot_name": "吉象勇敢者乐园",
     "raw_name": "吉象勇敢者乐园(江夏永旺)",
     "area": "江夏",
     "city": "武汉",
@@ -29041,7 +29041,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -29068,7 +29068,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": null,
       "tags": []
     }
@@ -29094,7 +29094,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -29120,7 +29120,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "动物园",
       "tags": []
     }
@@ -29176,7 +29176,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -29202,7 +29202,7 @@
       }
     },
     "_classification": {
-      "category": "主题乐园",
+      "category": "自然景观",
       "sub_category": null,
       "tags": []
     }
@@ -29226,7 +29226,7 @@
       "notes": {
         "raw": "玩夜场需要16:00之前入园,劳动节、国庆节假期不接待年卡用户,1.2米以下儿童、65岁以上老人免费,年卡合作有效期至2026年5月30日",
         "holiday_restriction": "blocked",
-        "has_night_session": true
+        "night_entry_hour": 16
       }
     },
     "_classification": {
@@ -29256,7 +29256,7 @@
       "notes": {
         "raw": "游夜场需要下午4:00之前入园,下午4点之后入园需补夜场票,大型节假日不接待年卡用户,1.2米以下儿童、70岁以上老人免费",
         "holiday_restriction": "blocked",
-        "has_night_session": true
+        "night_entry_hour": 4
       }
     },
     "_classification": {
@@ -29324,7 +29324,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -29350,7 +29350,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -29376,7 +29376,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -29402,7 +29402,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -29454,13 +29454,13 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "锦鲤土司城（黄陂）",
+    "spot_name": "锦鲤土司城",
     "raw_name": "锦鲤土司城（锦里沟）（黄陂）",
     "area": "黄陂",
     "city": "武汉",
@@ -29514,7 +29514,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "漂流",
       "tags": [
         "季节性",
@@ -29569,7 +29569,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -29601,7 +29601,7 @@
     }
   },
   {
-    "spot_name": "木兰水镇（黄陂）",
+    "spot_name": "木兰水镇",
     "raw_name": "木兰水镇（含夜场）（黄陂）",
     "area": "黄陂",
     "city": "武汉",
@@ -29670,7 +29670,7 @@
       },
       "notes": {
         "raw": "玩夜场需要16:00之前入园,1.2米以下儿童、70岁以上老人免费",
-        "has_night_session": true
+        "night_entry_hour": 16
       }
     },
     "_classification": {
@@ -29699,11 +29699,11 @@
       },
       "notes": {
         "raw": "玩夜场需要16:00之前入园,1.2米以下儿童、70岁以上老人免费",
-        "has_night_session": true
+        "night_entry_hour": 16
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": [
         "夜场"
@@ -29737,7 +29737,7 @@
     }
   },
   {
-    "spot_name": "武汉花博汇",
+    "spot_name": "花博汇",
     "raw_name": "武汉花博汇（蔡甸）",
     "area": "蔡甸",
     "city": "武汉",
@@ -29790,7 +29790,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "滑雪",
       "tags": [
         "需补差"
@@ -29818,7 +29818,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -29947,13 +29947,13 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "杏福园旅游区(生态采摘)",
+    "spot_name": "杏福园旅游区",
     "raw_name": "杏福园旅游区(生态采摘)",
     "area": "鄂州",
     "city": "鄂州",
@@ -29970,7 +29970,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "休闲农业",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -30022,7 +30022,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -30147,7 +30147,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": [
         "需补差"
@@ -30298,7 +30298,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -30518,7 +30518,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "漂流",
       "tags": [
         "季节性",
@@ -30581,7 +30581,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -30608,7 +30608,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -30656,7 +30656,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -30704,7 +30704,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -30885,7 +30885,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -30970,7 +30970,7 @@
     }
   },
   {
-    "spot_name": "松鼠部落水上乐园(咸宁)",
+    "spot_name": "松鼠部落水上乐园",
     "raw_name": "松鼠部落水上乐园(咸宁)",
     "area": "咸宁",
     "city": "咸宁",
@@ -31066,7 +31066,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": [
         "需补差"
@@ -31092,7 +31092,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "其他",
+      "category": "休闲农业",
       "sub_category": null,
       "tags": []
     }
@@ -31184,7 +31184,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -31232,7 +31232,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -31256,7 +31256,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -31355,7 +31355,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": [
         "夜场"
@@ -31429,7 +31429,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -31453,7 +31453,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -31477,7 +31477,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -31525,7 +31525,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -31549,7 +31549,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -31597,7 +31597,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -31645,7 +31645,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "自然景观",
       "sub_category": null,
       "tags": []
     }
@@ -31669,7 +31669,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -31813,7 +31813,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -31837,7 +31837,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -31861,7 +31861,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "城市娱乐",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -31935,7 +31935,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -31983,7 +31983,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -32009,7 +32009,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": null,
       "tags": []
     }
@@ -32033,7 +32033,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -32057,7 +32057,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -32129,7 +32129,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -32177,7 +32177,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -32225,7 +32225,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -32321,7 +32321,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -32345,7 +32345,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -32393,7 +32393,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "动物园",
       "tags": []
     }
@@ -32417,7 +32417,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -32441,7 +32441,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -32633,7 +32633,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": null,
       "tags": []
     }
@@ -32681,7 +32681,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -32705,7 +32705,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "滑雪",
       "tags": []
     }
@@ -32729,7 +32729,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -32825,7 +32825,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -32849,7 +32849,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -32947,7 +32947,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -32995,7 +32995,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -33043,7 +33043,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -33067,7 +33067,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -33211,7 +33211,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -33235,7 +33235,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -33333,7 +33333,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "温泉",
       "tags": []
     }
@@ -33405,7 +33405,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -33453,7 +33453,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -33477,7 +33477,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -33525,7 +33525,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -33597,7 +33597,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -33717,7 +33717,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -33741,7 +33741,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -33765,7 +33765,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "城市娱乐",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -33789,7 +33789,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "城市娱乐",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -33813,7 +33813,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -33837,7 +33837,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -33885,7 +33885,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -33933,13 +33933,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "凤娃古寨(不含夜场)",
+    "spot_name": "凤娃古寨",
     "raw_name": "凤娃古寨(不含夜场)",
     "area": "武汉",
     "city": "武汉",
@@ -33957,15 +33957,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
-      "tags": [
-        "夜场"
-      ]
+      "tags": []
     }
   },
   {
-    "spot_name": "紫薇都市田园(不含夜场)",
+    "spot_name": "紫薇都市田园",
     "raw_name": "紫薇都市田园(不含夜场)",
     "area": "武汉",
     "city": "武汉",
@@ -33985,9 +33983,7 @@
     "_classification": {
       "category": "休闲农业",
       "sub_category": null,
-      "tags": [
-        "夜场"
-      ]
+      "tags": []
     }
   },
   {
@@ -34033,7 +34029,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "城市娱乐",
       "sub_category": "寺庙",
       "tags": []
     }
@@ -34081,7 +34077,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -34203,7 +34199,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -34299,7 +34295,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -34323,7 +34319,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -34347,7 +34343,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -34395,7 +34391,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -34419,7 +34415,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -34467,7 +34463,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -34491,7 +34487,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -34515,7 +34511,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -34707,7 +34703,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "主题乐园",
       "sub_category": "游乐园",
       "tags": []
     }
@@ -34899,7 +34895,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -34995,7 +34991,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "人文历史",
+      "category": "自然景观",
       "sub_category": null,
       "tags": []
     }
@@ -35115,7 +35111,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -35163,7 +35159,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -35211,7 +35207,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -35235,7 +35231,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -35259,7 +35255,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -35331,7 +35327,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -35403,7 +35399,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -35499,7 +35495,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -35523,7 +35519,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -35595,7 +35591,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -35619,7 +35615,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -35667,7 +35663,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -35691,7 +35687,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -35739,13 +35735,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
   },
   {
-    "spot_name": "恩施地心谷",
+    "spot_name": "地心谷",
     "raw_name": "恩施地心谷",
     "area": "恩施",
     "city": "恩施",
@@ -35763,7 +35759,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -35811,7 +35807,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -35837,7 +35833,7 @@
       }
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -35885,7 +35881,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -35933,7 +35929,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -35981,7 +35977,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -36029,7 +36025,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -36077,7 +36073,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -36221,7 +36217,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -36365,7 +36361,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -36413,7 +36409,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -36533,7 +36529,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -36557,7 +36553,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": []
     }
@@ -36581,7 +36577,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -36629,7 +36625,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -36749,7 +36745,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -36773,7 +36769,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -36845,7 +36841,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -36893,7 +36889,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -36917,7 +36913,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -36989,7 +36985,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -37037,7 +37033,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -37085,7 +37081,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -37109,7 +37105,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -37205,7 +37201,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": null,
       "tags": []
     }
@@ -37229,7 +37225,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -37253,7 +37249,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -37301,7 +37297,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -37349,7 +37345,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -37373,7 +37369,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "户外运动",
       "sub_category": "漂流",
       "tags": []
     }
@@ -37421,7 +37417,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -37469,7 +37465,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -37493,7 +37489,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -37517,7 +37513,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -37613,7 +37609,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -37637,7 +37633,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -37661,7 +37657,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -37709,7 +37705,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -37733,7 +37729,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -37757,7 +37753,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -37853,7 +37849,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": "溶洞",
       "tags": []
     }
@@ -37901,7 +37897,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": []
     }
@@ -37949,7 +37945,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -37997,7 +37993,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -38021,7 +38017,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -38045,7 +38041,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "人文历史",
       "sub_category": null,
       "tags": []
     }
@@ -38093,7 +38089,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -38165,7 +38161,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": []
     }
@@ -38213,7 +38209,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
@@ -38261,7 +38257,7 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "温泉康养",
       "sub_category": "温泉",
       "tags": []
     }
@@ -38309,13 +38305,13 @@
       "notes": {}
     },
     "_classification": {
-      "category": "自然景观",
+      "category": "其他",
       "sub_category": null,
       "tags": []
     }
   },
   {
-    "spot_name": "武汉多乐台球",
+    "spot_name": "多乐台球",
     "raw_name": "武汉多乐台球",
     "area": "武汉",
     "city": "武汉",
@@ -38342,7 +38338,7 @@
     }
   },
   {
-    "spot_name": "武汉吉象勇敢者乐园",
+    "spot_name": "吉象勇敢者乐园",
     "raw_name": "武汉吉象勇敢者乐园",
     "area": "武汉",
     "city": "武汉",

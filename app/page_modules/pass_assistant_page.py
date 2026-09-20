@@ -133,8 +133,10 @@ def render_pass_assistant_page(ctx):
 
             # Value ratio bonus
             score += pi["value_ratio"] * 2
+            base_score = score
 
             # Seasonal bonus: spots of this pass that are must-visit (>=4) in the chosen month
+            season_bonus = 0.0
             if _season_key:
                 season_hits = sum(
                     1 for _s in spots_with_coords
@@ -142,7 +144,8 @@ def render_pass_assistant_page(ctx):
                     and _spot_season_score.get(_s["name"], 0) >= 4
                 )
                 if season_hits:
-                    score += min(season_hits * 1.5, 15)
+                    season_bonus = min(season_hits * 1.5, 15)
+                    score += season_bonus
                     reasons.append(f"{wiz_month}当季必去{season_hits}个")
 
             if not reasons:
@@ -154,6 +157,7 @@ def render_pass_assistant_page(ctx):
                 "景点数": pi["spot_count"],
                 "城市数": pi["city_count"],
                 "匹配度": round(score, 1),
+                "分数拆解": f"基础{round(base_score, 1)} + 季节{round(season_bonus, 1)}",
                 "性价比": f"{pi['value_ratio']}x",
                 "推荐理由": "；".join(reasons[:3]),
             })

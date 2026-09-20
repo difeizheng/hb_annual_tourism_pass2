@@ -63,6 +63,12 @@ def render_my_trips_page(ctx):
         if not st.session_state.selected_trip_spots:
             st.info("在「🗺️ 地图探索」点景点弹窗中的「添加到行程」，或在各规划页「加入行程」。")
         else:
+            # 主区域一键转存（侧边栏也有完整版：可自定义名称）
+            if st.button("💾 存为正式行程", key="mt_draft_quick_save",
+                         use_container_width=True):
+                _save_draft_as_plan(
+                    f"我的行程-{len(st.session_state.selected_trip_spots)}个景点",
+                    trip_origin)
             for i, spot in enumerate(st.session_state.selected_trip_spots):
                 with st.container(border=True):
                     st.markdown(f"**{i+1}. {spot['name']}**")
