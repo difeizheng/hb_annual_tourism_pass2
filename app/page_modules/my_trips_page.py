@@ -53,8 +53,51 @@ def render_my_trips_page(ctx):
             st.session_state.trip_nearby = {"hotels": [], "restaurants": []}
             st.rerun()
 
+    # ---------------- Draft slots (multi-draft) ----------------
+    # selected_trip_spots 是活跃槽镜像；切换槽位时先暂存当前槽再加载目标槽
+    _slots = st.session_state.get("draft_slots", {})
+    _active = st.session_state.get("active_draft", "默认")
+    if _slots:
+        mc1, mc2, mc3, mc4 = st.columns([3, 2, 2, 3])
+        _names = list(_slots.keys())
+        # 程序化切槽（新建/删除）后，selectbox widget 还持有旧值——
+        # 会在本帧被误判成「用户切回旧槽」。在 widget 实例化前同步其状态。
+        if st.session_state.pop("_draft_slot_sync", False):
+            st.session_state["mt_draft_slot_sel"] = _active
+        chosen = mc1.selectbox("草稿槽", _names,
+                               index=_names.index(_active) if _active in _names else 0,
+                               key="mt_draft_slot_sel")
+        if chosen != _active:
+            st.session_state.draft_slots[_active] = list(st.session_state.selected_trip_spots)
+            st.session_state.active_draft = chosen
+            st.session_state.selected_trip_spots = list(st.session_state.draft_slots.get(chosen, []))
+            st.session_state.route_options = []
+            st.rerun()
+        _new_name = mc2.text_input("新草稿名", key="mt_new_draft_name",
+                                   placeholder="如：五一三峡行", label_visibility="collapsed")
+        if mc3.button("➕ 新建", key="mt_new_draft_btn", width="stretch",
+                      help="以新名字开一个空草稿槽（当前槽内容保留）"):
+            _nm = (_new_name or "").strip() or f"草稿{len(st.session_state.draft_slots) + 1}"
+            if _nm not in st.session_state.draft_slots:
+                st.session_state.draft_slots[_active] = list(st.session_state.selected_trip_spots)
+                st.session_state.draft_slots[_nm] = []
+                st.session_state.active_draft = _nm
+                st.session_state.selected_trip_spots = []
+                st.session_state.route_options = []
+                st.session_state._draft_slot_sync = True
+                st.rerun()
+        if len(_slots) > 1:
+            if mc4.button("🗑️ 删除当前槽", key="mt_del_draft_btn", width="stretch"):
+                st.session_state.draft_slots.pop(_active, None)
+                _nxt = next(iter(st.session_state.draft_slots))
+                st.session_state.active_draft = _nxt
+                st.session_state.selected_trip_spots = list(st.session_state.draft_slots[_nxt])
+                st.session_state.route_options = []
+                st.session_state._draft_slot_sync = True
+                st.rerun()
+
     # ---------------- Draft: spot list + map ----------------
-    st.subheader("🧺 当前草稿（未保存）")
+    st.subheader(f"🧺 当前草稿「{_active}」（未保存）")
     col_list, col_map = st.columns([1, 2])
 
     with col_list:

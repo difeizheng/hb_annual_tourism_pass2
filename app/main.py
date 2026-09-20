@@ -363,7 +363,7 @@ html, body, #container {{ width: 100%; height: {height}; }}
 @keyframes toastIn {{ from {{ opacity: 0; transform: translateY(20px); }} to {{ opacity: 1; transform: translateY(0); }} }}
 @keyframes toastOut {{ from {{ opacity: 1; transform: translateY(0); }} to {{ opacity: 0; transform: translateY(20px); }} }}
 </style>
-<script src="https://webapi.amap.com/maps?v=2.0&key={js_key}"></script>
+<script src="https://webapi.amap.com/maps?v=2.0&key={js_key}&plugin=AMap.MarkerCluster"></script>
 </head>
 <body>
 <div id="container"></div>
@@ -410,42 +410,10 @@ function initMap() {{
     // Dimmed marker content: small gray dot
     const dimmedContent = '<div style="width:8px;height:8px;border-radius:50%;background:#bbb;opacity:0.4;border:1px solid #999;"></div>';
 
-    // Create markers directly on map (no clustering)
-    let currentMarkers = [];
-    function renderMarkers() {{
-        // Remove old markers
-        map.remove(currentMarkers);
-        currentMarkers = [];
 
-        const filtered = filteredMarkers();
-        const hasFilter = filterPasses.length > 0 || filterCities.length > 0 || filterCats.length > 0;
-        const filteredNames = new Set(filtered.map(m => m.name));
-
-        for (let i = 0; i < markersData.length; i++) {{
-            const m = markersData[i];
-            const isMatch = !hasFilter || filteredNames.has(m.name);
-
-            const markerOpts = {{
-                position: [m.lng, m.lat],
-                extData: m,
-            }};
-            if (!isMatch) {{
-                markerOpts.content = dimmedContent;
-                markerOpts.offset = new AMap.Pixel(-4, -4);
-            }}
-
-            const marker = new AMap.Marker(markerOpts);
-
-            // Add name label above matching markers when filters are active
-            if (isMatch && hasFilter) {{
-                marker.setLabel({{
-                    content: `<div style="background:#fff;padding:1px 5px;border-radius:3px;font-size:11px;white-space:nowrap;border:1px solid #ddd;box-shadow:0 1px 3px rgba(0,0,0,0.15)">${{m.name}}</div>`,
-                    direction: 'top',
-                }});
-            }}
-
+    // Shared spot-click handler factory (direct markers + cluster散点共用)
+    function attachSpotClick(marker, idx) {{
             // Compute index for coord correction UI (use original index in markersData)
-            const idx = i;
             marker.on('click', function(e) {{
                 const d = e.target.getExtData();
                 const levelBadge = d.level
@@ -499,9 +467,94 @@ function initMap() {{
                 infoWindow.open(map, e.target.getPosition());
                 window.parent.postMessage({{type: 'marker_click', name: d.name}}, '*');
             }});
+    }}
+
+    // Create markers directly on map; cluster when unfiltered & dense
+    let currentMarkers = [];
+    let cluster = null;
+    function renderMarkers() {{
+        // Remove old markers / cluster
+        map.remove(currentMarkers);
+        if (cluster) {{ cluster.setMap(null); cluster = null; }}
+        currentMarkers = [];
+
+        const filtered = filteredMarkers();
+        const hasFilter = filterPasses.length > 0 || filterCities.length > 0 || filterCats.length > 0;
+        const filteredNames = new Set(filtered.map(m => m.name));
+
+        for (let i = 0; i < markersData.length; i++) {{
+            const m = markersData[i];
+            const isMatch = !hasFilter || filteredNames.has(m.name);
+
+            const markerOpts = {{
+                position: [m.lng, m.lat],
+                extData: m,
+            }};
+            if (!isMatch) {{
+                markerOpts.content = dimmedContent;
+                markerOpts.offset = new AMap.Pixel(-4, -4);
+            }}
+
+            const marker = new AMap.Marker(markerOpts);
+
+            // Add name label above matching markers when filters are active
+            if (isMatch && hasFilter) {{
+                marker.setLabel({{
+                    content: `<div style="background:#fff;padding:1px 5px;border-radius:3px;font-size:11px;white-space:nowrap;border:1px solid #ddd;box-shadow:0 1px 3px rgba(0,0,0,0.15)">${{m.name}}</div>`,
+                    direction: 'top',
+                }});
+            }}
+
+            attachSpotClick(marker, i);
             currentMarkers.push(marker);
         }}
-        map.add(currentMarkers);
+
+        // 聚合：无筛选且点位密集时用 MarkerCluster，筛选态保持直绘
+        // （筛选结果少且需要名称标签，聚合反而藏信息）
+        // 注意：AMap 2.0 MarkerCluster 构造只吃纯数据 [{{lnglat, weight,...}}]，
+        // 传 Marker 实例会静默空渲染（getUserDataLen()=0）——本机 playwright 实测
+        if (!hasFilter && currentMarkers.length > 120 && typeof AMap.MarkerCluster === 'function') {{
+            const clusterData = currentMarkers.map((mk, i2) => ({{
+                lnglat: [mk.getExtData().lng, mk.getExtData().lat],
+                weight: 1,
+                _d: mk.getExtData(),
+                _idx: i2,  // currentMarkers 顺序 == markersData 顺序
+            }}));
+            try {{
+                cluster = new AMap.MarkerCluster(map, clusterData, {{
+                    gridSize: 60,
+                    maxZoom: 13,
+                    renderClusterMarker: function(context) {{
+                        const n = context.count;
+                        const bg = n > 100 ? '#e0393e' : n > 30 ? '#f39c12' : '#1a73e8';
+                        const size = n > 100 ? 44 : n > 30 ? 40 : 34;
+                        const div = document.createElement('div');
+                        div.style.cssText = `background:${{bg}};color:#fff;border-radius:50%;width:${{size}}px;height:${{size}}px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,0.3);cursor:pointer;`;
+                        div.innerText = n;
+                        context.marker.setContent(div);
+                        context.marker.setOffset(new AMap.Pixel(-size/2, -size/2));
+                    }},
+                    renderMarker: function(context) {{
+                        const pt = context.data[0];
+                        context.marker.setExtData(pt._d);
+                        attachSpotClick(context.marker, pt._idx);
+                    }},
+                }});
+                if (!cluster || cluster.getUserDataLen() === 0) throw new Error('cluster empty');
+                // 聚合点击默认不放大（2.0 需自接）：点气泡 → 放大两级居中
+                cluster.on('click', function(e) {{
+                    if (e.clusterData && e.clusterData.length > 1) {{
+                        map.setZoomAndCenter(Math.min(map.getZoom() + 2, 15), e.lnglat);
+                    }}
+                }});
+            }} catch (e) {{
+                console.warn('cluster failed, fallback to direct markers', e);
+                if (cluster) {{ try {{ cluster.setMap(null); }} catch(_) {{}} cluster = null; }}
+                map.add(currentMarkers);
+            }}
+        }} else {{
+            map.add(currentMarkers);
+        }}
 
         const citySet = new Set(filtered.map(m => m.city));
         const filterLabel = hasFilter ? `筛选结果 ` : '';
@@ -819,6 +872,28 @@ if not st.session_state.selected_trip_spots and os.path.exists(_DRAFT_FILE):
     except (json.JSONDecodeError, OSError):
         pass
 
+# Multi-slot drafts: trip_drafts.json holds named slots; selected_trip_spots
+# always mirrors the ACTIVE slot so all existing code paths stay unchanged.
+_DRAFTS_FILE = os.path.join(DATA_DIR, "trip_drafts.json")
+if "draft_slots" not in st.session_state:
+    _slots, _active = {}, "默认"
+    if os.path.exists(_DRAFTS_FILE):
+        try:
+            with open(_DRAFTS_FILE, "r", encoding="utf-8") as _f:
+                _dd = json.load(_f)
+            _slots = {k: [s for s in v if isinstance(s, dict) and s.get("name")]
+                      for k, v in _dd.get("slots", {}).items() if isinstance(v, list)}
+            _active = _dd.get("active") or "默认"
+        except (json.JSONDecodeError, OSError, AttributeError):
+            _slots, _active = {}, "默认"
+    if not _slots:
+        _slots = {"默认": list(st.session_state.selected_trip_spots)}
+    if _active not in _slots:
+        _active = next(iter(_slots))
+    st.session_state.draft_slots = _slots
+    st.session_state.active_draft = _active
+    st.session_state.selected_trip_spots = list(_slots[_active])
+
 # Sync from map server bridge file
 _QUICK_TRIP_FILE = os.path.join(DATA_DIR, "quick_trip_spots.json")
 if os.path.exists(_QUICK_TRIP_FILE):
@@ -980,8 +1055,16 @@ try:
         from app.page_modules.my_trips_page import render_my_trips_page
         render_my_trips_page(dict(globals()))
 finally:
-    # Persist trip draft every run (small JSON; survives restarts)
+    # Persist trip draft every run (small JSON; survives restarts).
+    # trip_drafts.json = 多槽位真源；trip_draft.json = 活跃槽镜像（向后兼容）
     try:
+        _slots = st.session_state.get("draft_slots")
+        if isinstance(_slots, dict) and _slots:
+            _active = st.session_state.get("active_draft", "默认")
+            _slots[_active] = st.session_state.get("selected_trip_spots", [])
+            with open(_DRAFTS_FILE, "w", encoding="utf-8") as _f:
+                json.dump({"active": _active, "slots": _slots}, _f,
+                          ensure_ascii=False, indent=1)
         with open(_DRAFT_FILE, "w", encoding="utf-8") as _f:
             json.dump(st.session_state.get("selected_trip_spots", []), _f,
                       ensure_ascii=False, indent=1)

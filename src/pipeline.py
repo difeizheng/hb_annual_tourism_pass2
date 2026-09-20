@@ -49,7 +49,22 @@ def run_pipeline(data_dir: str = None, output_dir: str = None):
     cleaned, coordinates, name_aliases, canon_report = canonicalize_spots(cleaned, coordinates)
     print(f"  Aliases merged: {len(name_aliases)}, "
           f"unique names {canon_report['stats']['unique_names_before']} -> {canon_report['stats']['unique_names_after']}")
+    # Enrich coords with level from cleaned records — spot_coordinates 原本不带
+    # level，而页面的 5A 筛选/[5A] 徽章/推荐排序全依赖它（同名取最高等级）
     if coordinates:
+        _lv_rank = {"A5": 5, "A4": 4, "A3": 3, "A2": 2, "A1": 1}
+        _name_level = {}
+        for r in cleaned:
+            lv = r.get("level") or ""
+            nm = name_aliases.get(r["spot_name"], r["spot_name"])
+            if _lv_rank.get(lv, 0) > _lv_rank.get(_name_level.get(nm, ""), 0):
+                _name_level[nm] = lv
+        lv_filled = 0
+        for nm, entry in coordinates.items():
+            if not entry.get("level") and _name_level.get(nm):
+                entry["level"] = _name_level[nm]
+                lv_filled += 1
+        print(f"  Backfilled level for {lv_filled} spots (needed by 5A filters/badges)")
         with open(coords_path, "w", encoding="utf-8") as f:
             json.dump(coordinates, f, ensure_ascii=False, indent=2)
     with open(os.path.join(_output_dir, "name_aliases.json"), "w", encoding="utf-8") as f:

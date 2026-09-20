@@ -96,6 +96,13 @@ def render_pass_assistant_page(ctx):
                 _spot_season_score[_s["name"]] = calculate_seasonal_score(_s, _season_key)[0]
 
         # Scoring
+        def _top_examples(details, pred, n=2):
+            """Pick up to n example spot names: 5A first, then 4A, then price desc."""
+            pool = [d for d in details if pred(d)]
+            pool.sort(key=lambda d: (0 if d.get("level") == "A5" else 1 if d.get("level") == "A4" else 2,
+                                     -d.get("price", 0)))
+            return [d["name"] for d in pool[:n]]
+
         wizard_results = []
         for pn, pi in pass_info.items():
             if pi["price"] > wiz_budget:
@@ -105,23 +112,31 @@ def render_pass_assistant_page(ctx):
 
             persona_cfg = personas.get(selected_persona, {})
 
-            # City match
+            # City match (personalized: name cities + per-city spot counts)
             if wiz_cities:
-                match = sum(1 for c in wiz_cities if c in pi["cities"])
-                score += match * 5
-                if match > 0:
-                    reasons.append(f"{match}个目标城市有景点")
+                matched_cities = [c for c in wiz_cities if c in pi["cities"]]
+                score += len(matched_cities) * 5
+                if matched_cities:
+                    parts = [f"{c}{sum(1 for d in pi['spots_detail'] if d.get('city') == c)}个"
+                             for c in matched_cities[:2]]
+                    more = f" 等{len(matched_cities)}城" if len(matched_cities) > 2 else ""
+                    reasons.append(f"目标城市：{'、'.join(parts)}景点{more}")
             elif persona_cfg.get("min_cities"):
                 if pi["city_count"] >= persona_cfg["min_cities"]:
                     score += 10
                     reasons.append(f"覆盖{pi['city_count']}个城市")
 
-            # Category match
+            # Category match (personalized: name strongest category + example spots)
             if wiz_cats:
-                match = sum(1 for c in wiz_cats if c in pi["categories"])
-                score += match * 4
-                if match > 0:
-                    reasons.append(f"{match}个偏好类型匹配")
+                matched_cats = [c for c in wiz_cats if c in pi["categories"]]
+                score += len(matched_cats) * 4
+                if matched_cats:
+                    strong = max(matched_cats,
+                                 key=lambda c: sum(1 for d in pi["spots_detail"] if d.get("category") == c))
+                    cnt = sum(1 for d in pi["spots_detail"] if d.get("category") == strong)
+                    ex = _top_examples(pi["spots_detail"], lambda d: d.get("category") == strong)
+                    ex_txt = f"（如{'、'.join(ex)}）" if ex else ""
+                    reasons.append(f"偏好「{strong}」命中{cnt}个{ex_txt}")
 
             # Persona-specific bonuses
             if persona_cfg.get("min_spots") and pi["spot_count"] >= persona_cfg["min_spots"]:
@@ -138,15 +153,18 @@ def render_pass_assistant_page(ctx):
             # Seasonal bonus: spots of this pass that are must-visit (>=4) in the chosen month
             season_bonus = 0.0
             if _season_key:
-                season_hits = sum(
-                    1 for _s in spots_with_coords
-                    if pi["name_key"] in _s.get("passes", [])
-                    and _spot_season_score.get(_s["name"], 0) >= 4
+                mv_spots = sorted(
+                    (_s for _s in spots_with_coords
+                     if pi["name_key"] in _s.get("passes", [])
+                     and _spot_season_score.get(_s["name"], 0) >= 4),
+                    key=lambda x: (0 if x.get("level") == "A5" else 1, -x.get("price", 0)),
                 )
+                season_hits = len(mv_spots)
                 if season_hits:
                     season_bonus = min(season_hits * 1.5, 15)
                     score += season_bonus
-                    reasons.append(f"{wiz_month}当季必去{season_hits}个")
+                    ex = "、".join(x["name"] for x in mv_spots[:2])
+                    reasons.append(f"{wiz_month}当季必去{season_hits}个（如{ex}）")
 
             if not reasons:
                 reasons.append("性价比不错")
