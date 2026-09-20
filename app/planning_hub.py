@@ -11,6 +11,8 @@ import streamlit as st
 
 from app.map_html import CITY_COORDS
 from app.plan_editor import render_plan_editor
+from src.trip_planner.plan_manager import list_plans, load_plan
+from src.trip_planner.plan_schema import plan_to_editor_days
 
 MODES = ["📝 表单规划", "💬 对话规划", "🚗 周末出发", "🧭 单日路线",
          "📥 粘贴导入", "✏️ 编辑器"]
@@ -53,6 +55,43 @@ def render_planning_hub(ctx):
         _render_editor_mode(ctx, ss)
 
 
+def _render_plan_picker_for_editor(ss):
+    """Editor empty-state shortcut: pick a saved plan and load it for editing."""
+    plans = list_plans()
+    if not plans:
+        return
+    opts = {p["id"]: f"{p.get('name') or '未命名'}（{p.get('num_days', '?')}天/{p.get('total_spots', '?')}站）"
+            for p in plans}
+    c1, c2 = st.columns([3, 1])
+    with c1:
+        pick = st.selectbox("或直接从行程仓库选一个来编辑：",
+                            [""] + list(opts), format_func=lambda x: opts.get(x, "选择一个行程…"),
+                            key="ph_ed_pick")
+    with c2:
+        st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
+        load_clicked = st.button("📂 载入编辑", key="ph_ed_load",
+                                 disabled=not pick, width="stretch")
+    if load_clicked and pick:
+        plan = load_plan(pick)
+        if not plan:
+            st.error("行程读取失败")
+            return
+        days, coords = plan_to_editor_days(plan)
+        ss.ed_days = days
+        ss.ed_coords = coords or None
+        ss.ed_edit_plan_id = plan["id"]
+        ss.ed_edit_name = plan.get("name", "")
+        ss.ed_source = plan.get("source") or "manual"
+        ss.ed_meta = {k: v for k, v in (plan.get("meta") or {}).items()
+                      if k != "day_extras"}
+        ss.ed_travel_month = plan.get("travel_month")
+        ss.ed_origin = (plan.get("origin") or {}).get("city") or "武汉"
+        ss.ed_dirty = False
+        ss.ed_edit_open = None
+        ss.ed_add_open = None
+        st.rerun()
+
+
 def _warn_if_no_llm():
     """Upfront banner when the LLM is not configured (the mode itself still
     renders its own fallback messages, but users should know before typing)."""
@@ -71,6 +110,7 @@ def _render_editor_mode(ctx, ss):
     """Shared editor bound to ed_* session keys (set by 我的行程's ✏️ 编辑)."""
     if not ss.get("ed_days"):
         st.info("在「🧳 我的行程」点某个行程的 **✏️ 编辑**，或先用其他方式生成/导入行程")
+        _render_plan_picker_for_editor(ss)
         return
     try:
         web_key = str(st.secrets.get("amap_web_key", "")).strip()

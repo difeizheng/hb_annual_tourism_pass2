@@ -14,7 +14,7 @@ def render_season_guide_page(ctx):
     with st.sidebar:
         all_cities_season = sorted(set(s["city"] for s in spots_with_coords if s["city"]))
         sel_cities = st.multiselect("城市筛选", all_cities_season, default=[])
-        clear_btn = st.button("清除筛选", type="secondary", use_container_width=True)
+        clear_btn = st.button("清除筛选", type="secondary", width="stretch")
         if clear_btn and sel_cities:
             st.rerun()
 
@@ -29,7 +29,7 @@ def render_season_guide_page(ctx):
         sk = MONTH_TO_SEASON[m]
         em = SEASON_EMOJI[sk]
         is_sel = st.session_state.selected_month == m
-        if col.button(f"{em}{m}月", key=f"mc_{m}", type="primary" if is_sel else "secondary", use_container_width=True):
+        if col.button(f"{em}{m}月", key=f"mc_{m}", type="primary" if is_sel else "secondary", width="stretch"):
             st.session_state.selected_month = m
             st.rerun()
 
@@ -79,7 +79,7 @@ def render_season_guide_page(ctx):
             yaxis2=dict(title="平均票价(¥)", overlaying="y", side="right"),
             height=380, hovermode="x unified", showlegend=True,
         )
-        st.plotly_chart(fig_monthly, use_container_width=True)
+        st.plotly_chart(fig_monthly, width="stretch")
 
         # Current month highlight
         cur = df_monthly[df_monthly["month"] == month].iloc[0]
@@ -106,7 +106,7 @@ def render_season_guide_page(ctx):
                     xaxis_title=f"{SEASON_NAMES[MONTH_TO_SEASON[month]]}可玩景点总价值(¥)",
                     height=max(300, len(df_rank) * 35),
                 )
-                st.plotly_chart(fig_rank, use_container_width=True)
+                st.plotly_chart(fig_rank, width="stretch")
 
                 # Top 3 metrics
                 top3 = df_rank.head(3)
@@ -141,7 +141,7 @@ def render_season_guide_page(ctx):
             )
             fig_pie.update_traces(textposition="inside", textinfo="percent+label")
             fig_pie.update_layout(height=350)
-            st.plotly_chart(fig_pie, use_container_width=True)
+            st.plotly_chart(fig_pie, width="stretch")
 
         total = recs["total_count"]
         if total == 0:
@@ -161,13 +161,13 @@ def render_season_guide_page(ctx):
                     level_badge = " `[4A]`"
                 st.markdown(f"**{spot['name']}**{level_badge}")
                 st.caption(f"{spot['city']} {spot.get('area', '')} · {spot['category']}")
-                st.caption(f"¥{spot['price']}")
+                st.caption(f"¥{spot['price']} · 当季适配 {'★' * max(1, min(5, score))}")
                 st.caption(f"📌 {reason}")
                 passes = spot.get("passes", [])
                 if passes:
                     pass_text = " · ".join(p.split("_")[0] for p in passes[:2])
                     st.caption(f"🎫 {pass_text}")
-                if st.button("➕ 添加行程", key=f"season_add_{key}_{spot['name']}", type="secondary", use_container_width=True):
+                if st.button("➕ 添加行程", key=f"season_add_{key}_{spot['name']}", type="secondary", width="stretch"):
                     existing = {s["name"] for s in st.session_state.selected_trip_spots}
                     if spot["name"] not in existing:
                         st.session_state.selected_trip_spots.append({
@@ -277,7 +277,7 @@ def render_season_guide_page(ctx):
                     xaxis=dict(title="月份"),
                     yaxis=dict(title="分类"),
                 )
-                st.plotly_chart(fig_cal, use_container_width=True)
+                st.plotly_chart(fig_cal, width="stretch")
 
             st.divider()
 
@@ -309,7 +309,7 @@ def render_season_guide_page(ctx):
 
             st.dataframe(
                 df_excl[["name", "city", "category", "sub_category", "price", "exclusive_type", "detection_type", "年卡覆盖数", "coverage_status"]],
-                use_container_width=True, hide_index=True,
+                width="stretch", hide_index=True,
                 column_config={
                     "price": st.column_config.NumberColumn("票价", format="¥%d"),
                     "coverage_status": st.column_config.TextColumn("覆盖状态"),
@@ -330,7 +330,7 @@ def render_season_guide_page(ctx):
                     for pid, cnt in sorted(pass_cov.items(), key=lambda x: -x[1])
                 ])
                 fig_cov = px.bar(df_cov, x="年卡", y="覆盖专属景点", color="覆盖专属景点", color_continuous_scale="Blues")
-                st.plotly_chart(fig_cov, use_container_width=True)
+                st.plotly_chart(fig_cov, width="stretch")
 
                 # Coverage gap: spots no pass covers
                 if excl_no_cover > 0:

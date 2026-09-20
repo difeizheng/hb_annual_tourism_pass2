@@ -168,7 +168,7 @@ def render_pass_assistant_page(ctx):
             st.divider()
             st.subheader(f"推荐排行 ({len(wizard_results)}张匹配)")
             df_wiz = pd.DataFrame(wizard_results)
-            st.dataframe(df_wiz, use_container_width=True, hide_index=True)
+            st.dataframe(df_wiz, width="stretch", hide_index=True)
 
             # Top recommendation
             top = wizard_results[0]
@@ -180,7 +180,7 @@ def render_pass_assistant_page(ctx):
                          text="匹配度", hover_data={"卡价": True, "景点数": True, "推荐理由": True})
             fig.update_traces(texttemplate="%{text:.1f}", textposition="outside")
             fig.update_layout(showlegend=False)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
         else:
             st.info("当前条件没有匹配的年卡，请放宽预算或减少筛选。")
 
@@ -216,7 +216,7 @@ def render_pass_assistant_page(ctx):
         if cat_counts:
             df_detail_cat = pd.DataFrame(list(cat_counts.items()), columns=["分类", "数量"])
             fig = px.pie(df_detail_cat, values="数量", names="分类", hole=0.4)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
         # City distribution
         st.subheader("城市分布")
@@ -231,7 +231,7 @@ def render_pass_assistant_page(ctx):
             fig = px.bar(df_detail_city, x="城市", y="景点数", color="景点数",
                          color_continuous_scale="Blues", text_auto=True)
             fig.update_layout(showlegend=False)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
         # Spot list
         st.subheader("包含景点")
@@ -247,7 +247,7 @@ def render_pass_assistant_page(ctx):
                 })
         if spot_list:
             df_spots = pd.DataFrame(spot_list).sort_values("票价", ascending=False)
-            st.dataframe(df_spots, use_container_width=True, hide_index=True, height=400)
+            st.dataframe(df_spots, width="stretch", hide_index=True, height=400)
 
         # Usage limits and notes
         st.subheader("使用说明")
@@ -293,7 +293,7 @@ def render_pass_assistant_page(ctx):
         dep_idx = 0 if "武汉" not in all_dep_b else all_dep_b.index("武汉")
         budget_dep = st.selectbox("出发城市", all_dep_b, index=dep_idx)
 
-        if st.button("生成方案", type="primary", use_container_width=True):
+        if st.button("生成方案", type="primary", width="stretch"):
             dep_coord_b = CITY_COORDS.get(budget_dep, [114.305, 30.593])
             origin_b = {"name": budget_dep, "lng": dep_coord_b[0], "lat": dep_coord_b[1]}
             pi_budget = build_pass_info(graph_data, cleaned)
@@ -363,4 +363,4 @@ def render_pass_assistant_page(ctx):
                     "5A景点": p["a5_count"],
                     "预算内": "✅" if p["feasible"] else "⚠️",
                 })
-            st.dataframe(pd.DataFrame(comp_rows), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(comp_rows), width="stretch", hide_index=True)

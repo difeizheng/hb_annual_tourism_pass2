@@ -34,7 +34,38 @@ def render_pass_compare_page(ctx):
                 else:
                     row[p2.split("_")[0]] = len(pass_spots[p1] & pass_spots[p2])
             matrix_data.append(row)
-        st.dataframe(pd.DataFrame(matrix_data), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(matrix_data), width="stretch", hide_index=True)
+
+        # 3-card Venn breakdown (7 regions)
+        if len(selected) == 3:
+            p1, p2, p3 = selected
+            s1, s2, s3 = pass_spots[p1], pass_spots[p2], pass_spots[p3]
+            n1, n2, n3 = (p.split("_")[0] for p in (p1, p2, p3))
+            abc = s1 & s2 & s3
+            ab = (s1 & s2) - abc
+            ac = (s1 & s3) - abc
+            bc = (s2 & s3) - abc
+            only1 = s1 - s2 - s3
+            only2 = s2 - s1 - s3
+            only3 = s3 - s1 - s2
+            st.subheader("三卡重叠分解")
+            venn_df = pd.DataFrame([
+                {"区域": f"仅{n1}", "景点数": len(only1)},
+                {"区域": f"仅{n2}", "景点数": len(only2)},
+                {"区域": f"仅{n3}", "景点数": len(only3)},
+                {"区域": f"{n1}∩{n2}", "景点数": len(ab)},
+                {"区域": f"{n1}∩{n3}", "景点数": len(ac)},
+                {"区域": f"{n2}∩{n3}", "景点数": len(bc)},
+                {"区域": "三卡共有", "景点数": len(abc)},
+            ])
+            fig_venn = px.bar(venn_df, x="区域", y="景点数", text="景点数",
+                              color="景点数", color_continuous_scale="Blues")
+            fig_venn.update_traces(textposition="outside")
+            fig_venn.update_layout(height=350, showlegend=False, coloraxis_showscale=False)
+            st.plotly_chart(fig_venn, width="stretch")
+            if abc:
+                with st.expander(f"三卡共有景点（{len(abc)}个）"):
+                    st.write("、".join(sorted(abc)))
 
         # Stats for first 2
         if len(selected) == 2:
@@ -296,7 +327,7 @@ window.showToast = function(message, type) {{
                     df = pd.DataFrame([{
                         "景点": s["name"], "城市": s["city"], "票价": s["price"], "类型": s["category"],
                     } for s in overlap_spots])
-                    st.dataframe(df, use_container_width=True, hide_index=True)
+                    st.dataframe(df, width="stretch", hide_index=True)
 
         else:
             # 3+ cards: show overview stats, no map
@@ -364,7 +395,7 @@ window.showToast = function(message, type) {{
                 })
             df_comp = pd.DataFrame(comp_data)
             st.subheader("参数对比")
-            st.dataframe(df_comp, use_container_width=True, hide_index=True)
+            st.dataframe(df_comp, width="stretch", hide_index=True)
 
             st.subheader("多维对比")
             metrics = ["景点数", "5A", "节省", "性价比", "城市数", "独有景点"]
@@ -393,7 +424,7 @@ window.showToast = function(message, type) {{
                 showlegend=True,
                 legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
             # Overlap analysis
             if len(selected_ids) >= 2:
@@ -409,7 +440,7 @@ window.showToast = function(message, type) {{
                         else:
                             row_d[pi_full[p2]["display"]] = len(s1 & s2)
                     matrix_data.append(row_d)
-                st.dataframe(pd.DataFrame(matrix_data), use_container_width=True, hide_index=True)
+                st.dataframe(pd.DataFrame(matrix_data), width="stretch", hide_index=True)
 
                 if len(selected_ids) == 2:
                     p1n, p2n = selected_ids[0], selected_ids[1]
@@ -433,7 +464,7 @@ window.showToast = function(message, type) {{
                     "需预约": ul.get("appointment_needed", 0),
                     "不含节假日": ul.get("holiday_excluded", 0),
                 })
-            st.dataframe(pd.DataFrame(usage_rows), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(usage_rows), width="stretch", hide_index=True)
 
         # ================================================================
         # Tab 2: 组合推荐
@@ -524,7 +555,7 @@ window.showToast = function(message, type) {{
                     "a5_count": "5A", "a4_count": "4A",
                 })
                 st.dataframe(df_scene[["年卡", "卡价", "景点数", "总价值", "节省", "5A", "4A"]],
-                             use_container_width=True, hide_index=True)
+                             width="stretch", hide_index=True)
             else:
                 st.caption("当前筛选条件无匹配景点")
 
@@ -550,7 +581,7 @@ window.showToast = function(message, type) {{
             fig_heat = px.imshow(df_heat_rn, labels=dict(x="年卡", y="城市", color="景点数"),
                                   color_continuous_scale="YlOrRd", text_auto=True)
             fig_heat.update_layout(height=max(200, len(df_heat_rn) * 30))
-            st.plotly_chart(fig_heat, use_container_width=True)
+            st.plotly_chart(fig_heat, width="stretch")
 
         # ================================================================
         # Tab 4: 限制明细
@@ -585,6 +616,6 @@ window.showToast = function(message, type) {{
                              "票价": s["price"], "分类": s["category"]}
                             for s in exc_spots
                         ])
-                        st.dataframe(df_exc, use_container_width=True, hide_index=True)
+                        st.dataframe(df_exc, width="stretch", hide_index=True)
                     else:
                         st.caption("暂无独有景点")

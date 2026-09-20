@@ -40,7 +40,7 @@ def render_data_overview_page(ctx):
                          text="性价比", hover_data={"卡价": True, "景点数": True, "总票价": True})
             fig.update_traces(texttemplate="%{text:.1f}x", textposition="outside")
             fig.update_layout(showlegend=False, xaxis_title="性价比倍数 (总票价/卡价)")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
         # Overlap analysis
         st.subheader("年卡重叠对比")
@@ -58,7 +58,7 @@ def render_data_overview_page(ctx):
                 if overlap["overlap_spots"]:
                     overlap_names = [G_dash.nodes[n].get("name", n) for n in overlap["overlap_spots"]]
                     st.caption(f"{len(overlap_names)} 个重叠景点:")
-                    st.dataframe(pd.DataFrame(overlap_names, columns=["景点"]), use_container_width=True, hide_index=True)
+                    st.dataframe(pd.DataFrame(overlap_names, columns=["景点"]), width="stretch", hide_index=True)
 
     with tabs[1]:
         # City distribution
@@ -74,7 +74,7 @@ def render_data_overview_page(ctx):
             df_city = pd.DataFrame(list(city_dist.items()), columns=["城市", "景点数"])
             fig = px.bar(df_city, x="城市", y="景点数", color="景点数", color_continuous_scale="Blues", text_auto=True)
             fig.update_layout(showlegend=False)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
         # Category distribution
         with col2:
@@ -83,7 +83,7 @@ def render_data_overview_page(ctx):
             df_cat = pd.DataFrame(list(cat_dist.items()), columns=["分类", "数量"])
             fig = px.pie(df_cat, values="数量", names="分类", hole=0.4,
                          color="分类", color_discrete_sequence=px.colors.qualitative.Set3)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
         # Level distribution
         st.subheader("景点等级分布")
@@ -95,7 +95,7 @@ def render_data_overview_page(ctx):
         df_level = pd.DataFrame(list(level_dist.items()), columns=["等级", "数量"])
         fig = px.pie(df_level, values="数量", names="等级",
                      color="等级", color_discrete_sequence=px.colors.qualitative.Pastel)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
         # Price by category boxplot
         st.subheader("各分类票价分布")
@@ -104,7 +104,7 @@ def render_data_overview_page(ctx):
             df_box = pd.DataFrame(price_cat)
             fig = px.box(df_box, x="分类", y="票价", color="分类", points="outliers")
             fig.update_layout(showlegend=False)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
         # City × Category heatmap
         st.subheader("城市 × 分类 热力图")
@@ -117,7 +117,7 @@ def render_data_overview_page(ctx):
             pivot = pd.crosstab(df_heat["城市"], df_heat["分类"])
             fig = px.imshow(pivot, text_auto=True, color_continuous_scale="YlOrRd",
                             labels={"x": "分类", "y": "城市", "color": "景点数"})
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
     with tabs[2]:
         # Price stats
@@ -142,7 +142,7 @@ def render_data_overview_page(ctx):
         fig = px.bar(df_pr["区间"].value_counts().reset_index(), x="区间", y="count",
                      color="count", color_continuous_scale="Viridis", text_auto=True)
         fig.update_layout(xaxis_title="票价区间", yaxis_title="景点数", showlegend=False)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
         # Top 20 expensive spots
         st.subheader("高价景点 TOP 20")
@@ -152,7 +152,7 @@ def render_data_overview_page(ctx):
              "等级": s.get("level") or "未评级", "票价": s["price"]}
             for s in top_spots
         ])
-        st.dataframe(df_top, use_container_width=True, hide_index=True)
+        st.dataframe(df_top, width="stretch", hide_index=True)
 
         # Seasonal analysis
         st.subheader("季节性景点统计")
@@ -166,7 +166,7 @@ def render_data_overview_page(ctx):
 
         if seasonal["spots"]:
             df_season = pd.DataFrame(seasonal["spots"])
-            st.dataframe(df_season, use_container_width=True, hide_index=True)
+            st.dataframe(df_season, width="stretch", hide_index=True)
 
     with tabs[3]:
         # Pass × City coverage matrix
@@ -195,7 +195,7 @@ def render_data_overview_page(ctx):
             fig = px.imshow(df_matrix_indexed, text_auto=True, color_continuous_scale="YlOrRd",
                             labels={"x": "城市", "y": "年卡", "color": "景点数"})
             fig.update_layout(xaxis_title="城市", yaxis_title="年卡")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
         # Pass city coverage count
         st.subheader("年卡覆盖城市数排行")
@@ -207,4 +207,4 @@ def render_data_overview_page(ctx):
                      color="覆盖城市数", color_continuous_scale="Tealgrn", text_auto=True)
         fig.update_traces(texttemplate="%{text}", textposition="outside")
         fig.update_layout(showlegend=False)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")

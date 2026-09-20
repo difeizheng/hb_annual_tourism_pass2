@@ -44,9 +44,9 @@ def render_my_trips_page(ctx):
             plan_name = st.text_input(
                 "行程名称",
                 value=f"我的行程-{len(st.session_state.selected_trip_spots)}个景点")
-            if st.button("保存草稿为行程", type="primary", use_container_width=True):
+            if st.button("保存草稿为行程", type="primary", width="stretch"):
                 _save_draft_as_plan(plan_name, trip_origin)
-        if st.button("清空行程", type="secondary", use_container_width=True):
+        if st.button("清空行程", type="secondary", width="stretch"):
             st.session_state.selected_trip_spots = []
             st.session_state.route_options = []
             st.session_state.selected_route_idx = 0
@@ -65,7 +65,7 @@ def render_my_trips_page(ctx):
         else:
             # 主区域一键转存（侧边栏也有完整版：可自定义名称）
             if st.button("💾 存为正式行程", key="mt_draft_quick_save",
-                         use_container_width=True):
+                         width="stretch"):
                 _save_draft_as_plan(
                     f"我的行程-{len(st.session_state.selected_trip_spots)}个景点",
                     trip_origin)
@@ -83,7 +83,7 @@ def render_my_trips_page(ctx):
 
             # Route optimization
             if len(st.session_state.selected_trip_spots) >= 2:
-                if st.button("优化路线", type="primary", use_container_width=True):
+                if st.button("优化路线", type="primary", width="stretch"):
                     valid_spots = [s for s in st.session_state.selected_trip_spots
                                    if s.get("lng") and s.get("lat")]
                     dep_coord = CITY_COORDS.get(trip_origin, [114.305, 30.593])
@@ -146,7 +146,7 @@ def render_my_trips_page(ctx):
                         {"酒店": h["name"], "地址": h.get("address", ""), "距离(m)": h.get("distance", 0)}
                         for h in st.session_state.trip_nearby["hotels"][:10]
                     ])
-                    st.dataframe(hotel_df, use_container_width=True, hide_index=True)
+                    st.dataframe(hotel_df, width="stretch", hide_index=True)
 
                 if st.session_state.trip_nearby.get("restaurants"):
                     st.write("**附近餐厅**")
@@ -154,7 +154,7 @@ def render_my_trips_page(ctx):
                         {"餐厅": r["name"], "地址": r.get("address", ""), "距离(m)": r.get("distance", 0)}
                         for r in st.session_state.trip_nearby["restaurants"][:10]
                     ])
-                    st.dataframe(rest_df, use_container_width=True, hide_index=True)
+                    st.dataframe(rest_df, width="stretch", hide_index=True)
 
             # Route options selector
             if st.session_state.route_options:

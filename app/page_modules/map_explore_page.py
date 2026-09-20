@@ -45,7 +45,7 @@ def render_map_explore_page(ctx):
         name_q = st.sidebar.text_input("🔍 搜索景点名", placeholder="输入名称关键字")
 
         has_active = sel_city or sel_cat or sel_pass
-        if has_active and st.sidebar.button("清除筛选", type="secondary", use_container_width=True):
+        if has_active and st.sidebar.button("清除筛选", type="secondary", width="stretch"):
             st.rerun()
 
         # --- 6. Quick filter presets ---
@@ -63,7 +63,7 @@ def render_map_explore_page(ctx):
         }
         preset_clicked = False
         for preset_name in presets:
-            if st.sidebar.button(preset_name, use_container_width=True, key=f"preset_{preset_name}"):
+            if st.sidebar.button(preset_name, width="stretch", key=f"preset_{preset_name}"):
                 preset = presets[preset_name]
                 sel_city = preset.get("city", sel_city)
                 sel_cat = preset.get("category", sel_cat)
@@ -138,7 +138,7 @@ def render_map_explore_page(ctx):
                     fig_city = px.bar(df_city, x="城市", y="景点数", color="景点数",
                                       color_continuous_scale="Blues", text_auto=True)
                     fig_city.update_layout(showlegend=False, title="城市分布")
-                    st.plotly_chart(fig_city, use_container_width=True)
+                    st.plotly_chart(fig_city, width="stretch")
             with fc2:
                 # Category pie
                 cat_counts = {}
@@ -149,7 +149,7 @@ def render_map_explore_page(ctx):
                 if cat_counts:
                     df_cat = pd.DataFrame(list(cat_counts.items()), columns=["分类", "数量"])
                     fig_cat = px.pie(df_cat, values="数量", names="分类", title="分类占比", hole=0.4)
-                    st.plotly_chart(fig_cat, use_container_width=True)
+                    st.plotly_chart(fig_cat, width="stretch")
 
             fp1, fp2 = st.columns(2)
             with fp1:
@@ -160,7 +160,7 @@ def render_map_explore_page(ctx):
                     fig_price = px.histogram(df_price, x="票价", nbins=20,
                                              color_discrete_sequence=["#1a73e8"])
                     fig_price.update_layout(showlegend=False, title="票价分布")
-                    st.plotly_chart(fig_price, use_container_width=True)
+                    st.plotly_chart(fig_price, width="stretch")
             with fp2:
                 # Level distribution
                 level_counts = {}
@@ -172,7 +172,7 @@ def render_map_explore_page(ctx):
                     fig_level = px.bar(df_level, x="等级", y="数量", color="数量",
                                        color_continuous_scale="RdYlGn", text_auto=True)
                     fig_level.update_layout(showlegend=False, title="等级分布")
-                    st.plotly_chart(fig_level, use_container_width=True)
+                    st.plotly_chart(fig_level, width="stretch")
 
         elif view_mode == "📋 列表":
             # Enhanced list view
@@ -184,7 +184,7 @@ def render_map_explore_page(ctx):
             with sc2:
                 level_filter = st.selectbox("等级筛选", ["全部", "A5", "A4", "未评级"])
             with sc3:
-                if st.button("应用筛选", type="primary", use_container_width=True):
+                if st.button("应用筛选", type="primary", width="stretch"):
                     pass  # rerun handled by selectbox change
 
             if level_filter != "全部":
@@ -205,7 +205,7 @@ def render_map_explore_page(ctx):
                 "等级": s.get("level") or "未评级", "票价": s.get("price", 0),
                 "包含年卡": len(s.get("passes", [])),
             } for s in filtered])
-            st.dataframe(df_list, use_container_width=True, hide_index=True, height=500)
+            st.dataframe(df_list, width="stretch", hide_index=True, height=500)
 
             # Card view
             cols = st.columns(3)
@@ -227,7 +227,7 @@ def render_map_explore_page(ctx):
                             st.caption("✅ 已在行程中")
                         else:
                             if st.button("➕ 加入行程", key=f"map_add_{s['name']}",
-                                         type="secondary", use_container_width=True):
+                                         type="secondary", width="stretch"):
                                 st.session_state.selected_trip_spots.append({
                                     "name": s["name"], "lng": s.get("lng"),
                                     "lat": s.get("lat"), "city": s.get("city", ""),
@@ -255,7 +255,7 @@ def render_map_explore_page(ctx):
                 fig_heat = px.imshow(df_heat.values, labels=dict(x="分类", y="城市", color="景点数"),
                                      x=df_heat.columns, y=df_heat.index,
                                      color_continuous_scale="YlOrRd", text_auto=True)
-                st.plotly_chart(fig_heat, use_container_width=True)
+                st.plotly_chart(fig_heat, width="stretch")
 
             # Price vs category scatter (jittered)
             st.divider()
@@ -273,7 +273,7 @@ def render_map_explore_page(ctx):
                                          size="票价", size_max=15)
                 fig_scatter.update_layout(yaxis=dict(tickvals=[1, 3, 4, 5],
                                                      ticktext=["未评级", "3A", "4A", "5A"]))
-                st.plotly_chart(fig_scatter, use_container_width=True)
+                st.plotly_chart(fig_scatter, width="stretch")
 
         # Spot details (shows when marker clicked / search)
         st.divider()
@@ -301,7 +301,7 @@ def render_map_explore_page(ctx):
                             st.caption("✅ 已在行程中")
                         else:
                             if st.button("➕ 加入行程", key=f"search_add_{s['name']}",
-                                         type="secondary", use_container_width=True):
+                                         type="secondary", width="stretch"):
                                 st.session_state.selected_trip_spots.append({
                                     "name": s["name"], "lng": s.get("lng"),
                                     "lat": s.get("lat"), "city": s.get("city", ""),

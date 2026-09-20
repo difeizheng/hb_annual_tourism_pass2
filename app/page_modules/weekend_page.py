@@ -26,7 +26,7 @@ def render_weekend_page(ctx):
     preset_cols = st.columns(6)
     for idx, (pk, pv) in enumerate(presets_w.items()):
         with preset_cols[idx]:
-            if st.button(pv["label"], key=f"wpreset_{pk}", use_container_width=True, type="primary"):
+            if st.button(pv["label"], key=f"wpreset_{pk}", width="stretch", type="primary"):
                 st.session_state.weekend_preset = pk
                 st.session_state.weekend_dep = pv["city"]
                 st.session_state.weekend_days = pv["days"]
@@ -57,7 +57,7 @@ def render_weekend_page(ctx):
                                 index=all_dep_cities.index(default_dep) if default_dep in all_dep_cities else 0)
     with home_input_row[1]:
         web_key_for_geo = st.secrets.get("amap_web_key", "")
-        if st.button("📍 定位地址", type="secondary", use_container_width=True):
+        if st.button("📍 定位地址", type="secondary", width="stretch"):
             if home_addr and web_key_for_geo:
                 result = geocode_address(home_addr, web_key_for_geo, city=dep_city)
                 if result:
@@ -83,7 +83,7 @@ def render_weekend_page(ctx):
     with params_row[2]:
         travel_month_w = st.selectbox("月份", list(range(1, 13)), index=0)
 
-    gen_clicked = st.button("生成行程", type="primary", use_container_width=True)
+    gen_clicked = st.button("生成行程", type="primary", width="stretch")
     needs_gen = gen_clicked or st.session_state.get("weekend_needs_gen", False)
     st.session_state.weekend_needs_gen = False
 
@@ -378,7 +378,7 @@ def render_weekend_page(ctx):
 
         # Add to trip button
         st.divider()
-        if st.button("➕ 添加到我的行程", type="secondary", use_container_width=True):
+        if st.button("➕ 添加到我的行程", type="secondary", width="stretch"):
             existing = {s["name"] for s in st.session_state.selected_trip_spots}
             added = 0
             for spot in all_plan_spots:

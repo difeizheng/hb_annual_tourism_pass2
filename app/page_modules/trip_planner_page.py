@@ -52,7 +52,7 @@ def render_trip_planner_page(ctx):
                     st.metric("景点数", pass_data["spot_count"])
                     st.metric("性价比", pass_data["value_ratio"])
             with c3:
-                if st.button("一键导入", type="primary", use_container_width=True):
+                if st.button("一键导入", type="primary", width="stretch"):
                     imported = import_pass_spots(selected_pass_name, graph_data, cleaned)
                     if imported:
                         st.session_state.tp_cart = imported
@@ -165,7 +165,7 @@ def render_trip_planner_page(ctx):
                 }
                 for s in st.session_state.tp_cart
             ])
-            st.dataframe(cart_df, use_container_width=True, hide_index=True)
+            st.dataframe(cart_df, width="stretch", hide_index=True)
 
             if st.button("清空行程", type="secondary"):
                 st.session_state.tp_cart = []
@@ -195,7 +195,7 @@ def render_trip_planner_page(ctx):
             with c4:
                 daily_cap = st.slider("每日时长(h)", 6.0, 12.0, 8.0, 0.5)
 
-            if st.button("自动编排行程", type="primary", use_container_width=True):
+            if st.button("自动编排行程", type="primary", width="stretch"):
                 dep_coord = CITY_COORDS.get(dep_city, [114.305, 30.593])
                 departure = {"name": dep_city, "lng": dep_coord[0], "lat": dep_coord[1]}
                 valid = [s for s in st.session_state.tp_cart if s.get("lng") and s.get("lat")]
@@ -371,7 +371,7 @@ def render_trip_planner_page(ctx):
             with c2:
                 travel_style = st.selectbox("消费水平", ["economy", "midrange", "luxury"], format_func=lambda x: {"economy": "经济型", "midrange": "舒适型", "luxury": "豪华型"}.get(x, x))
             with c3:
-                if st.button("保存行程", type="primary", use_container_width=True):
+                if st.button("保存行程", type="primary", width="stretch"):
                     plan_id = save_days_plan(
                         assignment["days"], trip_name, "manual",
                         origin_city=st.session_state.tp_departure_city,
