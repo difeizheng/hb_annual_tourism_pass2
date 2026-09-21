@@ -60,7 +60,21 @@ def render_chat_planner_page(spots_with_coords, graph_data, cleaned, departure_c
             st.markdown(msg["content"])
 
     # --- user input ---
-    if prompt := st.chat_input("描述你的出行计划…"):
+    prompt = None
+    if not ss.chat_messages:
+        st.caption("试试这些例子：")
+        _examples = [
+            "中秋+国庆+请假3天，准备出行10天，我有武汉惠游年票，从武汉出发走宜昌+恩施，帮我规划",
+            "周末两天带娃在武汉玩，偏好主题乐园",
+            "我有湖北文旅年卡，想去神农架+宜昌玩4天",
+        ]
+        _ecols = st.columns(len(_examples))
+        for _i, (_c, _ex) in enumerate(zip(_ecols, _examples)):
+            if _c.button(_ex, width="stretch", key=f"chat_example_{_i}"):
+                prompt = _ex
+    if prompt is None:
+        prompt = st.chat_input("描述你的出行计划…")
+    if prompt:
         ss.chat_messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)

@@ -8,13 +8,14 @@ import app.main here (Streamlit re-execution trap).
 
 def render_pass_compare_page(ctx):
     globals().update(ctx)
-    st.title("年卡对比（地图模式）")
+    st.title("年卡对比")
 
     passes_list = sorted(set(s["pass_name"] for s in cleaned))
     selected = st.multiselect(
         "选择年卡对比（默认全部，可删减）",
         passes_list,
         default=passes_list,
+        format_func=_pass_display_name,
     )
 
     if len(selected) >= 2:

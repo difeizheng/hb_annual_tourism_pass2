@@ -45,6 +45,7 @@ def render_trip_planner_page(ctx):
                     "选择年卡",
                     [p["name"] for p in passes_info],
                     label_visibility="collapsed",
+                    format_func=_pass_display_name,
                 )
             with c2:
                 pass_data = next((p for p in passes_info if p["name"] == selected_pass_name), None)

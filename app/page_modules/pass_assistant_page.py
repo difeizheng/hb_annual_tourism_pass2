@@ -98,7 +98,9 @@ def render_pass_assistant_page(ctx):
         # Scoring
         def _top_examples(details, pred, n=2):
             """Pick up to n example spot names: 5A first, then 4A, then price desc."""
-            pool = [d for d in details if pred(d)]
+            pool = [d for d in details if pred(d) and len(d.get("name", "")) <= 12]
+            if not pool:
+                pool = [d for d in details if pred(d)]
             pool.sort(key=lambda d: (0 if d.get("level") == "A5" else 1 if d.get("level") == "A4" else 2,
                                      -d.get("price", 0)))
             return [d["name"] for d in pool[:n]]

@@ -17,7 +17,7 @@ def render_data_overview_page(ctx):
     k1, k2, k3, k4, k5, k6 = st.columns(6)
     k1.metric("景点总数", stats.get("spot_count", 0))
     k2.metric("年卡数量", stats.get("pass_count", 0))
-    k3.metric("覆盖城市", stats.get("city_count", 0))
+    k3.metric("覆盖城市", len(set(s.get("city") for s in cleaned if s.get("city"))))
     k4.metric("总价值", f"¥{total_value:,}")
     k5.metric("免费景点", free_count)
     k6.metric("5A景点", a5_count)

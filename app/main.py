@@ -265,6 +265,11 @@ def get_unique_spots_with_coords(cleaned, coordinates):
 # Map HTML generation
 # ============================================================
 
+def _pass_display_name(name):
+    """展示名清洗：武汉惠游年票_120元 → 武汉惠游年票（120元）。"""
+    return re.sub(r"_(\d+)元$", r"（\1元）", name or "")
+
+
 def _build_map_html(spots_with_coords, filters=None, height="700px", clear_filters=False):
     """Generate AMap HTML with markers."""
     js_key = st.secrets.get("amap_js_key", "") if hasattr(st, "secrets") else ""

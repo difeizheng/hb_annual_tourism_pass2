@@ -77,7 +77,8 @@ def render_day_route_page(spots_with_coords, graph_data, cleaned):
     with st.sidebar:
         st.subheader("出发点")
         all_cities = sorted(set(s["city"] for s in spots_with_coords if s.get("city")))
-        origin_name = st.selectbox("出发地", all_cities, key="dr_origin_city")
+        _origin_idx = all_cities.index("武汉") if "武汉" in all_cities else 0
+        origin_name = st.selectbox("出发地", all_cities, index=_origin_idx, key="dr_origin_city")
         from app.map_html import CITY_COORDS
         oc = CITY_COORDS.get(origin_name, [114.305, 30.593])
         origin = {"name": origin_name, "lng": oc[0], "lat": oc[1]}

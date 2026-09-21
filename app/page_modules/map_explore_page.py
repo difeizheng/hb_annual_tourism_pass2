@@ -5,6 +5,8 @@ render(ctx) injects main.py's namespace via globals().update(ctx). Do NOT
 import app.main here (Streamlit re-execution trap).
 """
 
+_LV_DISP = {"A5": "5A", "A4": "4A", "A3": "3A"}
+
 
 def render_map_explore_page(ctx):
     globals().update(ctx)
@@ -39,13 +41,35 @@ def render_map_explore_page(ctx):
         all_cats = sorted(set(s["category"] for s in spots_with_coords if s["category"]))
         all_passes = sorted(set(p for s in spots_with_coords for p in s["passes"]))
 
-        sel_city = st.sidebar.multiselect("城市", all_cities, default=[])
-        sel_cat = st.sidebar.multiselect("类型", all_cats, default=[])
-        sel_pass = st.sidebar.multiselect("年卡", all_passes, default=[])
+        # 预设/清除在下一帧 widget 实例化前应用（widget key 不能同帧改）
+        _pp = st.session_state.pop("_map_preset_pending", None)
+        if _pp:
+            if _pp.get("city") is not None:
+                st.session_state["mx_city"] = list(_pp["city"])
+            if _pp.get("category") is not None:
+                st.session_state["mx_cat"] = list(_pp["category"])
+        if st.session_state.pop("_map_clear_pending", False):
+            st.session_state["mx_city"] = []
+            st.session_state["mx_cat"] = []
+            st.session_state["mx_pass"] = []
+
+        sel_city = st.sidebar.multiselect("城市", all_cities, default=[], key="mx_city")
+        sel_cat = st.sidebar.multiselect("类型", all_cats, default=[], key="mx_cat")
+        sel_pass = st.sidebar.multiselect("年卡", all_passes, default=[], key="mx_pass",
+                                           format_func=_pass_display_name)
         name_q = st.sidebar.text_input("🔍 搜索景点名", placeholder="输入名称关键字")
 
-        has_active = sel_city or sel_cat or sel_pass
+        has_active = bool(
+            sel_city or sel_cat or sel_pass
+            or st.session_state.get("_map_level")
+            or st.session_state.get("_map_free_only")
+            or st.session_state.get("_map_high_value")
+        )
         if has_active and st.sidebar.button("清除筛选", type="secondary", width="stretch"):
+            st.session_state["_map_clear_pending"] = True
+            st.session_state["_map_level"] = None
+            st.session_state["_map_free_only"] = False
+            st.session_state["_map_high_value"] = False
             st.rerun()
 
         # --- 6. Quick filter presets ---
@@ -65,9 +89,7 @@ def render_map_explore_page(ctx):
         for preset_name in presets:
             if st.sidebar.button(preset_name, width="stretch", key=f"preset_{preset_name}"):
                 preset = presets[preset_name]
-                sel_city = preset.get("city", sel_city)
-                sel_cat = preset.get("category", sel_cat)
-                has_active = True
+                st.session_state["_map_preset_pending"] = preset
                 preset_clicked = True
                 st.session_state["_map_level"] = preset.get("level")
                 st.session_state["_map_free_only"] = preset.get("free_only", False)
@@ -165,7 +187,7 @@ def render_map_explore_page(ctx):
                 # Level distribution
                 level_counts = {}
                 for s in filtered:
-                    lv = s.get("level") or "未评级"
+                    lv = _LV_DISP.get(s.get("level"), s.get("level") or "未评级")
                     level_counts[lv] = level_counts.get(lv, 0) + 1
                 if level_counts:
                     df_level = pd.DataFrame(list(level_counts.items()), columns=["等级", "数量"])
@@ -182,7 +204,8 @@ def render_map_explore_page(ctx):
             with sc1:
                 sort_by = st.selectbox("排序方式", ["票价降序", "票价升序", "等级优先", "名称"])
             with sc2:
-                level_filter = st.selectbox("等级筛选", ["全部", "A5", "A4", "未评级"])
+                level_filter = st.selectbox("等级筛选", ["全部", "A5", "A4", "未评级"],
+                                            format_func=lambda v: _LV_DISP.get(v, v))
             with sc3:
                 if st.button("应用筛选", type="primary", width="stretch"):
                     pass  # rerun handled by selectbox change
@@ -202,7 +225,7 @@ def render_map_explore_page(ctx):
             # Results table
             df_list = pd.DataFrame([{
                 "景点": s["name"], "城市": s.get("city", ""), "分类": s.get("category", ""),
-                "等级": s.get("level") or "未评级", "票价": s.get("price", 0),
+                "等级": _LV_DISP.get(s.get("level"), s.get("level") or "未评级"), "票价": s.get("price", 0),
                 "包含年卡": len(s.get("passes", [])),
             } for s in filtered])
             st.dataframe(df_list, width="stretch", hide_index=True, height=500)
@@ -254,6 +277,7 @@ def render_map_explore_page(ctx):
             if df_heat.shape[0] > 0 and df_heat.shape[1] > 0:
                 fig_heat = px.imshow(df_heat.values, labels=dict(x="分类", y="城市", color="景点数"),
                                      x=df_heat.columns, y=df_heat.index,
+                                     aspect="auto",
                                      color_continuous_scale="YlOrRd", text_auto=True)
                 st.plotly_chart(fig_heat, width="stretch")
 

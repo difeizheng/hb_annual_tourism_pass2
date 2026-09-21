@@ -20,7 +20,7 @@ def render_season_guide_page(ctx):
 
     # Month chips
     if "selected_month" not in st.session_state:
-        st.session_state.selected_month = 1
+        st.session_state.selected_month = time.localtime().tm_mon
 
     st.markdown("#### 选择月份")
     month_cols = st.columns(12)
